@@ -1,0 +1,39 @@
+{
+    "type": "record", 
+    "name": "TestPerson",
+    "namespace" : "com.epam.eco.commons.avro.data", 
+    "fields": [
+        {"name": "age", "type": ["null", "int"]},
+        {"name": "name", "type": "string"},
+        {"name": "hobby", "type": ["null", 
+            {"type": "array", "items": 
+                {"name": "TestHobby", "type": "record", "fields":[
+                    {"name": "kind", "type": "string"},
+                    {"name": "description", "type": "string"}
+                ]}
+            }
+            ]
+        },
+        {"name": "job", "type":
+            {"type": "record", "name": "TestJob", "fields":[
+                {"name": "company", "type": "string"},
+                {"name": "position", "type":
+                    {"type": "record", "name": "TestPosition", "fields":[
+                        {"name": "title", "type": "string"},
+                        {"name": "skill", "type":
+                            {"type": "map", "values":
+                                {"type": "record", "name": "TestSkillLevel", "fields":[
+                                    {"name": "level", "type": "string"},
+                                    {"name": "description", "type": "string"}
+                                ]}
+                            }
+                        }
+                    ]}
+                },
+                {"name": "previousJob", "type":  ["null", "TestJob"]}
+            ]}
+        }],
+    "prop1": "nomatter",
+    "prop2": "nomatter",
+    "prop3": "nomatter"
+}

@@ -1,0 +1,31 @@
+{
+    "type": "record", 
+    "name": "TestPersonDerived",
+    "namespace" : "com.epam.eco.commons.avro.data.derived", 
+    "fields": [
+        {"name": "age", "type": ["null", "int"]},
+        {"name": "hobby", "type": ["null", 
+            {"type": "array", "items": 
+                {"name": "TestHobbyDerived", "type": "record", "fields":[
+                    {"name": "kind", "type": "string"}
+                ]}
+            }
+            ]
+        },
+        {"name": "job", "type":
+            {"type": "record", "name": "TestJobDerived", "fields":[
+                {"name": "position", "type":
+                    {"type": "record", "name": "TestPositionDerived", "fields":[
+                        {"name": "skill", "type":
+                            {"type": "map", "values":
+                                {"type": "record", "name": "TestSkillLevelDerived", "fields":[
+                                    {"name": "level", "type": "string"}
+                                ]}
+                            }
+                        }
+                    ]}
+                },
+                {"name": "previousJob", "type":  ["null", "TestJobDerived"]}
+            ]}
+        }]
+}
