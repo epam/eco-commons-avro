@@ -81,6 +81,8 @@ public abstract class GrammarErrorParser {
             parse(new LinkedList<>(Arrays.asList(symbol.production)), path, errors);
         } else if (symbol.kind == Kind.ALTERNATIVE) {
             parse(new LinkedList<>(Arrays.asList(((Alternative)symbol).symbols)), path, errors);
+        } else if (symbol.kind == Kind.EXPLICIT_ACTION) {
+            // nothing to do
         } else {
             throw new RuntimeException("Unknown symbol kind: " + symbol.kind);
         }

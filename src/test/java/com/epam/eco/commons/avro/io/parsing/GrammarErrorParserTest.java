@@ -34,7 +34,7 @@ public class GrammarErrorParserTest {
             "{\"type\":\"record\",\"name\":\"R1\",\"fields\":["
                     + "{\"name\":\"f1\",\"type\":{\"type\":\"record\",\"name\":\"R1_1\",\"fields\":["
                             + "{\"name\":\"f1_1\",\"type\":\"boolean\"},"
-                            + "{\"name\":\"f1_2\",\"type\":{\"name\":\"f_1\",\"type\":\"record\",\"name\":\"R1_1_1\",\"fields\":["
+                            + "{\"name\":\"f1_2\",\"type\":{\"type\":\"record\",\"name\":\"R1_1_1\",\"fields\":["
                                 + "{\"name\":\"f1_2_1\",\"type\":\"int\"}"
                             + "]}}"
                         + "]}},"
@@ -47,14 +47,20 @@ public class GrammarErrorParserTest {
                         + "{\"name\":\"f7_1\",\"type\":\"string\"}"
                     + "]}}},"
                     + "{\"name\":\"f8\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":\"boolean\"}}},"
-                    + "{\"name\":\"f9\",\"type\":[\"null\", \"string\"]}"
+                    + "{\"name\":\"f9\",\"type\":[\"null\", \"string\"]},"
+                    + "{\"name\":\"f10\",\"type\":{\"type\": \"enum\",\"name\": \"WEEKENDS\", \"symbols\": [\"SATURDAY\", \"SUNDAY\"]}},"
+                    + "{\"name\":\"f11\",\"type\":\"string\"},"
+                    + "{\"name\":\"f12\",\"type\":{\"type\": \"map\", \"values\": \"long\"}},"
+                    + "{\"name\":\"f13\",\"type\":\"string\"},"
+                    + "{\"name\":\"f14\",\"type\":{\"type\": \"fixed\", \"size\": 16, \"name\": \"md5\"}},"
+                    + "{\"name\":\"f15\",\"type\":\"string\"}"
                 + "]}");
 
     private static final Schema READER_SCHEMA = AvroUtils.schemaFromJson(
             "{\"type\":\"record\",\"name\":\"R1\",\"fields\":["
                     + "{\"name\":\"f1\",\"type\":{\"type\":\"record\",\"name\":\"R1_1\",\"fields\":["
                             + "{\"name\":\"f1_1\",\"type\":\"int\"},"
-                            + "{\"name\":\"f1_2\",\"type\":{\"name\":\"f_1\",\"type\":\"record\",\"name\":\"R1_1_1\",\"fields\":["
+                            + "{\"name\":\"f1_2\",\"type\":{\"type\":\"record\",\"name\":\"R1_1_1\",\"fields\":["
                                 + "{\"name\":\"f1_2_1\",\"type\":\"int\"}"
                             + "]}}"
                         + "]}},"
@@ -67,7 +73,13 @@ public class GrammarErrorParserTest {
                         + "{\"name\":\"f7_1\",\"type\":\"int\"}"
                     + "]}}},"
                     + "{\"name\":\"f8\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":\"string\"}}},"
-                    + "{\"name\":\"f9\",\"type\":[\"null\", {\"type\":\"record\",\"name\":\"R_9\",\"fields\":[{\"name\":\"f9_1\",\"type\":\"int\"}]}]}"
+                    + "{\"name\":\"f9\",\"type\":[\"null\", {\"type\":\"record\",\"name\":\"R_9\",\"fields\":[{\"name\":\"f9_1\",\"type\":\"int\"}]}]},"
+                    + "{\"name\":\"f10\",\"type\":{\"type\": \"enum\",\"name\": \"WEEKENDS\", \"symbols\": [\"SATURDAY\", \"SUNDAY\"]}},"
+                    + "{\"name\":\"f11\",\"type\":\"string\"},"
+                    + "{\"name\":\"f12\",\"type\":{\"type\": \"map\", \"values\": \"long\"}},"
+                    + "{\"name\":\"f13\",\"type\":\"string\"},"
+                    + "{\"name\":\"f14\",\"type\":{\"type\": \"fixed\", \"size\": 16, \"name\": \"md5\"}},"
+                    + "{\"name\":\"f15\",\"type\":\"string\"}"
                 + "]}");
 
     @Test
