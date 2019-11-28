@@ -38,19 +38,19 @@ public class ByNameSchemaFieldComparatorTest {
     @Test
     public void testSchemaFieldsAreAscOrdered() throws Exception {
         List<Map<String, Object>> fields = generateFieldList(100);
-        List<Map<String, Object>> fieldsOfRecordOrUnknownType =
-                extractFieldsOfRecordAndUnknownType(fields);
+        List<Map<String, Object>> fieldsOfComplexOrUnknownType =
+                extractFieldsOfComplexAndUnknownType(fields);
 
         fields.sort(ByNameSchemaFieldComparator.ASC);
 
-        verifyFieldsOrdered(fields, fieldsOfRecordOrUnknownType, true);
+        verifyFieldsOrdered(fields, fieldsOfComplexOrUnknownType, true);
     }
 
     @Test
     public void testSchemaFieldsAreDescOrdered() throws Exception {
         List<Map<String, Object>> fields = generateFieldList(100);
         List<Map<String, Object>> fieldsOfRecordOrUnknownType =
-                extractFieldsOfRecordAndUnknownType(fields);
+                extractFieldsOfComplexAndUnknownType(fields);
 
         fields.sort(ByNameSchemaFieldComparator.DESC);
 
@@ -82,16 +82,21 @@ public class ByNameSchemaFieldComparatorTest {
     }
 
     private List<Map<String, Object>> generateFieldList(int size) {
+        String[] complexAndUnknownTypes = new String[]{
+                Type.RECORD.name(),
+                Type.ENUM.name(),
+                Type.MAP.name(),
+                Type.UNION.name(),
+                Type.ARRAY.name(),
+                "unknown"
+        };
         List<Map<String, Object>> fields = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             Map<String, Object> field = new HashMap<>();
             field.put(AvroConstants.SCHEMA_KEY_FIELD_NAME, "f" + i);
             if (i % 3 == 0) {
-                if (new Random().nextBoolean()) {
-                    field.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, Type.RECORD.name());
-                } else {
-                    field.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, "unknown");
-                }
+                int nextType = new Random().nextInt(complexAndUnknownTypes.length);
+                field.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, complexAndUnknownTypes[nextType]);
             } else {
                 field.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, Type.STRING.name());
             }
@@ -101,16 +106,21 @@ public class ByNameSchemaFieldComparatorTest {
         return fields;
     }
 
-    private List<Map<String, Object>> extractFieldsOfRecordAndUnknownType(
+    private List<Map<String, Object>> extractFieldsOfComplexAndUnknownType(
             List<Map<String, Object>> fields) {
         return fields.stream().
-                filter(this::isRecordOrUnknown).
+                filter(this::isComplexOrUnknown).
                 collect(Collectors.toList());
     }
 
-    private boolean isRecordOrUnknown(Map<String, Object> field) {
+    private boolean isComplexOrUnknown(Map<String, Object> field) {
         Type type = AvroUtils.typeOfGenericFieldOrElseNullIfUnknown(field);
-        return type == null || type == Type.RECORD;
+        return type == null
+                || type == Type.RECORD
+                || type == Type.ENUM
+                || type == Type.MAP
+                || type == Type.UNION
+                || type == Type.ARRAY;
     }
 
 }

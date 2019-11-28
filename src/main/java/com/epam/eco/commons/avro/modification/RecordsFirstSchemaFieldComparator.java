@@ -25,6 +25,7 @@ import com.epam.eco.commons.avro.AvroUtils;
 /**
  * @author Andrei_Tytsik
  */
+@Deprecated
 public abstract class RecordsFirstSchemaFieldComparator implements Comparator<Map<String, Object>> {
 
     @Override
