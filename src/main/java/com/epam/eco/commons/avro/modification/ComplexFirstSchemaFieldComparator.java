@@ -21,6 +21,9 @@ import org.apache.avro.Schema;
 import java.util.Comparator;
 import java.util.Map;
 
+/**
+ * @author Ales_Zhuk
+ */
 public abstract class ComplexFirstSchemaFieldComparator implements Comparator<Map<String, Object>> {
 
     @Override

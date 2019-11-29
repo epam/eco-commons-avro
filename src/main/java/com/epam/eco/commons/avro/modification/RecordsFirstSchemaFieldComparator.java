@@ -24,6 +24,10 @@ import com.epam.eco.commons.avro.AvroUtils;
 
 /**
  * @author Andrei_Tytsik
+ *
+ * @deprecated due to possible wrong fields order in schema after sorting.
+ * Complex types can have nested definitions of other types, therefore all complex types have to go first in predefined(initial) order.
+ * Use {@link ComplexFirstSchemaFieldComparator} instead.
  */
 @Deprecated
 public abstract class RecordsFirstSchemaFieldComparator implements Comparator<Map<String, Object>> {

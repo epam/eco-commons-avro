@@ -81,7 +81,7 @@ public class SortSchemaFieldsTest {
     @Test
     public void testSchemaFieldsAreAscOrdered() throws Exception {
         Map<String, Object> schemaMap = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
-        new SortSchemaFields(MockByNameSchemaFieldComparator.ASC).applyToGeneric(schemaMap);
+        new SortSchemaFields(SimpleByNameSchemaFieldComparator.ASC).applyToGeneric(schemaMap);
         for (List<Map<String, Object>> fields : SchemaModificationTestUtils.resolveAllSchemasFields(schemaMap)) {
             verifyFieldsOrdered(fields, true);
         }
@@ -91,7 +91,7 @@ public class SortSchemaFieldsTest {
     @Test
     public void testSchemaFieldsAreDescOrdered() throws Exception {
         Map<String, Object> schemaMap = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
-        new SortSchemaFields(MockByNameSchemaFieldComparator.DESC).applyToGeneric(schemaMap);
+        new SortSchemaFields(SimpleByNameSchemaFieldComparator.DESC).applyToGeneric(schemaMap);
         for (List<Map<String, Object>> fields : SchemaModificationTestUtils.resolveAllSchemasFields(schemaMap)) {
             verifyFieldsOrdered(fields, false);
         }
@@ -101,10 +101,10 @@ public class SortSchemaFieldsTest {
     @Test
     public void testTwoSchemasAreEqualAfterSorting() throws Exception {
         Map<String, Object> schemaMap1 = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
-        new SortSchemaFields(MockByNameSchemaFieldComparator.ASC).applyToGeneric(schemaMap1);
+        new SortSchemaFields().applyToGeneric(schemaMap1);
 
         Map<String, Object> schemaMap2 = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
-        new SortSchemaFields(MockByNameSchemaFieldComparator.ASC).applyToGeneric(schemaMap2);
+        new SortSchemaFields().applyToGeneric(schemaMap2);
 
         Assert.assertEquals(schemaMap1, schemaMap2);
     }
@@ -125,14 +125,14 @@ public class SortSchemaFieldsTest {
 
 }
 
-class MockByNameSchemaFieldComparator implements Comparator<Map<String, Object>> {
+class SimpleByNameSchemaFieldComparator implements Comparator<Map<String, Object>> {
 
-    static final MockByNameSchemaFieldComparator ASC = new MockByNameSchemaFieldComparator(true);
-    static final MockByNameSchemaFieldComparator DESC = new MockByNameSchemaFieldComparator(false);
+    static final SimpleByNameSchemaFieldComparator ASC = new SimpleByNameSchemaFieldComparator(true);
+    static final SimpleByNameSchemaFieldComparator DESC = new SimpleByNameSchemaFieldComparator(false);
 
     private final boolean asc;
 
-    private MockByNameSchemaFieldComparator(boolean asc) {
+    private SimpleByNameSchemaFieldComparator(boolean asc) {
         this.asc = asc;
     }
 
