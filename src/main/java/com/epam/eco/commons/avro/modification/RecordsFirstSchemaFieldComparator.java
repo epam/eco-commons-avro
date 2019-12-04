@@ -34,8 +34,8 @@ public abstract class RecordsFirstSchemaFieldComparator implements Comparator<Ma
 
     @Override
     public final int compare(Map<String, Object> field1, Map<String, Object> field2) {
-        Type field1Type = AvroUtils.typeOfGenericFieldOrElseNullIfUnknown(field1);
-        Type field2Type = AvroUtils.typeOfGenericFieldOrElseNullIfUnknown(field2);
+        Type field1Type = AvroUtils.typeOfGenericFieldOrElseNullIfUnknown(field1, false);
+        Type field2Type = AvroUtils.typeOfGenericFieldOrElseNullIfUnknown(field2, false);
         if (isRecordOrUnknown(field1Type) && isRecordOrUnknown(field2Type)) {
             return 0;
         } else if (isRecordOrUnknown(field1Type) && !isRecordOrUnknown(field2Type)) {

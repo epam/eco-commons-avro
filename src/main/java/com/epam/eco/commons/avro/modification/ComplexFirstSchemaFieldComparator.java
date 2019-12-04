@@ -28,8 +28,8 @@ public abstract class ComplexFirstSchemaFieldComparator implements Comparator<Ma
 
     @Override
     public int compare(Map<String, Object> field1, Map<String, Object> field2) {
-        Schema.Type field1Type = AvroUtils.typeOfGenericFieldOrElseNullIfUnknown(field1);
-        Schema.Type field2Type = AvroUtils.typeOfGenericFieldOrElseNullIfUnknown(field2);
+        Schema.Type field1Type = AvroUtils.typeOfGenericFieldOrElseNullIfUnknown(field1, true);
+        Schema.Type field2Type = AvroUtils.typeOfGenericFieldOrElseNullIfUnknown(field2, true);
 
         if (isComplexOrUnknown(field1Type) && isComplexOrUnknown(field2Type)) {
             return 0;

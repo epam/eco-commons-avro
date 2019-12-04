@@ -30,6 +30,8 @@ import org.junit.Test;
 import com.epam.eco.commons.avro.AvroConstants;
 import com.epam.eco.commons.avro.AvroUtils;
 
+import static java.util.Arrays.asList;
+
 /**
  * @author Andrei_Tytsik
  */
@@ -86,7 +88,6 @@ public class ByNameSchemaFieldComparatorTest {
                 Type.RECORD.name(),
                 Type.ENUM.name(),
                 Type.MAP.name(),
-                Type.UNION.name(),
                 Type.ARRAY.name(),
                 "unknown"
         };
@@ -97,6 +98,8 @@ public class ByNameSchemaFieldComparatorTest {
             if (i % 3 == 0) {
                 int nextType = new Random().nextInt(complexAndUnknownTypes.length);
                 field.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, complexAndUnknownTypes[nextType]);
+            } else if(i % 4 == 0) {
+                field.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, generateUnion(i));
             } else {
                 field.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, Type.STRING.name());
             }
@@ -104,6 +107,17 @@ public class ByNameSchemaFieldComparatorTest {
         }
         Collections.shuffle(fields);
         return fields;
+    }
+
+    private Map<String, Object> generateUnion(int currIndex) {
+        Map<String, Object> field = new HashMap<>();
+        field.put(AvroConstants.SCHEMA_KEY_FIELD_NAME, "f" + currIndex);
+        if(new Random().nextBoolean()) {
+            field.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, asList("null", Type.STRING.name()));
+        } else {
+            field.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, asList("null", "unknown"));
+        }
+        return field;
     }
 
     private List<Map<String, Object>> extractFieldsOfComplexAndUnknownType(
@@ -114,7 +128,7 @@ public class ByNameSchemaFieldComparatorTest {
     }
 
     private boolean isComplexOrUnknown(Map<String, Object> field) {
-        Type type = AvroUtils.typeOfGenericFieldOrElseNullIfUnknown(field);
+        Type type = AvroUtils.typeOfGenericFieldOrElseNullIfUnknown(field, true);
         return type == null
                 || type == Type.RECORD
                 || type == Type.ENUM

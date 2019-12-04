@@ -56,6 +56,8 @@ public abstract class AvroUtils {
 
     private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^[_a-zA-Z][_a-zA-Z0-9]*$");
 
+    private static final int NUM_FIELDS_NULLABLE_UNION_WITH_PRIMITIVE = 2;
+
     private AvroUtils() {
     }
 
@@ -136,7 +138,7 @@ public abstract class AvroUtils {
                 reader = new GenericDatumReader<>(schema);
             }
 
-            return (GenericRecord)reader.read(null, decoder);
+            return (GenericRecord) reader.read(null, decoder);
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
         }
@@ -289,13 +291,46 @@ public abstract class AvroUtils {
         Validate.notNull(genericSchema, "Generic schema is null");
 
         if (genericSchema instanceof Map) {
-            return Type.valueOf(((Map<String, Object>)genericSchema).
+            return Type.valueOf(((Map<String, Object>) genericSchema).
                     get(AvroConstants.SCHEMA_KEY_TYPE).toString().toUpperCase());
         } else if (genericSchema instanceof List) {
             return Type.UNION;
         } else {
             return Type.valueOf(genericSchema.toString().toUpperCase());
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Type typeOfGenericSchemaExtractNullableUnion(Object genericSchema) {
+        Validate.notNull(genericSchema, "Generic schema is null");
+
+        if (genericSchema instanceof Map) {
+            return Type.valueOf(((Map<String, Object>) genericSchema).
+                    get(AvroConstants.SCHEMA_KEY_TYPE).toString().toUpperCase());
+        } else if (genericSchema instanceof List) {
+            return primitiveTypeOfNullableUnionOrUnionTypeIfComplex((List) genericSchema);
+        } else {
+            return Type.valueOf(genericSchema.toString().toUpperCase());
+        }
+    }
+
+    public static Type primitiveTypeOfNullableUnionOrUnionTypeIfComplex(List<Object> list) {
+        Type type = Type.UNION;
+        if (list.size() == NUM_FIELDS_NULLABLE_UNION_WITH_PRIMITIVE) {
+            Object schemaType = null;
+            if ("null".equals(list.get(0))) {
+                schemaType = list.get(1);
+            } else if ("null".equals(list.get(1))) {
+                schemaType = list.get(0);
+            }
+            if (schemaType instanceof String) {
+                String typeStr = schemaType.toString().toUpperCase();
+                if (isPrimitive(typeStr)) {
+                    type = Type.valueOf(typeStr);
+                }
+            }
+        }
+        return type;
     }
 
     public static Type typeOfGenericSchemaOrElseNullIfUnknown(Object genericSchema) {
@@ -306,15 +341,20 @@ public abstract class AvroUtils {
         }
     }
 
-    public static Type typeOfGenericField(Map<String, Object> genericField) {
+    public static Type typeOfGenericField(Map<String, Object> genericField, boolean extractNullableUnion) {
         Validate.notNull(genericField, "Generic field is null");
 
-        return typeOfGenericSchema(genericField.get(AvroConstants.SCHEMA_KEY_FIELD_TYPE));
+        return extractNullableUnion
+                ? typeOfGenericSchemaExtractNullableUnion(genericField.get(AvroConstants.SCHEMA_KEY_FIELD_TYPE))
+                : typeOfGenericSchema(genericField.get(AvroConstants.SCHEMA_KEY_FIELD_TYPE));
     }
 
-    public static Type typeOfGenericFieldOrElseNullIfUnknown(Map<String, Object> genericField) {
+    public static Type typeOfGenericFieldOrElseNullIfUnknown(
+            Map<String, Object> genericField,
+            boolean extractNullableUnion
+    ) {
         try {
-            return typeOfGenericField(genericField);
+            return typeOfGenericField(genericField, extractNullableUnion);
         } catch (IllegalArgumentException iae) {
             return null;
         }
@@ -323,7 +363,7 @@ public abstract class AvroUtils {
     public static String nameOfGenericField(Map<String, Object> genericField) {
         Validate.notNull(genericField, "Generic field is null");
 
-        return (String)genericField.get(AvroConstants.SCHEMA_KEY_FIELD_NAME);
+        return (String) genericField.get(AvroConstants.SCHEMA_KEY_FIELD_NAME);
     }
 
     public static boolean isFieldNameValid(String fieldName) {
@@ -341,7 +381,7 @@ public abstract class AvroUtils {
 
     public static Object javaPrimitiveToAvro(Object value) {
         if (value instanceof String) {
-            return new Utf8((String)value);
+            return new Utf8((String) value);
         }
         return value;
     }
@@ -431,6 +471,20 @@ public abstract class AvroUtils {
                 type == Type.DOUBLE ||
                 type == Type.BYTES ||
                 type == Type.STRING;
+    }
+
+    public static boolean isPrimitive(String type) {
+        Validate.notNull(type, "Type is null");
+
+        return
+                Type.NULL.name().equals(type) ||
+                Type.BOOLEAN.name().equals(type) ||
+                Type.INT.name().equals(type) ||
+                Type.LONG.name().equals(type) ||
+                Type.FLOAT.name().equals(type) ||
+                Type.DOUBLE.name().equals(type) ||
+                Type.BYTES.name().equals(type) ||
+                Type.STRING.name().equals(type);
     }
 
     public static boolean isOfNamedType(Schema schema) {

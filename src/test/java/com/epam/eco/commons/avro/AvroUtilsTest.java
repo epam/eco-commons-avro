@@ -245,10 +245,41 @@ public class AvroUtilsTest {
     public void testGenericFieldTypeIsResolved() throws Exception {
         for (Field field : TestPerson.SCHEMA$.getFields()) {
             Map<String, Object> genericField = AvroUtils.fieldToGeneric(field);
-            Type type = AvroUtils.typeOfGenericField(genericField);
+            Type type = AvroUtils.typeOfGenericField(genericField, false);
 
             Assert.assertEquals(field.schema().getType(), type);
         }
+    }
+
+    @Test
+    public void testExtractFromUnionGenericFieldNullFirst() throws Exception {
+        Field unionField = new Schema.Parser()
+                .parse("{\"type\": \"record\",\"name\": \"test.schema\",\"namespace\": \"com.epam\",\"fields\": [{\"name\": \"age\",\"type\": [\"null\",\"int\"],\"default\": null}]}")
+                .getField("age");
+        Map<String, Object> genericField = AvroUtils.fieldToGeneric(unionField);
+        Type type = AvroUtils.typeOfGenericField(genericField, true);
+
+        Assert.assertEquals(Type.INT, type);
+    }
+
+    @Test
+    public void testExtractFromUnionGenericFieldNullSecond() throws Exception {
+        Field unionField = new Schema.Parser()
+                .parse("{\"type\": \"record\",\"name\": \"test.schema\",\"namespace\": \"com.epam\",\"fields\": [{\"name\": \"age\",\"type\": [\"int\", \"null\"],\"default\": 1}]}")
+                .getField("age");
+        Map<String, Object> genericField = AvroUtils.fieldToGeneric(unionField);
+        Type type = AvroUtils.typeOfGenericField(genericField, true);
+
+        Assert.assertEquals(Type.INT, type);
+    }
+
+    @Test
+    public void testExtractFromUnionGenericFieldComplexType() throws Exception {
+        Schema.Field unionField = TestPerson.SCHEMA$.getField("hobby");
+        Map<String, Object> genericField = AvroUtils.fieldToGeneric(unionField);
+        Type type = AvroUtils.typeOfGenericField(genericField, true);
+
+        Assert.assertEquals(Type.UNION, type);
     }
 
     @Test
@@ -256,7 +287,7 @@ public class AvroUtilsTest {
         for (Field field : TestPerson.SCHEMA$.getFields()) {
             Map<String, Object> genericField = AvroUtils.fieldToGeneric(field);
             genericField.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, "unknown");
-            Type type = AvroUtils.typeOfGenericFieldOrElseNullIfUnknown(genericField);
+            Type type = AvroUtils.typeOfGenericFieldOrElseNullIfUnknown(genericField, false);
 
             Assert.assertNull(type);
         }
