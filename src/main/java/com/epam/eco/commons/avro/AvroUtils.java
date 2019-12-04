@@ -138,7 +138,7 @@ public abstract class AvroUtils {
                 reader = new GenericDatumReader<>(schema);
             }
 
-            return (GenericRecord) reader.read(null, decoder);
+            return (GenericRecord)reader.read(null, decoder);
         } catch (IOException ioe) {
             throw new RuntimeException(ioe);
         }
@@ -291,7 +291,7 @@ public abstract class AvroUtils {
         Validate.notNull(genericSchema, "Generic schema is null");
 
         if (genericSchema instanceof Map) {
-            return Type.valueOf(((Map<String, Object>) genericSchema).
+            return Type.valueOf(((Map<String, Object>)genericSchema).
                     get(AvroConstants.SCHEMA_KEY_TYPE).toString().toUpperCase());
         } else if (genericSchema instanceof List) {
             return Type.UNION;
@@ -363,7 +363,7 @@ public abstract class AvroUtils {
     public static String nameOfGenericField(Map<String, Object> genericField) {
         Validate.notNull(genericField, "Generic field is null");
 
-        return (String) genericField.get(AvroConstants.SCHEMA_KEY_FIELD_NAME);
+        return (String)genericField.get(AvroConstants.SCHEMA_KEY_FIELD_NAME);
     }
 
     public static boolean isFieldNameValid(String fieldName) {
@@ -381,7 +381,7 @@ public abstract class AvroUtils {
 
     public static Object javaPrimitiveToAvro(Object value) {
         if (value instanceof String) {
-            return new Utf8((String) value);
+            return new Utf8((String)value);
         }
         return value;
     }
