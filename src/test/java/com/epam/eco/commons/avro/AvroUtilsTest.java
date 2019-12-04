@@ -15,6 +15,7 @@
  */
 package com.epam.eco.commons.avro;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.avro.Schema;
@@ -30,6 +31,8 @@ import org.slf4j.LoggerFactory;
 
 import com.epam.eco.commons.avro.data.TestPerson;
 import com.epam.eco.commons.avro.data.TestPersonDataReader;
+
+import static java.util.Arrays.asList;
 
 
 /**
@@ -253,24 +256,32 @@ public class AvroUtilsTest {
 
     @Test
     public void testExtractFromUnionGenericFieldNullFirst() throws Exception {
-        Field unionField = new Schema.Parser()
-                .parse("{\"type\": \"record\",\"name\": \"test.schema\",\"namespace\": \"com.epam\",\"fields\": [{\"name\": \"age\",\"type\": [\"null\",\"int\"],\"default\": null}]}")
-                .getField("age");
-        Map<String, Object> genericField = AvroUtils.fieldToGeneric(unionField);
-        Type type = AvroUtils.typeOfGenericField(genericField, true);
+        List<Type> primitiveTypes = asList(Type.STRING, Type.INT, Type.DOUBLE, Type.BYTES, Type.LONG, Type.FLOAT);
+        for(Type primitiveType: primitiveTypes) {
+            String schema = "{\"type\":\"record\",\"name\":\"test\",\"fields\":[{\"name\":\"f0\",\"type\":[\"null\",\"%s\"],\"default\": null}]}";
+            Field unionField = new Schema.Parser()
+                    .parse(String.format(schema, primitiveType.name().toLowerCase()))
+                    .getField("f0");
+            Map<String, Object> genericField = AvroUtils.fieldToGeneric(unionField);
+            Type type = AvroUtils.typeOfGenericField(genericField, true);
 
-        Assert.assertEquals(Type.INT, type);
+            Assert.assertEquals(primitiveType, type);
+        }
     }
 
     @Test
     public void testExtractFromUnionGenericFieldNullSecond() throws Exception {
-        Field unionField = new Schema.Parser()
-                .parse("{\"type\": \"record\",\"name\": \"test.schema\",\"namespace\": \"com.epam\",\"fields\": [{\"name\": \"age\",\"type\": [\"int\", \"null\"],\"default\": 1}]}")
-                .getField("age");
-        Map<String, Object> genericField = AvroUtils.fieldToGeneric(unionField);
-        Type type = AvroUtils.typeOfGenericField(genericField, true);
+        List<Type> primitiveTypes = asList(Type.STRING, Type.INT, Type.DOUBLE, Type.BYTES, Type.LONG, Type.FLOAT);
+        for(Type primitiveType: primitiveTypes) {
+            String schema = "{\"type\":\"record\",\"name\":\"test\",\"fields\":[{\"name\":\"f0\",\"type\":[\"%s\",\"null\"],\"default\":null}]}";
+            Field unionField = new Schema.Parser()
+                    .parse(String.format(schema, primitiveType.name().toLowerCase()))
+                    .getField("f0");
+            Map<String, Object> genericField = AvroUtils.fieldToGeneric(unionField);
+            Type type = AvroUtils.typeOfGenericField(genericField, true);
 
-        Assert.assertEquals(Type.INT, type);
+            Assert.assertEquals(primitiveType, type);
+        }
     }
 
     @Test

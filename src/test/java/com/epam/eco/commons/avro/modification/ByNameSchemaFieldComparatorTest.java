@@ -99,7 +99,7 @@ public class ByNameSchemaFieldComparatorTest {
                 int nextType = new Random().nextInt(complexAndUnknownTypes.length);
                 field.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, complexAndUnknownTypes[nextType]);
             } else if(i % 4 == 0) {
-                field.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, generateUnion(i));
+                field.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, generateUnion());
             } else {
                 field.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, Type.STRING.name());
             }
@@ -109,15 +109,14 @@ public class ByNameSchemaFieldComparatorTest {
         return fields;
     }
 
-    private Map<String, Object> generateUnion(int currIndex) {
-        Map<String, Object> field = new HashMap<>();
-        field.put(AvroConstants.SCHEMA_KEY_FIELD_NAME, "f" + currIndex);
+    private List<String> generateUnion() {
+        List<String> unionTypes;
         if(new Random().nextBoolean()) {
-            field.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, asList("null", Type.STRING.name()));
+            unionTypes = asList("null", Type.STRING.name());
         } else {
-            field.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, asList("null", "unknown"));
+            unionTypes = asList("null", "unknown");
         }
-        return field;
+        return unionTypes;
     }
 
     private List<Map<String, Object>> extractFieldsOfComplexAndUnknownType(

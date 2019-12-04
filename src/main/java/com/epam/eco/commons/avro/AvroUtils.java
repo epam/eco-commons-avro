@@ -323,11 +323,8 @@ public abstract class AvroUtils {
             } else if ("null".equals(list.get(1))) {
                 schemaType = list.get(0);
             }
-            if (schemaType instanceof String) {
-                String typeStr = schemaType.toString().toUpperCase();
-                if (isPrimitive(typeStr)) {
-                    type = Type.valueOf(typeStr);
-                }
+            if (schemaType instanceof String && isPrimitive(((String) schemaType))) {
+                type = Type.valueOf(((String) schemaType).toUpperCase());
             }
         }
         return type;
@@ -477,14 +474,14 @@ public abstract class AvroUtils {
         Validate.notNull(type, "Type is null");
 
         return
-                Type.NULL.name().equals(type) ||
-                Type.BOOLEAN.name().equals(type) ||
-                Type.INT.name().equals(type) ||
-                Type.LONG.name().equals(type) ||
-                Type.FLOAT.name().equals(type) ||
-                Type.DOUBLE.name().equals(type) ||
-                Type.BYTES.name().equals(type) ||
-                Type.STRING.name().equals(type);
+                Type.NULL.name().equals(type.toUpperCase()) ||
+                Type.BOOLEAN.name().equals(type.toUpperCase()) ||
+                Type.INT.name().equals(type.toUpperCase()) ||
+                Type.LONG.name().equals(type.toUpperCase()) ||
+                Type.FLOAT.name().equals(type.toUpperCase()) ||
+                Type.DOUBLE.name().equals(type.toUpperCase()) ||
+                Type.BYTES.name().equals(type.toUpperCase()) ||
+                Type.STRING.name().equals(type.toUpperCase());
     }
 
     public static boolean isOfNamedType(Schema schema) {
