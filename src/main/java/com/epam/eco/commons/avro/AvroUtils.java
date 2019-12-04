@@ -341,20 +341,20 @@ public abstract class AvroUtils {
         }
     }
 
-    public static Type typeOfGenericField(Map<String, Object> genericField, boolean extractNullableUnion) {
+    public static Type typeOfGenericField(Map<String, Object> genericField, boolean extractNullableUnionWithPrimitive) {
         Validate.notNull(genericField, "Generic field is null");
 
-        return extractNullableUnion
+        return extractNullableUnionWithPrimitive
                 ? typeOfGenericSchemaExtractNullableUnion(genericField.get(AvroConstants.SCHEMA_KEY_FIELD_TYPE))
                 : typeOfGenericSchema(genericField.get(AvroConstants.SCHEMA_KEY_FIELD_TYPE));
     }
 
     public static Type typeOfGenericFieldOrElseNullIfUnknown(
             Map<String, Object> genericField,
-            boolean extractNullableUnion
+            boolean extractNullableUnionWithPrimitive
     ) {
         try {
-            return typeOfGenericField(genericField, extractNullableUnion);
+            return typeOfGenericField(genericField, extractNullableUnionWithPrimitive);
         } catch (IllegalArgumentException iae) {
             return null;
         }
