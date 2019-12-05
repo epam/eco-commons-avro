@@ -15,6 +15,8 @@
  */
 package com.epam.eco.commons.avro;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.avro.Schema;
@@ -306,6 +308,52 @@ public class AvroUtilsTest {
     @Test(expected = UnknownTypeException.class)
     public void testTypeNotResolvedForNameIgnoreCase() throws Exception {
         AvroUtils.typeForNameIgnoreCase("UnKnOwN");
+    }
+
+    @Test
+    public void testEffectiveTypeOfGenericSchemaResolved() throws Exception {
+        Object schema = unionSchema(Type.ARRAY.getName());
+        Assert.assertEquals(Type.ARRAY, AvroUtils.effectiveTypeOfGenericSchema(schema));
+
+        schema = unionSchema(Type.NULL.getName(), Type.BOOLEAN.getName());
+        Assert.assertEquals(Type.BOOLEAN, AvroUtils.effectiveTypeOfGenericSchema(schema));
+
+        schema = unionSchema(Type.NULL.getName(), Type.UNION.getName());
+        Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
+
+        schema = unionSchema(Type.STRING.getName(), Type.BOOLEAN.getName());
+        Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
+
+        schema = unionSchema(Type.STRING.getName(), Type.BOOLEAN.getName(), Type.MAP.getName());
+        Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
+
+        schema = unionSchema(
+                    unionSchema(
+                        unionSchema(Type.STRING.getName())));
+        Assert.assertEquals(Type.STRING, AvroUtils.effectiveTypeOfGenericSchema(schema));
+
+        schema = unionSchema(
+                    unionSchema(
+                        unionSchema(Type.NULL.getName(), Type.FIXED.getName())));
+        Assert.assertEquals(Type.FIXED, AvroUtils.effectiveTypeOfGenericSchema(schema));
+
+        schema = unionSchema(
+                    unionSchema(
+                        unionSchema(Type.MAP.getName(), Type.FIXED.getName())));
+        Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
+
+        schema = unionSchema(
+                    unionSchema(
+                        unionSchema(Type.MAP.getName(), Type.FIXED.getName(), Type.STRING.getName())));
+        Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
+    }
+
+    private static List<Object> unionSchema(Object ... types) {
+        List<Object> unionSchema = new ArrayList<>(types.length);
+        for (Object type : types) {
+            unionSchema.add(type);
+        }
+        return unionSchema;
     }
 
 }

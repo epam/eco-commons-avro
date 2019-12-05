@@ -319,6 +319,45 @@ public abstract class AvroUtils {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public static Type effectiveTypeOfGenericSchema(Object genericSchema) throws UnknownTypeException {
+        Validate.notNull(genericSchema, "Generic schema is null");
+
+        if (genericSchema instanceof Map) {
+            return typeForName(
+                    ((Map<String, Object>)genericSchema).get(AvroConstants.SCHEMA_KEY_TYPE).toString());
+        } else if (genericSchema instanceof List) {
+            return effectiveTypeOfGenericUnionSchema((List<Object>)genericSchema);
+        } else {
+            return typeForName(genericSchema.toString());
+        }
+    }
+
+    public static Type effectiveTypeOfGenericSchemaOrElseNullIfUnknown(Object genericSchema) {
+        try {
+            return effectiveTypeOfGenericSchema(genericSchema);
+        } catch (UnknownTypeException ute) {
+            return null;
+        }
+    }
+
+    public static Type effectiveTypeOfGenericUnionSchema(List<Object> genericUnionSchema) throws UnknownTypeException {
+        Validate.notEmpty(genericUnionSchema, "Generic union schema is null or empty");
+
+        if (genericUnionSchema.size() == 1) {
+            return effectiveTypeOfGenericSchema(genericUnionSchema.get(0));
+        } else if (genericUnionSchema.size() == 2) {
+            Object first = genericUnionSchema.get(0);
+            Object second = genericUnionSchema.get(1);
+            if (Type.NULL.getName().equals(first)) {
+                return effectiveTypeOfGenericSchema(second);
+            } else if (Type.NULL.getName().equals(second)) {
+                return effectiveTypeOfGenericSchema(first);
+            }
+        }
+        return Type.UNION;
+    }
+
     public static Type typeOfGenericField(Map<String, Object> genericField) throws UnknownTypeException {
         Validate.notNull(genericField, "Generic field is null");
 
@@ -328,6 +367,20 @@ public abstract class AvroUtils {
     public static Type typeOfGenericFieldOrElseNullIfUnknown(Map<String, Object> genericField) {
         try {
             return typeOfGenericField(genericField);
+        } catch (UnknownTypeException ute) {
+            return null;
+        }
+    }
+
+    public static Type effectiveTypeOfGenericField(Map<String, Object> genericField) throws UnknownTypeException {
+        Validate.notNull(genericField, "Generic field is null");
+
+        return effectiveTypeOfGenericSchema(genericField.get(AvroConstants.SCHEMA_KEY_FIELD_TYPE));
+    }
+
+    public static Type effectiveTypeOfGenericFieldOrElseNullIfUnknown(Map<String, Object> genericField) {
+        try {
+            return effectiveTypeOfGenericField(genericField);
         } catch (UnknownTypeException ute) {
             return null;
         }
