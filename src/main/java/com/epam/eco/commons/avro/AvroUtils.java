@@ -298,7 +298,7 @@ public abstract class AvroUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static Type typeOfGenericSchema(Object genericSchema) {
+    public static Type typeOfGenericSchema(Object genericSchema) throws UnknownTypeException {
         Validate.notNull(genericSchema, "Generic schema is null");
 
         if (genericSchema instanceof Map) {
@@ -319,7 +319,7 @@ public abstract class AvroUtils {
         }
     }
 
-    public static Type typeOfGenericField(Map<String, Object> genericField) {
+    public static Type typeOfGenericField(Map<String, Object> genericField) throws UnknownTypeException {
         Validate.notNull(genericField, "Generic field is null");
 
         return typeOfGenericSchema(genericField.get(AvroConstants.SCHEMA_KEY_FIELD_TYPE));
