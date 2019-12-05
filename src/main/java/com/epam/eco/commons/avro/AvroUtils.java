@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -41,6 +42,7 @@ import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.avro.specific.SpecificRecord;
 import org.apache.avro.util.Utf8;
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.Validate;
@@ -55,6 +57,17 @@ public abstract class AvroUtils {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^[_a-zA-Z][_a-zA-Z0-9]*$");
+
+    private static final Map<String, Type> TYPES;
+    private static final Map<String, Type> TYPES_CASE_INSENSITIVE;
+    static {
+        Map<String, Type> types = new HashMap<>((int) (Type.values().length / 0.75));
+        for (Type type : Type.values()) {
+            types.put(type.getName(), type);
+        }
+        TYPES = Collections.unmodifiableMap(types);
+        TYPES_CASE_INSENSITIVE = Collections.unmodifiableMap(new CaseInsensitiveMap<>(types));
+    }
 
     private AvroUtils() {
     }
@@ -289,19 +302,19 @@ public abstract class AvroUtils {
         Validate.notNull(genericSchema, "Generic schema is null");
 
         if (genericSchema instanceof Map) {
-            return Type.valueOf(((Map<String, Object>)genericSchema).
-                    get(AvroConstants.SCHEMA_KEY_TYPE).toString().toUpperCase());
+            return typeForName(
+                    ((Map<String, Object>)genericSchema).get(AvroConstants.SCHEMA_KEY_TYPE).toString());
         } else if (genericSchema instanceof List) {
             return Type.UNION;
         } else {
-            return Type.valueOf(genericSchema.toString().toUpperCase());
+            return typeForName(genericSchema.toString());
         }
     }
 
     public static Type typeOfGenericSchemaOrElseNullIfUnknown(Object genericSchema) {
         try {
             return typeOfGenericSchema(genericSchema);
-        } catch (IllegalArgumentException iae) {
+        } catch (UnknownTypeException ute) {
             return null;
         }
     }
@@ -315,7 +328,7 @@ public abstract class AvroUtils {
     public static Type typeOfGenericFieldOrElseNullIfUnknown(Map<String, Object> genericField) {
         try {
             return typeOfGenericField(genericField);
-        } catch (IllegalArgumentException iae) {
+        } catch (UnknownTypeException ute) {
             return null;
         }
     }
@@ -380,7 +393,7 @@ public abstract class AvroUtils {
             return schema.getTypes().stream().
                     filter(s -> Schema.Type.NULL != s.getType()).
                     findAny().
-                    orElseThrow(() -> new IllegalArgumentException("Can not resolve union type"));
+                    orElseThrow(() -> new IllegalArgumentException("Can not resolve non nullable union type"));
         }
         return schema;
     }
@@ -461,6 +474,26 @@ public abstract class AvroUtils {
                 type == Type.UNION ||
                 type == Type.ARRAY ||
                 type == Type.MAP;
+    }
+
+    public static Type typeForName(String name) throws UnknownTypeException {
+        Validate.notBlank(name, "Name is blank");
+
+        Type type = TYPES.get(name);
+        if (type == null) {
+            throw new UnknownTypeException(name);
+        }
+        return type;
+    }
+
+    public static Type typeForNameIgnoreCase(String name) throws UnknownTypeException {
+        Validate.notBlank(name, "Name is blank");
+
+        Type type = TYPES_CASE_INSENSITIVE.get(name);
+        if (type == null) {
+            throw new UnknownTypeException(name);
+        }
+        return type;
     }
 
 }

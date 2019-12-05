@@ -262,4 +262,50 @@ public class AvroUtilsTest {
         }
     }
 
+    @Test
+    public void testTypeResolvedForName() throws Exception {
+        Assert.assertEquals(Type.ARRAY, AvroUtils.typeForName("array"));
+        Assert.assertEquals(Type.BOOLEAN, AvroUtils.typeForName("boolean"));
+        Assert.assertEquals(Type.BYTES, AvroUtils.typeForName("bytes"));
+        Assert.assertEquals(Type.DOUBLE, AvroUtils.typeForName("double"));
+        Assert.assertEquals(Type.ENUM, AvroUtils.typeForName("enum"));
+        Assert.assertEquals(Type.FIXED, AvroUtils.typeForName("fixed"));
+        Assert.assertEquals(Type.FLOAT, AvroUtils.typeForName("float"));
+        Assert.assertEquals(Type.INT, AvroUtils.typeForName("int"));
+        Assert.assertEquals(Type.LONG, AvroUtils.typeForName("long"));
+        Assert.assertEquals(Type.MAP, AvroUtils.typeForName("map"));
+        Assert.assertEquals(Type.NULL, AvroUtils.typeForName("null"));
+        Assert.assertEquals(Type.RECORD, AvroUtils.typeForName("record"));
+        Assert.assertEquals(Type.STRING, AvroUtils.typeForName("string"));
+        Assert.assertEquals(Type.UNION, AvroUtils.typeForName("union"));
+    }
+
+    @Test(expected = UnknownTypeException.class)
+    public void testTypeNotResolvedForName() throws Exception {
+        AvroUtils.typeForName("unknown");
+    }
+
+    @Test
+    public void testTypeResolvedForNameIgnoreCase() throws Exception {
+        Assert.assertEquals(Type.ARRAY, AvroUtils.typeForNameIgnoreCase("aRraY"));
+        Assert.assertEquals(Type.BOOLEAN, AvroUtils.typeForNameIgnoreCase("bOOlean"));
+        Assert.assertEquals(Type.BYTES, AvroUtils.typeForNameIgnoreCase("bytEs"));
+        Assert.assertEquals(Type.DOUBLE, AvroUtils.typeForNameIgnoreCase("dOUble"));
+        Assert.assertEquals(Type.ENUM, AvroUtils.typeForNameIgnoreCase("EnuM"));
+        Assert.assertEquals(Type.FIXED, AvroUtils.typeForNameIgnoreCase("fIXEd"));
+        Assert.assertEquals(Type.FLOAT, AvroUtils.typeForNameIgnoreCase("flOat"));
+        Assert.assertEquals(Type.INT, AvroUtils.typeForNameIgnoreCase("inT"));
+        Assert.assertEquals(Type.LONG, AvroUtils.typeForNameIgnoreCase("Long"));
+        Assert.assertEquals(Type.MAP, AvroUtils.typeForNameIgnoreCase("mAP"));
+        Assert.assertEquals(Type.NULL, AvroUtils.typeForNameIgnoreCase("nulL"));
+        Assert.assertEquals(Type.RECORD, AvroUtils.typeForNameIgnoreCase("RecorD"));
+        Assert.assertEquals(Type.STRING, AvroUtils.typeForNameIgnoreCase("sTRing"));
+        Assert.assertEquals(Type.UNION, AvroUtils.typeForNameIgnoreCase("UNION"));
+    }
+
+    @Test(expected = UnknownTypeException.class)
+    public void testTypeNotResolvedForNameIgnoreCase() throws Exception {
+        AvroUtils.typeForNameIgnoreCase("UnKnOwN");
+    }
+
 }
