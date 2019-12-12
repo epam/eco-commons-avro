@@ -28,8 +28,8 @@ public abstract class ComplexFirstSchemaFieldComparator implements Comparator<Ma
 
     @Override
     public int compare(Map<String, Object> field1, Map<String, Object> field2) {
-        Schema.Type field1Type = AvroUtils.typeOfGenericFieldOrElseNullIfUnknown(field1);
-        Schema.Type field2Type = AvroUtils.typeOfGenericFieldOrElseNullIfUnknown(field2);
+        Schema.Type field1Type = AvroUtils.effectiveTypeOfGenericFieldOrElseNullIfUnknown(field1);
+        Schema.Type field2Type = AvroUtils.effectiveTypeOfGenericFieldOrElseNullIfUnknown(field2);
 
         if (isComplexOrUnknown(field1Type) && isComplexOrUnknown(field2Type)) {
             return 0;
@@ -50,7 +50,8 @@ public abstract class ComplexFirstSchemaFieldComparator implements Comparator<Ma
                 || type == Schema.Type.ENUM
                 || type == Schema.Type.MAP
                 || type == Schema.Type.UNION
-                || type == Schema.Type.ARRAY;
+                || type == Schema.Type.ARRAY
+                || type == Schema.Type.FIXED;
     }
 
 }

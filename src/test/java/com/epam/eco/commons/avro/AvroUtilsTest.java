@@ -346,6 +346,11 @@ public class AvroUtilsTest {
                     unionSchema(
                         unionSchema(Type.MAP.getName(), Type.FIXED.getName(), Type.STRING.getName())));
         Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
+
+        schema = unionSchema(
+                    unionSchema(
+                        Type.STRING, unionSchema(Type.NULL.getName(), Type.STRING.getName())));
+        Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
     }
 
     private static List<Object> unionSchema(Object ... types) {
