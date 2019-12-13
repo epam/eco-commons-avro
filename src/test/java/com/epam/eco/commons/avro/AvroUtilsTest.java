@@ -313,7 +313,7 @@ public class AvroUtilsTest {
         Object schema = Type.INT.getName();
         Assert.assertEquals(Type.INT, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
-        schema = GenericSchemaDataGen.recordSchema();
+        schema = GenericSchemaDataGen.recordSchema("Test");
         Assert.assertEquals(Type.RECORD, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
         schema = GenericSchemaDataGen.arraySchema(Type.STRING.getName());
@@ -353,7 +353,7 @@ public class AvroUtilsTest {
         Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
         schema = GenericSchemaDataGen.unionSchema(
-                GenericSchemaDataGen.arraySchema(GenericSchemaDataGen.recordSchema()));
+                GenericSchemaDataGen.arraySchema(GenericSchemaDataGen.recordSchema("Test")));
         Assert.assertEquals(Type.RECORD, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
         schema = GenericSchemaDataGen.unionSchema(

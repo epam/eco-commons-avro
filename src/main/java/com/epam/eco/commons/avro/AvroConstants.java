@@ -30,6 +30,8 @@ public abstract class  AvroConstants {
     public static final String SCHEMA_KEY_FIELD_ORDER = "order";
     public static final String SCHEMA_KEY_ARRAY_ITEMS = "items";
     public static final String SCHEMA_KEY_MAP_VALUES = "values";
+    public static final String SCHEMA_KEY_ENUM_SYMBOLS = "symbols";
+    public static final String SCHEMA_KEY_FIXED_SIZE = "size";
 
     private AvroConstants() {
     }

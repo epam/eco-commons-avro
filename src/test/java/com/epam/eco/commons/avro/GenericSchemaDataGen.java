@@ -16,15 +16,15 @@
 package com.epam.eco.commons.avro;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.avro.Schema.Type;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Andrei_Tytsik
@@ -39,25 +39,13 @@ public abstract class GenericSchemaDataGen {
     public static List<Map<String, Object>> randomFields(int size) {
         List<Map<String, Object>> fields = new ArrayList<>();
         for (int i = 0; i < size; i++) {
-            fields.add(randomField("f" + i));
+            fields.add(randomField());
         }
-        Collections.shuffle(fields);
         return fields;
     }
 
     public static Map<String, Object> randomField() {
-        return randomField(null);
-    }
-
-    public static Map<String, Object> randomField(String name) {
-        Map<String, Object> field = new HashMap<>();
-
-        name = !StringUtils.isBlank(name) ? name : RandomStringUtils.randomAlphabetic(20);
-        field.put(AvroConstants.SCHEMA_KEY_FIELD_NAME, name);
-
-        field.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, randomSchema());
-
-        return field;
+        return field(randomName(), randomSchema());
     }
 
     public static Object randomSchema() {
@@ -68,10 +56,14 @@ public abstract class GenericSchemaDataGen {
         int random = ThreadLocalRandom.current().nextInt(100);
         if (random > 80) {
             return randomRecordSchema();
-        } else if (random > 60) {
+        } else if (random > 70) {
             return randomMapSchema();
-        } else if (random > 40) {
+        } else if (random > 60) {
             return randomArraySchema();
+        } else if (random > 50) {
+            return randomEnumSchema();
+        } else if (random > 40) {
+            return randomFixedSchema();
         } else if (random > 20 && !excludeUnion) {
             return randomUnionSchema();
         } else {
@@ -91,8 +83,27 @@ public abstract class GenericSchemaDataGen {
         return arraySchema(randomSchema());
     }
 
+    public static Object randomNamedSchema() {
+        int random = ThreadLocalRandom.current().nextInt(100);
+        if (random > 66) {
+            return randomRecordSchema();
+        } else if (random > 33) {
+            return randomEnumSchema();
+        } else {
+            return randomFixedSchema();
+        }
+    }
+
     public static Object randomRecordSchema() {
-        return recordSchema();
+        return recordSchema(randomName());
+    }
+
+    public static Object randomEnumSchema() {
+        return enumSchema(randomName());
+    }
+
+    public static Object randomFixedSchema() {
+        return fixedSchema(randomName());
     }
 
     public static Object randomUnionSchema() {
@@ -102,8 +113,19 @@ public abstract class GenericSchemaDataGen {
         } else if (random > 50) { // nullable
             return unionSchema(Type.NULL.getName(), randomSchema(true));
         } else { // non-nullable
-            return unionSchema(randomSchema(true), randomSchema(true));
+            return unionSchema(randomMapSchema(), randomArraySchema(), randomPrimitiveSchema());
         }
+    }
+
+    public static String randomName() {
+        return "name" + UUID.randomUUID().toString().replace('-', '_');
+    }
+
+    public static Map<String, Object> field(String name, Object schema) {
+        Map<String, Object> field = new HashMap<>();
+        field.put(AvroConstants.SCHEMA_KEY_FIELD_NAME, name);
+        field.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, schema);
+        return field;
     }
 
     public static Object unionSchema(Object ... types) {
@@ -128,16 +150,32 @@ public abstract class GenericSchemaDataGen {
         return mapSchema;
     }
 
-    public static Object recordSchema() {
-        Map<String, Object> recordSchema = new HashMap<>();
-        recordSchema.put(AvroConstants.SCHEMA_KEY_TYPE, Type.RECORD.getName());
-        recordSchema.put(AvroConstants.SCHEMA_KEY_NAME, "TestRecord"); // not unique!
-        recordSchema.put(AvroConstants.SCHEMA_KEY_FIELDS, Collections.emptyList());
-        return recordSchema;
+    public static Object enumSchema(String name) {
+        Map<String, Object> mapSchema = new HashMap<>();
+        mapSchema.put(AvroConstants.SCHEMA_KEY_TYPE, Type.ENUM.getName());
+        mapSchema.put(AvroConstants.SCHEMA_KEY_NAME, name);
+        mapSchema.put(AvroConstants.SCHEMA_KEY_ENUM_SYMBOLS, Arrays.asList("A", "B", "C"));
+        return mapSchema;
     }
 
-    public static void main(String[] args) {
-        System.out.println(randomFields(10));
+    public static Object fixedSchema(String name) {
+        Map<String, Object> mapSchema = new HashMap<>();
+        mapSchema.put(AvroConstants.SCHEMA_KEY_TYPE, Type.FIXED.getName());
+        mapSchema.put(AvroConstants.SCHEMA_KEY_NAME, name);
+        mapSchema.put(AvroConstants.SCHEMA_KEY_FIXED_SIZE, 999);
+        return mapSchema;
+    }
+
+    public static Object recordSchema(String name) {
+        return recordSchema(name, Collections.emptyList());
+    }
+
+    public static Object recordSchema(String name, List<Map<String, Object>> fields) {
+        Map<String, Object> recordSchema = new HashMap<>();
+        recordSchema.put(AvroConstants.SCHEMA_KEY_TYPE, Type.RECORD.getName());
+        recordSchema.put(AvroConstants.SCHEMA_KEY_NAME, name);
+        recordSchema.put(AvroConstants.SCHEMA_KEY_FIELDS, fields);
+        return recordSchema;
     }
 
 }

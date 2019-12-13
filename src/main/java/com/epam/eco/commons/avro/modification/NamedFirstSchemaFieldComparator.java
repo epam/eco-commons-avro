@@ -25,21 +25,18 @@ import com.epam.eco.commons.avro.AvroUtils;
 
 /**
  * @author Andrei_Tytsik
- *
- * @deprecated comparator doesn't take into account all named types, use {@link NamedFirstSchemaFieldComparator} instead
  */
-@Deprecated
-public abstract class RecordsFirstSchemaFieldComparator implements Comparator<Map<String, Object>> {
+public abstract class NamedFirstSchemaFieldComparator implements Comparator<Map<String, Object>> {
 
     @Override
     public final int compare(Map<String, Object> field1, Map<String, Object> field2) {
         Schema.Type field1Type = AvroUtils.effectiveTypeOfGenericFieldOrElseNullIfUnknown(field1);
         Schema.Type field2Type = AvroUtils.effectiveTypeOfGenericFieldOrElseNullIfUnknown(field2);
-        if (isRecordOrAmbiguous(field1Type) && isRecordOrAmbiguous(field2Type)) {
+        if (isNamedOrAmbiguous(field1Type) && isNamedOrAmbiguous(field2Type)) {
             return 0;
-        } else if (isRecordOrAmbiguous(field1Type) && !isRecordOrAmbiguous(field2Type)) {
+        } else if (isNamedOrAmbiguous(field1Type) && !isNamedOrAmbiguous(field2Type)) {
             return -1;
-        } else if (!isRecordOrAmbiguous(field1Type) && isRecordOrAmbiguous(field2Type)) {
+        } else if (!isNamedOrAmbiguous(field1Type) && isNamedOrAmbiguous(field2Type)) {
             return 1;
         }
         return doCompare(field1, field2);
@@ -47,11 +44,11 @@ public abstract class RecordsFirstSchemaFieldComparator implements Comparator<Ma
 
     protected abstract int doCompare(Map<String, Object> field1, Map<String, Object> field2);
 
-    private static boolean isRecordOrAmbiguous(Type type) {
+    private static boolean isNamedOrAmbiguous(Type type) {
         return
-                type == Schema.Type.RECORD ||
-                type == null || // named type (could refer record type)
-                type == Schema.Type.UNION; // non-nullable union (could contain record type)
+                type == null || // type name (could refer record type)
+                type == Schema.Type.UNION || // non-nullable union (could contain record type)
+                AvroUtils.isNamed(type);
     }
 
 }

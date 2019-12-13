@@ -15,7 +15,6 @@
  */
 package com.epam.eco.commons.avro.modification;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -31,40 +30,47 @@ import com.epam.eco.commons.avro.AvroUtils;
  */
 public class SortSchemaFieldsTest {
 
+    // x_ - named fields
+    // f_ - other fields
     private final static String SCHEMA_JSON =
                 "{\"type\": \"record\", \"name\": \"TestA\", \"fields\": [" +
-                    "{\"name\": \"f3\", \"type\": \"int\"}," +
-                    "{\"name\": \"f4\", \"type\": \"int\"}," +
-                    "{\"name\": \"f5\", \"type\": \"int\"}," +
-                    "{\"name\": \"f2\", \"type\": \"int\"}," +
-                    "{\"name\": \"f1\", \"type\": [\"null\", " +
+                    "{\"name\": \"f_3\", \"type\": \"int\"}," +
+                    "{\"name\": \"f_4\", \"type\": \"int\"}," +
+                    "{\"name\": \"x_0\", \"type\": {\"type\": \"fixed\", \"name\": \"FixedA\", \"size\": 32}}," +
+                    "{\"name\": \"f_5\", \"type\": \"int\"}," +
+                    "{\"name\": \"f_2\", \"type\": \"int\"}," +
+                    "{\"name\": \"x_1\", \"type\": [\"null\", " +
                         "{\"type\": \"array\", \"items\": " +
                             "{\"name\": \"TestB\", \"type\": \"record\", \"fields\":[" +
-                                "{\"name\": \"f4\", \"type\": \"int\"}," +
-                                "{\"name\": \"f2\", \"type\": \"int\"}," +
-                                "{\"name\": \"f3\", \"type\": \"int\"}," +
-                                "{\"name\": \"f5\", \"type\": \"int\"}," +
-                                "{\"name\": \"f1\", \"type\":" +
+                                "{\"name\": \"f_4\", \"type\": \"int\"}," +
+                                "{\"name\": \"f_2\", \"type\": \"int\"}," +
+                                "{\"name\": \"f_3\", \"type\": \"int\"}," +
+                                "{\"name\": \"x_0\", \"type\": {\"type\": \"enum\", \"name\": \"EnumB\", \"symbols\": [\"B\"]}}," +
+                                "{\"name\": \"f_5\", \"type\": \"int\"}," +
+                                "{\"name\": \"x_1\", \"type\":" +
                                     "{\"type\": \"map\", \"values\":" +
                                         "{\"type\": \"record\", \"name\": \"TestC\", \"fields\":[" +
-                                            "{\"name\": \"f4\", \"type\": \"int\"}," +
-                                            "{\"name\": \"f3\", \"type\": \"int\"}," +
-                                            "{\"name\": \"f5\", \"type\": \"int\"}," +
-                                            "{\"name\": \"f2\", \"type\": \"int\"}," +
-                                            "{\"name\": \"f1\", \"type\": [" +
+                                            "{\"name\": \"f_4\", \"type\": \"int\"}," +
+                                            "{\"name\": \"f_3\", \"type\": \"int\"}," +
+                                            "{\"name\": \"x_0\", \"type\": \"FixedA\"}," +
+                                            "{\"name\": \"f_5\", \"type\": \"int\"}," +
+                                            "{\"name\": \"f_2\", \"type\": \"int\"}," +
+                                            "{\"name\": \"x_1\", \"type\": [" +
                                                 "{\"type\": \"record\", \"name\": \"TestD\", \"fields\":[" +
-                                                    "{\"name\": \"f5\", \"type\": \"int\"}," +
-                                                    "{\"name\": \"f4\", \"type\": \"int\"}," +
-                                                    "{\"name\": \"f3\", \"type\": \"int\"}," +
-                                                    "{\"name\": \"f2\", \"type\": \"int\"}," +
-                                                    "{\"name\": \"f1\", \"type\": \"int\"}" +
+                                                    "{\"name\": \"f_5\", \"type\": \"int\"}," +
+                                                    "{\"name\": \"f_4\", \"type\": \"int\"}," +
+                                                    "{\"name\": \"f_3\", \"type\": \"int\"}," +
+                                                    "{\"name\": \"x_0\", \"type\": \"EnumB\"}," +
+                                                    "{\"name\": \"f_2\", \"type\": \"int\"}," +
+                                                    "{\"name\": \"f_1\", \"type\": \"int\"}" +
                                                 "]}," +
                                                 "{\"type\": \"record\", \"name\": \"TestE\", \"fields\":[" +
-                                                    "{\"name\": \"f1\", \"type\": \"int\"}," +
-                                                    "{\"name\": \"f2\", \"type\": \"int\"}," +
-                                                    "{\"name\": \"f3\", \"type\": \"int\"}," +
-                                                    "{\"name\": \"f4\", \"type\": \"int\"}," +
-                                                    "{\"name\": \"f5\", \"type\": \"int\"}" +
+                                                    "{\"name\": \"x_0\", \"type\": \"FixedA\"}," +
+                                                    "{\"name\": \"f_1\", \"type\": \"int\"}," +
+                                                    "{\"name\": \"f_2\", \"type\": \"int\"}," +
+                                                    "{\"name\": \"f_3\", \"type\": \"int\"}," +
+                                                    "{\"name\": \"f_4\", \"type\": \"int\"}," +
+                                                    "{\"name\": \"f_5\", \"type\": \"int\"}" +
                                                 "]}" +
                                             "]}" +
                                         "]}" +
@@ -81,7 +87,7 @@ public class SortSchemaFieldsTest {
     @Test
     public void testSchemaFieldsAreAscOrdered() throws Exception {
         Map<String, Object> schemaMap = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
-        new SortSchemaFields(SimpleByNameSchemaFieldComparator.ASC).applyToGeneric(schemaMap);
+        new SortSchemaFields(ByNameSchemaFieldComparator.ASC).applyToGeneric(schemaMap);
         for (List<Map<String, Object>> fields : SchemaModificationTestUtils.resolveAllSchemasFields(schemaMap)) {
             verifyFieldsOrdered(fields, true);
         }
@@ -91,7 +97,7 @@ public class SortSchemaFieldsTest {
     @Test
     public void testSchemaFieldsAreDescOrdered() throws Exception {
         Map<String, Object> schemaMap = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
-        new SortSchemaFields(SimpleByNameSchemaFieldComparator.DESC).applyToGeneric(schemaMap);
+        new SortSchemaFields(ByNameSchemaFieldComparator.DESC).applyToGeneric(schemaMap);
         for (List<Map<String, Object>> fields : SchemaModificationTestUtils.resolveAllSchemasFields(schemaMap)) {
             verifyFieldsOrdered(fields, false);
         }
@@ -114,32 +120,17 @@ public class SortSchemaFieldsTest {
         for (Map<String, Object> field : fields) {
             String fieldName = (String)field.get(AvroConstants.SCHEMA_KEY_FIELD_NAME);
             if (prevFieldName != null) {
-                Assert.assertTrue(
-                        asc ?
-                        prevFieldName.compareTo(fieldName) <= 0 :
-                        prevFieldName.compareTo(fieldName) >= 0);
+                if (prevFieldName.startsWith("x_") && fieldName.startsWith("x_")) { // always same order!
+                    Assert.assertTrue(prevFieldName.compareTo(fieldName) < 0);
+                } else if (prevFieldName.startsWith("f_") && fieldName.startsWith("f_")) {
+                    Assert.assertTrue(
+                            asc ?
+                            prevFieldName.compareTo(fieldName) < 0 :
+                            prevFieldName.compareTo(fieldName) > 0);
+                }
             }
             prevFieldName = fieldName;
         }
     }
 
-}
-
-class SimpleByNameSchemaFieldComparator implements Comparator<Map<String, Object>> {
-
-    static final SimpleByNameSchemaFieldComparator ASC = new SimpleByNameSchemaFieldComparator(true);
-    static final SimpleByNameSchemaFieldComparator DESC = new SimpleByNameSchemaFieldComparator(false);
-
-    private final boolean asc;
-
-    private SimpleByNameSchemaFieldComparator(boolean asc) {
-        this.asc = asc;
-    }
-
-    @Override
-    public int compare(Map<String, Object> field1, Map<String, Object> field2) {
-        String fieldName1 = AvroUtils.nameOfGenericField(field1);
-        String fieldName2 = AvroUtils.nameOfGenericField(field2);
-        return (!asc ? -1 : 1) * fieldName1.compareTo(fieldName2);
-    }
 }

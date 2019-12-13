@@ -40,6 +40,7 @@ public class ByNameSchemaFieldComparatorTest {
 
         fields.sort(ByNameSchemaFieldComparator.ASC);
 
+        verifyFieldsValid(fields);
         verifyFieldsOrdered(fields, fieldsOfRecordOrAmbiguousType, true);
     }
 
@@ -51,6 +52,7 @@ public class ByNameSchemaFieldComparatorTest {
 
         fields.sort(ByNameSchemaFieldComparator.DESC);
 
+        verifyFieldsValid(fields);
         verifyFieldsOrdered(fields, fieldsOfRecordOrAmbiguousType, false);
     }
 
@@ -78,19 +80,24 @@ public class ByNameSchemaFieldComparatorTest {
         }
     }
 
+    private void verifyFieldsValid(List<Map<String, Object>> fields) {
+        Object recordSchema = GenericSchemaDataGen.recordSchema("Test", fields);
+        AvroUtils.schemaFromGeneric(recordSchema); //should not fail
+    }
+
     private List<Map<String, Object>> extractFieldsOfRecordOrAmbiguousType(
             List<Map<String, Object>> fields) {
         return fields.stream().
-                filter(this::isOfRecordOrAmbiguousType).
+                filter(this::isOfNamedOrAmbiguousType).
                 collect(Collectors.toList());
     }
 
-    private boolean isOfRecordOrAmbiguousType(Map<String, Object> field) {
+    private boolean isOfNamedOrAmbiguousType(Map<String, Object> field) {
         Type type = AvroUtils.effectiveTypeOfGenericFieldOrElseNullIfUnknown(field);
         return
                 type == null ||
-                type == Type.RECORD ||
-                type == Type.UNION;
+                type == Type.UNION ||
+                AvroUtils.isNamed(type);
     }
 
 }
