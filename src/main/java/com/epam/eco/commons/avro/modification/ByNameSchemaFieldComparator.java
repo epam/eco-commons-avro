@@ -22,7 +22,7 @@ import com.epam.eco.commons.avro.AvroUtils;
 /**
  * @author Andrei_Tytsik
  */
-public class ByNameSchemaFieldComparator extends ComplexFirstSchemaFieldComparator {
+public class ByNameSchemaFieldComparator extends RecordsFirstSchemaFieldComparator {
 
     public static final ByNameSchemaFieldComparator ASC = new ByNameSchemaFieldComparator(true);
     public static final ByNameSchemaFieldComparator DESC = new ByNameSchemaFieldComparator(false);

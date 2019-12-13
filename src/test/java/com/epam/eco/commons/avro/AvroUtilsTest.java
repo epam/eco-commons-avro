@@ -15,8 +15,6 @@
  */
 package com.epam.eco.commons.avro;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.avro.Schema;
@@ -312,48 +310,61 @@ public class AvroUtilsTest {
 
     @Test
     public void testEffectiveTypeOfGenericSchemaResolved() throws Exception {
-        Object schema = unionSchema(Type.ARRAY.getName());
-        Assert.assertEquals(Type.ARRAY, AvroUtils.effectiveTypeOfGenericSchema(schema));
+        Object schema = Type.INT.getName();
+        Assert.assertEquals(Type.INT, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
-        schema = unionSchema(Type.NULL.getName(), Type.BOOLEAN.getName());
-        Assert.assertEquals(Type.BOOLEAN, AvroUtils.effectiveTypeOfGenericSchema(schema));
+        schema = GenericSchemaDataGen.recordSchema();
+        Assert.assertEquals(Type.RECORD, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
-        schema = unionSchema(Type.NULL.getName(), Type.UNION.getName());
-        Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
-
-        schema = unionSchema(Type.STRING.getName(), Type.BOOLEAN.getName());
-        Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
-
-        schema = unionSchema(Type.STRING.getName(), Type.BOOLEAN.getName(), Type.MAP.getName());
-        Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
-
-        schema = unionSchema(
-                    unionSchema(
-                        unionSchema(Type.STRING.getName())));
+        schema = GenericSchemaDataGen.arraySchema(Type.STRING.getName());
         Assert.assertEquals(Type.STRING, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
-        schema = unionSchema(
-                    unionSchema(
-                        unionSchema(Type.NULL.getName(), Type.FIXED.getName())));
+        schema = GenericSchemaDataGen.arraySchema(GenericSchemaDataGen.unionSchema(Type.FIXED.getName()));
         Assert.assertEquals(Type.FIXED, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
-        schema = unionSchema(
-                    unionSchema(
-                        unionSchema(Type.MAP.getName(), Type.FIXED.getName())));
+        schema = GenericSchemaDataGen.arraySchema(GenericSchemaDataGen.unionSchema(Type.NULL.getName(), Type.BYTES.getName()));
+        Assert.assertEquals(Type.BYTES, AvroUtils.effectiveTypeOfGenericSchema(schema));
+
+        schema = GenericSchemaDataGen.arraySchema(GenericSchemaDataGen.unionSchema(Type.STRING.getName(), Type.DOUBLE.getName()));
         Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
-        schema = unionSchema(
-                    unionSchema(
-                        unionSchema(Type.MAP.getName(), Type.FIXED.getName(), Type.STRING.getName())));
-        Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
-    }
+        schema = GenericSchemaDataGen.mapSchema(Type.BOOLEAN.getName());
+        Assert.assertEquals(Type.BOOLEAN, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
-    private static List<Object> unionSchema(Object ... types) {
-        List<Object> unionSchema = new ArrayList<>(types.length);
-        for (Object type : types) {
-            unionSchema.add(type);
-        }
-        return unionSchema;
+        schema = GenericSchemaDataGen.mapSchema(GenericSchemaDataGen.unionSchema(Type.FIXED.getName()));
+        Assert.assertEquals(Type.FIXED, AvroUtils.effectiveTypeOfGenericSchema(schema));
+
+        schema = GenericSchemaDataGen.mapSchema(GenericSchemaDataGen.unionSchema(Type.NULL.getName(), Type.BYTES.getName()));
+        Assert.assertEquals(Type.BYTES, AvroUtils.effectiveTypeOfGenericSchema(schema));
+
+        schema = GenericSchemaDataGen.mapSchema(GenericSchemaDataGen.unionSchema(Type.STRING.getName(), Type.DOUBLE.getName()));
+        Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
+
+        schema = GenericSchemaDataGen.unionSchema(Type.FLOAT.getName());
+        Assert.assertEquals(Type.FLOAT, AvroUtils.effectiveTypeOfGenericSchema(schema));
+
+        schema = GenericSchemaDataGen.unionSchema(Type.NULL.getName(), Type.BOOLEAN.getName());
+        Assert.assertEquals(Type.BOOLEAN, AvroUtils.effectiveTypeOfGenericSchema(schema));
+
+        schema = GenericSchemaDataGen.unionSchema(Type.STRING.getName(), Type.BOOLEAN.getName());
+        Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
+
+        schema = GenericSchemaDataGen.unionSchema(Type.STRING.getName(), Type.BOOLEAN.getName(), Type.BYTES.getName());
+        Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
+
+        schema = GenericSchemaDataGen.unionSchema(
+                GenericSchemaDataGen.arraySchema(GenericSchemaDataGen.recordSchema()));
+        Assert.assertEquals(Type.RECORD, AvroUtils.effectiveTypeOfGenericSchema(schema));
+
+        schema = GenericSchemaDataGen.unionSchema(
+                Type.NULL.getName(),
+                GenericSchemaDataGen.mapSchema(GenericSchemaDataGen.arraySchema(Type.BYTES.getName())));
+        Assert.assertEquals(Type.BYTES, AvroUtils.effectiveTypeOfGenericSchema(schema));
+
+        schema = GenericSchemaDataGen.unionSchema(
+                GenericSchemaDataGen.arraySchema(Type.BOOLEAN.getName()),
+                GenericSchemaDataGen.mapSchema(Type.ENUM.getName()));
+        Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
     }
 
 }

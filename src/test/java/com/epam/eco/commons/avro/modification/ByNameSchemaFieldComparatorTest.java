@@ -15,12 +15,8 @@
  */
 package com.epam.eco.commons.avro.modification;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.apache.avro.Schema.Type;
@@ -29,6 +25,7 @@ import org.junit.Test;
 
 import com.epam.eco.commons.avro.AvroConstants;
 import com.epam.eco.commons.avro.AvroUtils;
+import com.epam.eco.commons.avro.GenericSchemaDataGen;
 
 /**
  * @author Andrei_Tytsik
@@ -37,24 +34,24 @@ public class ByNameSchemaFieldComparatorTest {
 
     @Test
     public void testSchemaFieldsAreAscOrdered() throws Exception {
-        List<Map<String, Object>> fields = generateFieldList(100);
-        List<Map<String, Object>> fieldsOfComplexOrUnknownType =
-                extractFieldsOfComplexAndUnknownType(fields);
+        List<Map<String, Object>> fields = GenericSchemaDataGen.randomFields(300);
+        List<Map<String, Object>> fieldsOfRecordOrAmbiguousType =
+                extractFieldsOfRecordOrAmbiguousType(fields);
 
         fields.sort(ByNameSchemaFieldComparator.ASC);
 
-        verifyFieldsOrdered(fields, fieldsOfComplexOrUnknownType, true);
+        verifyFieldsOrdered(fields, fieldsOfRecordOrAmbiguousType, true);
     }
 
     @Test
     public void testSchemaFieldsAreDescOrdered() throws Exception {
-        List<Map<String, Object>> fields = generateFieldList(100);
-        List<Map<String, Object>> fieldsOfRecordOrUnknownType =
-                extractFieldsOfComplexAndUnknownType(fields);
+        List<Map<String, Object>> fields = GenericSchemaDataGen.randomFields(300);
+        List<Map<String, Object>> fieldsOfRecordOrAmbiguousType =
+                extractFieldsOfRecordOrAmbiguousType(fields);
 
         fields.sort(ByNameSchemaFieldComparator.DESC);
 
-        verifyFieldsOrdered(fields, fieldsOfRecordOrUnknownType, false);
+        verifyFieldsOrdered(fields, fieldsOfRecordOrAmbiguousType, false);
     }
 
     private void verifyFieldsOrdered(
@@ -81,46 +78,19 @@ public class ByNameSchemaFieldComparatorTest {
         }
     }
 
-    private List<Map<String, Object>> generateFieldList(int size) {
-        String[] complexAndUnknownTypes = new String[]{
-                Type.RECORD.name(),
-                Type.ENUM.name(),
-                Type.MAP.name(),
-                Type.UNION.name(),
-                Type.ARRAY.name(),
-                "unknown"
-        };
-        List<Map<String, Object>> fields = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            Map<String, Object> field = new HashMap<>();
-            field.put(AvroConstants.SCHEMA_KEY_FIELD_NAME, "f" + i);
-            if (i % 3 == 0) {
-                int nextType = new Random().nextInt(complexAndUnknownTypes.length);
-                field.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, complexAndUnknownTypes[nextType]);
-            } else {
-                field.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, Type.STRING.name());
-            }
-            fields.add(field);
-        }
-        Collections.shuffle(fields);
-        return fields;
-    }
-
-    private List<Map<String, Object>> extractFieldsOfComplexAndUnknownType(
+    private List<Map<String, Object>> extractFieldsOfRecordOrAmbiguousType(
             List<Map<String, Object>> fields) {
         return fields.stream().
-                filter(this::isComplexOrUnknown).
+                filter(this::isOfRecordOrAmbiguousType).
                 collect(Collectors.toList());
     }
 
-    private boolean isComplexOrUnknown(Map<String, Object> field) {
-        Type type = AvroUtils.typeOfGenericFieldOrElseNullIfUnknown(field);
-        return type == null
-                || type == Type.RECORD
-                || type == Type.ENUM
-                || type == Type.MAP
-                || type == Type.UNION
-                || type == Type.ARRAY;
+    private boolean isOfRecordOrAmbiguousType(Map<String, Object> field) {
+        Type type = AvroUtils.effectiveTypeOfGenericFieldOrElseNullIfUnknown(field);
+        return
+                type == null ||
+                type == Type.RECORD ||
+                type == Type.UNION;
     }
 
 }

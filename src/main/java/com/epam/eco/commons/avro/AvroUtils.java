@@ -20,9 +20,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.avro.Schema;
@@ -58,16 +60,32 @@ public abstract class AvroUtils {
 
     private static final Pattern FIELD_NAME_PATTERN = Pattern.compile("^[_a-zA-Z][_a-zA-Z0-9]*$");
 
-    private static final Map<String, Type> TYPES;
-    private static final Map<String, Type> TYPES_CASE_INSENSITIVE;
+    public static final Set<Type> ALL_TYPES = Collections.unmodifiableSet(EnumSet.allOf(Type.class));
+
+    public static final Set<Type> COMPLEX_TYPES =
+            Collections.unmodifiableSet(
+                    EnumSet.of(Type.RECORD, Type.ENUM, Type.ARRAY, Type.MAP, Type.UNION, Type.FIXED));
+
+    public static final Set<Type> PRIMITIVE_TYPES =
+            Collections.unmodifiableSet(
+                    EnumSet.of(Type.NULL, Type.BOOLEAN, Type.INT, Type.LONG, Type.FLOAT, Type.DOUBLE, Type.BYTES, Type.STRING));
+
+    public static final Set<Type> NAMED_TYPES =
+            Collections.unmodifiableSet(EnumSet.of(Type.RECORD, Type.ENUM, Type.FIXED));
+
+    public static final Set<Type> PARAMETRIZED_TYPES = Collections.unmodifiableSet(EnumSet.of(Type.UNION, Type.ARRAY, Type.MAP));
+
+    private static final Map<String, Type> ALL_TYPES_BY_NAME;
+    private static final Map<String, Type> ALL_TYPES_BY_NAME_CASE_INSENSITIVE;
     static {
         Map<String, Type> types = new HashMap<>((int) (Type.values().length / 0.75));
         for (Type type : Type.values()) {
             types.put(type.getName(), type);
         }
-        TYPES = Collections.unmodifiableMap(types);
-        TYPES_CASE_INSENSITIVE = Collections.unmodifiableMap(new CaseInsensitiveMap<>(types));
+        ALL_TYPES_BY_NAME = Collections.unmodifiableMap(types);
+        ALL_TYPES_BY_NAME_CASE_INSENSITIVE = Collections.unmodifiableMap(new CaseInsensitiveMap<>(types));
     }
+
 
     private AvroUtils() {
     }
@@ -324,10 +342,31 @@ public abstract class AvroUtils {
         Validate.notNull(genericSchema, "Generic schema is null");
 
         if (genericSchema instanceof Map) {
-            return typeForName(
+            Type type = typeForName(
                     ((Map<String, Object>)genericSchema).get(AvroConstants.SCHEMA_KEY_TYPE).toString());
+            if (type == Type.MAP) {
+                return effectiveTypeOfGenericSchema(
+                        ((Map<String, Object>)genericSchema).get(AvroConstants.SCHEMA_KEY_MAP_VALUES));
+            } else if (type == Type.ARRAY) {
+                return effectiveTypeOfGenericSchema(
+                        ((Map<String, Object>)genericSchema).get(AvroConstants.SCHEMA_KEY_ARRAY_ITEMS));
+            } else {
+                return type;
+            }
         } else if (genericSchema instanceof List) {
-            return effectiveTypeOfGenericUnionSchema((List<Object>)genericSchema);
+            List<Object> genericUnionSchema = (List<Object>)genericSchema;
+            if (genericUnionSchema.size() == 1) {
+                return effectiveTypeOfGenericSchema(genericUnionSchema.get(0));
+            } else if (genericUnionSchema.size() == 2) {
+                Object first = genericUnionSchema.get(0);
+                Object second = genericUnionSchema.get(1);
+                if (Type.NULL.getName().equals(first)) {
+                    return effectiveTypeOfGenericSchema(second);
+                } else if (Type.NULL.getName().equals(second)) {
+                    return effectiveTypeOfGenericSchema(first);
+                }
+            }
+            return Type.UNION;
         } else {
             return typeForName(genericSchema.toString());
         }
@@ -339,23 +378,6 @@ public abstract class AvroUtils {
         } catch (UnknownTypeException ute) {
             return null;
         }
-    }
-
-    public static Type effectiveTypeOfGenericUnionSchema(List<Object> genericUnionSchema) throws UnknownTypeException {
-        Validate.notEmpty(genericUnionSchema, "Generic union schema is null or empty");
-
-        if (genericUnionSchema.size() == 1) {
-            return effectiveTypeOfGenericSchema(genericUnionSchema.get(0));
-        } else if (genericUnionSchema.size() == 2) {
-            Object first = genericUnionSchema.get(0);
-            Object second = genericUnionSchema.get(1);
-            if (Type.NULL.getName().equals(first)) {
-                return effectiveTypeOfGenericSchema(second);
-            } else if (Type.NULL.getName().equals(second)) {
-                return effectiveTypeOfGenericSchema(first);
-            }
-        }
-        return Type.UNION;
     }
 
     public static Type typeOfGenericField(Map<String, Object> genericField) throws UnknownTypeException {
@@ -470,13 +492,7 @@ public abstract class AvroUtils {
     public static boolean isComplex(Type type) {
         Validate.notNull(type, "Type is null");
 
-        return
-                type == Type.RECORD ||
-                type == Type.ENUM ||
-                type == Type.ARRAY ||
-                type == Type.MAP ||
-                type == Type.UNION ||
-                type == Type.FIXED;
+        return COMPLEX_TYPES.contains(type);
     }
 
     public static boolean isOfPrimitiveType(Schema schema) {
@@ -488,15 +504,7 @@ public abstract class AvroUtils {
     public static boolean isPrimitive(Type type) {
         Validate.notNull(type, "Type is null");
 
-        return
-                type == Type.NULL ||
-                type == Type.BOOLEAN ||
-                type == Type.INT ||
-                type == Type.LONG ||
-                type == Type.FLOAT ||
-                type == Type.DOUBLE ||
-                type == Type.BYTES ||
-                type == Type.STRING;
+        return PRIMITIVE_TYPES.contains(type);
     }
 
     public static boolean isOfNamedType(Schema schema) {
@@ -508,10 +516,7 @@ public abstract class AvroUtils {
     public static boolean isNamed(Type type) {
         Validate.notNull(type, "Type is null");
 
-        return
-                type == Type.RECORD ||
-                type == Type.ENUM ||
-                type == Type.FIXED;
+        return NAMED_TYPES.contains(type);
     }
 
     public static boolean isOfParametrizedType(Schema schema) {
@@ -523,16 +528,13 @@ public abstract class AvroUtils {
     public static boolean isParametrized(Type type) {
         Validate.notNull(type, "Type is null");
 
-        return
-                type == Type.UNION ||
-                type == Type.ARRAY ||
-                type == Type.MAP;
+        return PARAMETRIZED_TYPES.contains(type);
     }
 
     public static Type typeForName(String name) throws UnknownTypeException {
         Validate.notBlank(name, "Name is blank");
 
-        Type type = TYPES.get(name);
+        Type type = ALL_TYPES_BY_NAME.get(name);
         if (type == null) {
             throw new UnknownTypeException(name);
         }
@@ -542,7 +544,7 @@ public abstract class AvroUtils {
     public static Type typeForNameIgnoreCase(String name) throws UnknownTypeException {
         Validate.notBlank(name, "Name is blank");
 
-        Type type = TYPES_CASE_INSENSITIVE.get(name);
+        Type type = ALL_TYPES_BY_NAME_CASE_INSENSITIVE.get(name);
         if (type == null) {
             throw new UnknownTypeException(name);
         }

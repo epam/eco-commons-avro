@@ -18,29 +18,25 @@ package com.epam.eco.commons.avro.modification;
 import java.util.Comparator;
 import java.util.Map;
 
+import org.apache.avro.Schema;
 import org.apache.avro.Schema.Type;
 
 import com.epam.eco.commons.avro.AvroUtils;
 
 /**
  * @author Andrei_Tytsik
- *
- * @deprecated due to possible wrong fields order in schema after sorting.
- * Complex types can have nested definitions of other types, therefore all complex types have to go first in predefined(initial) order.
- * Use {@link ComplexFirstSchemaFieldComparator} instead.
  */
-@Deprecated
 public abstract class RecordsFirstSchemaFieldComparator implements Comparator<Map<String, Object>> {
 
     @Override
     public final int compare(Map<String, Object> field1, Map<String, Object> field2) {
-        Type field1Type = AvroUtils.typeOfGenericFieldOrElseNullIfUnknown(field1);
-        Type field2Type = AvroUtils.typeOfGenericFieldOrElseNullIfUnknown(field2);
-        if (isRecordOrUnknown(field1Type) && isRecordOrUnknown(field2Type)) {
+        Schema.Type field1Type = AvroUtils.effectiveTypeOfGenericFieldOrElseNullIfUnknown(field1);
+        Schema.Type field2Type = AvroUtils.effectiveTypeOfGenericFieldOrElseNullIfUnknown(field2);
+        if (isRecordOrAmbiguous(field1Type) && isRecordOrAmbiguous(field2Type)) {
             return 0;
-        } else if (isRecordOrUnknown(field1Type) && !isRecordOrUnknown(field2Type)) {
+        } else if (isRecordOrAmbiguous(field1Type) && !isRecordOrAmbiguous(field2Type)) {
             return -1;
-        } else if (!isRecordOrUnknown(field1Type) && isRecordOrUnknown(field2Type)) {
+        } else if (!isRecordOrAmbiguous(field1Type) && isRecordOrAmbiguous(field2Type)) {
             return 1;
         }
         return doCompare(field1, field2);
@@ -48,8 +44,11 @@ public abstract class RecordsFirstSchemaFieldComparator implements Comparator<Ma
 
     protected abstract int doCompare(Map<String, Object> field1, Map<String, Object> field2);
 
-    private static boolean isRecordOrUnknown(Type type) {
-        return type == null || type == Type.RECORD;
+    private static boolean isRecordOrAmbiguous(Type type) {
+        return
+                type == Schema.Type.RECORD ||
+                type == null || // named type (could refer record type)
+                type == Schema.Type.UNION; // non-nullable union (could contain record type)
     }
 
 }
