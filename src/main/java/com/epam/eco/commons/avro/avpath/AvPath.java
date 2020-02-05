@@ -49,9 +49,6 @@ public class AvPath {
     private final ConcurrentMap<String, Expression<?>> expsCache = new ConcurrentHashMap<>();
     private final ConcurrentMap<Schema, List<PathTemplate>> pathTemplatesCache = new ConcurrentHashMap<>();
 
-    private AvPath() {
-    }
-
     public <T> List<T> select(Object object, String path, Class<T> type) {
         Validate.notNull(object, "Object is null");
         Validate.notBlank(path, "Path is blank");
@@ -172,12 +169,12 @@ public class AvPath {
             if (schema.getType() == Type.ARRAY) {
                 templates.add(
                         PathTemplate.with(
-                                "/" + path + "[*]",
+                                "/" + path + PathUtils.ELEMENT_SELECTOR_MATCH_ALL,
                                 schema.getElementType()));
             } else if (schema.getType() == Type.MAP) {
                 templates.add(
                         PathTemplate.with(
-                                "/" + path + "[*]",
+                                "/" + path + PathUtils.ELEMENT_SELECTOR_MATCH_ALL,
                                 schema.getValueType()));
             }
             templates.add(

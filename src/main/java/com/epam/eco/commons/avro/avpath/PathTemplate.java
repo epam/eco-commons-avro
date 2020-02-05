@@ -46,10 +46,16 @@ public class PathTemplate implements Comparable<PathTemplate> {
                 other.schema);
     }
 
-    public static PathTemplate with(
-            String path,
-            Schema schema) {
-        return new PathTemplate(path, schema);
+    public boolean isElementSelector() {
+        return PathUtils.isMatchAllPath(path);
+    }
+
+    public String toPlainPath() {
+        return toPlainPath(".");
+    }
+
+    public String toPlainPath(String separator) {
+        return PathUtils.templatePathToPlain(path, separator);
     }
 
     @Override
@@ -83,6 +89,12 @@ public class PathTemplate implements Comparable<PathTemplate> {
             result = ObjectUtils.compare(this.schema.getType(), other.schema.getType());
         }
         return result;
+    }
+
+    public static PathTemplate with(
+            String path,
+            Schema schema) {
+        return new PathTemplate(path, schema);
     }
 
 }

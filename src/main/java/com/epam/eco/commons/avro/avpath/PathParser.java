@@ -17,11 +17,8 @@ package com.epam.eco.commons.avro.avpath;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.math.NumberUtils;
 
 import com.epam.eco.commons.avro.AvroUtils;
 
@@ -29,14 +26,6 @@ import com.epam.eco.commons.avro.AvroUtils;
  * @author Andrei_Tytsik
  */
 public class PathParser {
-
-    private static final int GET_RECORD_FIELD_BEGIN = '/';
-    private static final int SELECT_ELEMENTS_BEGIN = '[';
-    private static final int SELECT_ELEMENTS_END = ']';
-
-    private static final String SELECT_CRITERIA_MATCH_ALL = "*";
-    private static final String SELECT_CRITERIA_BY_NULL_KEY = "null";
-    private static final Pattern SELECT_CRITERIA_BY_LITERAL_KEY_PATTERN = Pattern.compile("^'(.*)'$");
 
     private final String path;
     private final char[] pathChars;
@@ -57,9 +46,9 @@ public class PathParser {
 
         int ch;
         while ((ch = read()) != -1) {
-            if (isGetRecordFieldBegin(ch)) {
+            if (PathUtils.isGetRecordFieldBeginCh(ch)) {
                 exps.add(parseGetRecordFieldExp());
-            } else if (isSelectElementsBegin(ch)) {
+            } else if (PathUtils.isSelectElementsBeginCh(ch)) {
                 exps.add(parseSelectElementsExp());
             } else {
                 throw new PathParseException(
@@ -79,7 +68,7 @@ public class PathParser {
     private Expression<?> parseGetRecordFieldExp() {
         StringBuilder fieldNameBuilder = new StringBuilder();
         int ch;
-        while (!isGetRecordFieldEnd(ch = read())) {
+        while (!isGetRecordFieldEndCh(ch = read())) {
             fieldNameBuilder.append((char)ch);
         }
         if (ch != -1) {
@@ -96,26 +85,14 @@ public class PathParser {
         return new GetRecordField(fieldName);
     }
 
-    private boolean isGetRecordFieldBegin(int ch) {
-        return GET_RECORD_FIELD_BEGIN == ch;
-    }
-
-    private boolean isGetRecordFieldEnd(int ch) {
-        return isMarkupSymbol(ch);
-    }
-
-    private boolean isMarkupSymbol(int ch) {
-        return
-                GET_RECORD_FIELD_BEGIN == ch ||
-                SELECT_ELEMENTS_BEGIN == ch ||
-                SELECT_ELEMENTS_END == ch ||
-                -1 == ch;
+    private boolean isGetRecordFieldEndCh(int ch) {
+        return PathUtils.isMarkupCh(ch) || ch == -1;
     }
 
     private Expression<?> parseSelectElementsExp() {
         StringBuilder selectCriteriaBuilder = new StringBuilder();
         int ch;
-        while (!isSelectElementsEnd(ch = read())) {
+        while (!PathUtils.isSelectElementsEndCh(ch = read())) {
             if (ch == -1) {
                 throw new PathParseException(
                         path,
@@ -128,55 +105,21 @@ public class PathParser {
         }
 
         String selectCriteria = selectCriteriaBuilder.toString();
-        if (isSelectCriteriaMatchAll(selectCriteria)) {
+        if (PathUtils.isSelectCriteriaMatchAll(selectCriteria)) {
             return new SelectAllElements();
-        } else if (isSelectCriteriaByNullKey(selectCriteria)) {
+        } else if (PathUtils.isSelectCriteriaByNullKey(selectCriteria)) {
             return new SelectElementByKey(null);
-        } else if (isSelectCriteriaByNumericKey(selectCriteria)) {
-            Number key = parseSelectCriteriaAsNumericKey(selectCriteria);
+        } else if (PathUtils.isSelectCriteriaByNumericKey(selectCriteria)) {
+            Number key = PathUtils.parseSelectCriteriaAsNumericKey(selectCriteria);
             return new SelectElementByKey(key);
-        } else if (isSelectCriteriaByLiteralKey(selectCriteria)) {
-            String key = parseSelectCriteriaAsLiteralKey(selectCriteria);
+        } else if (PathUtils.isSelectCriteriaByLiteralKey(selectCriteria)) {
+            String key = PathUtils.parseSelectCriteriaAsLiteralKey(selectCriteria);
             return new SelectElementByKey(key);
         } else {
             throw new PathParseException(
                     path,
                     String.format("select criteria '%s' is invalid", selectCriteria));
         }
-    }
-
-    private boolean isSelectCriteriaMatchAll(String selectCriteria) {
-        return SELECT_CRITERIA_MATCH_ALL.equals(selectCriteria);
-    }
-
-    private boolean isSelectCriteriaByNullKey(String selectCriteria) {
-        return SELECT_CRITERIA_BY_NULL_KEY.equals(selectCriteria);
-    }
-
-    private boolean isSelectCriteriaByNumericKey(String selectCriteria) {
-        return NumberUtils.isNumber(selectCriteria);
-    }
-
-    private Number parseSelectCriteriaAsNumericKey(String selectCriteria) {
-        return NumberUtils.createNumber(selectCriteria);
-    }
-
-    private boolean isSelectCriteriaByLiteralKey(String selectCriteria) {
-        return SELECT_CRITERIA_BY_LITERAL_KEY_PATTERN.matcher(selectCriteria).matches();
-    }
-
-    private String parseSelectCriteriaAsLiteralKey(String selectCriteria) {
-        Matcher matcher = SELECT_CRITERIA_BY_LITERAL_KEY_PATTERN.matcher(selectCriteria);
-        matcher.find();
-        return matcher.group(1);
-    }
-
-    private boolean isSelectElementsBegin(int ch) {
-        return SELECT_ELEMENTS_BEGIN == ch;
-    }
-
-    private boolean isSelectElementsEnd(int ch) {
-        return SELECT_ELEMENTS_END == ch;
     }
 
     private int read() {
