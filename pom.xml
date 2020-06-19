@@ -65,7 +65,7 @@
         <avro.version>1.8.2</avro.version>
         <commons-io.version>2.5</commons-io.version>
         <commons-lang3.version>3.4</commons-lang3.version>
-        <commons-collections4.version>4.0</commons-collections4.version>
+        <commons-collections4.version>4.1</commons-collections4.version>
         <jackson-databind.version>2.10.0.pr1</jackson-databind.version>
         <jackson.version>2.9.10</jackson.version>
 
