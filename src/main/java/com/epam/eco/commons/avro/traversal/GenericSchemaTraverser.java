@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.apache.avro.Schema.Type;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
 import com.epam.eco.commons.avro.AvroConstants;
@@ -171,8 +172,7 @@ public class GenericSchemaTraverser {
     }
 
     private String buildFullNameFor(String name, String namespace) {
-        Validate.notBlank(name, "Name is null");
-        if (namespace == null) {
+        if (namespace == null && !StringUtils.contains(name, '.')) {
             namespace = !NAMESPACE_CONTEXT.get().isEmpty() ? NAMESPACE_CONTEXT.get().peek() : null;
         }
         return namespace != null ? String.format("%s.%s", namespace, name) : name;
