@@ -31,7 +31,7 @@ public class SchemaTraverseTestData {
     public final static String SCHEMA_JSON =
             "{\"type\": \"record\"," +
             "\"name\": \"TestPerson\"," +
-            "\"namespace\" : \"com.epam.eco.schemaregistry.client.avro.data\"," +
+            "\"namespace\" : \"com.epam.eco\"," +
             "\"fields\": [" +
                 "{\"name\": \"age\", \"type\": [\"null\", \"int\"]}," +
                 "{\"name\": \"hobby\", \"type\": [\"null\", " +
@@ -43,7 +43,7 @@ public class SchemaTraverseTestData {
                     "}" +
                 "]}," +
                 "{\"name\": \"job\", \"type\":" +
-                    "{\"type\": \"record\", \"name\": \"TestJob\", \"fields\":[" +
+                    "{\"type\": \"record\", \"namespace\": \"com.epam.eco.job\", \"name\": \"TestJob\", \"fields\":[" +
                         "{\"name\": \"position\", \"type\":" +
                             "{\"type\": \"record\", \"name\": \"TestPosition\", \"fields\":[" +
                                 "{\"name\": \"skill\", \"type\":" +
@@ -54,11 +54,11 @@ public class SchemaTraverseTestData {
                                     "}" +
                                 "}" +
                             "]}" +
-                        "}," +
-                        "{\"name\": \"previousJob\", \"type\":  [\"null\", \"TestJob\"]}" +
+                        "}" +
                     "]}" +
-                "}]" +
-            "}";
+                "}," +
+                "{\"name\": \"previousJob\", \"type\": [\"null\", \"com.epam.eco.job.TestJob\"]}" +
+            "]}";
 
     public final static Schema SCHEMA = new Schema.Parser().parse(SCHEMA_JSON);
 
@@ -72,7 +72,7 @@ public class SchemaTraverseTestData {
     public static final int INT_COUNT = 1;
     public static final int STRING_COUNT = 3;
     public static final Set<String> FIELD_PATHS = new HashSet<>(Arrays.asList(
-            "age", "hobby", "hobby.kind", "hobby.description", "job", "job.position", "job.position.skill", "job.position.skill.level", "job.previousJob"
+            "age", "hobby", "hobby.kind", "hobby.description", "job", "job.position", "job.position.skill", "job.position.skill.level", "previousJob"
             ));
 
     public static final String DESIRED_PATH = "job.position.skill.level";
