@@ -1,0 +1,75 @@
+{
+  "type": "record",
+  "name": "Event",
+  "namespace": "com.graph.models.extensions",
+  "fields": [
+    {
+      "name": "originalStartTimeZone",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "recurrence",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "PatternedRecurrence",
+          "fields": [
+            {
+              "name": "pattern",
+              "type": [
+                "null",
+                {
+                  "type": "record",
+                  "name": "RecurrencePattern",
+                  "fields": [
+                    {
+                      "name": "daysOfWeek",
+                      "type": [
+                        "null",
+                        {
+                          "type": "array",
+                          "items": {
+                            "type": "enum",
+                            "name": "DayOfWeek",
+                            "namespace": "com.graph.models.generated",
+                            "symbols": [
+                              "SUNDAY",
+                              "MONDAY",
+                              "TUESDAY",
+                              "WEDNESDAY",
+                              "THURSDAY",
+                              "FRIDAY",
+                              "SATURDAY",
+                              "UNEXPECTED_VALUE"
+                            ]
+                          },
+                          "java-class": "java.util.List"
+                        }
+                      ],
+                      "default": null
+                    },
+                    {
+                      "name": "firstDayOfWeek",
+                      "type": [
+                        "null",
+                        "com.graph.models.generated.DayOfWeek"
+                      ],
+                      "default": null
+                    }
+                  ]
+                }
+              ],
+              "default": null
+            }
+          ]
+        }
+      ],
+      "default": null
+    }
+  ]
+}
