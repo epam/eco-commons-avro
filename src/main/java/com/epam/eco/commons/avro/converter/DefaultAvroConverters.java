@@ -22,21 +22,23 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.avro.JsonProperties;
 import org.apache.avro.LogicalTypes;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field;
 import org.apache.avro.Schema.Type;
 import org.apache.avro.generic.GenericData.EnumSymbol;
 import org.apache.avro.generic.GenericRecordBuilder;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.Validate;
 
 import static com.epam.eco.commons.avro.AvroUtils.isNullable;
@@ -371,20 +373,40 @@ public class DefaultAvroConverters implements AvroConverters {
             }
         }
 
+
+
         private void validate(Map<String, Object> value, Schema schema) {
-            List<String> schemaFields = schema.getFields().stream().
-                    map(Field::name).
-                    collect(Collectors.toList());
+            List<Field> schemaFields = schema.getFields();
 
-            String fieldsDisjunction = String.join(
-                    ", ", CollectionUtils.disjunction(schemaFields, value.keySet()));
-
-            if (!fieldsDisjunction.isEmpty()) {
-                throw new AvroConversionException(
-                        value,
-                        schema,
-                        "Fields disjunction: " + fieldsDisjunction);
+            List<String> fieldsDisjunction = new ArrayList<>();
+            for (Field schemaField : schemaFields) {
+                if (!value.containsKey(schemaField.name()) && !isUnionWithNull(schemaField)) {
+                    fieldsDisjunction.add(schemaField.name());
+                }
             }
+
+            List<String> schemaFieldsNames = schemaFields.stream()
+                    .map(Field::name)
+                    .collect(Collectors.toList());
+            for (String valueName : value.keySet()) {
+                if (!schemaFieldsNames.contains(valueName)) {
+                    fieldsDisjunction.add(valueName);
+                }
+            }
+
+            if (fieldsDisjunction.size() != 0) {
+                String message = String.join(", ", fieldsDisjunction);
+                throw new AvroConversionException(value, schema, "Fields disjunction: " + message);
+            }
+        }
+
+        private boolean isUnionWithNull(Field schemaField) {
+            if (schemaField.schema().getType() != Schema.Type.UNION || schemaField.schema().getTypes().size() == 0) {
+                return false;
+            }
+            //null only on first position working in our case
+            return schemaField.schema().getTypes().get(0).getType() == Schema.Type.NULL &&
+                    Objects.equals(schemaField.defaultVal(), JsonProperties.NULL_VALUE);
         }
 
     }
