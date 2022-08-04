@@ -126,5 +126,11 @@
         }, "null" ]
       } ]
     }, "null" ]
+  }, {
+    "name": "null_string",
+    "type": [
+      "null",
+      "string"],
+    "default": null
   } ]
 }

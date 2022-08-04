@@ -40,7 +40,7 @@ import avro.shaded.com.google.common.collect.ImmutableMap;
  */
 public class DefaultAvroConvertersTest {
 
-    private static final Schema VALUE_SCHEMA = AvroUtils.schemaFromResource("/broad_schema.avsc");
+    private static final Schema VALUE_SCHEMA = AvroUtils.schemaFromResource("/broad_schema_with_null.avsc");
 
     private Map<String, Object> value = ImmutableMap.<String, Object>builder()
                                                     .put("int_field", 1)
