@@ -1,0 +1,136 @@
+{
+  "type" : "record",
+  "name" : "BroadSchema",
+  "namespace" : "test.commons.avro",
+  "fields" : [ {
+    "name" : "int_field",
+    "type" : [ "int", "null" ]
+  }, {
+    "name" : "long_field",
+    "type" : [ "long", "null" ]
+  }, {
+    "name" : "float_field",
+    "type" : [ "float", "null" ]
+  }, {
+    "name" : "double_field",
+    "type" : [ "double", "null" ]
+  }, {
+    "name" : "boolean_field",
+    "type" : [ "boolean", "null" ]
+  }, {
+    "name" : "string_field",
+    "type" : [ "string", "null" ]
+  }, {
+    "name" : "bytes_field",
+    "type" : [ "bytes", "null" ]
+  }, {
+    "name" : "date_field",
+    "type" : [ {
+      "type" : "int",
+      "logicalType" : "date"
+    }, "null" ]
+  }, {
+    "name" : "time_field",
+    "type" : [ {
+      "type" : "int",
+      "logicalType" : "time-millis"
+    }, "null" ]
+  }, {
+    "name" : "datetime_field",
+    "type" : [ {
+      "type" : "long",
+      "logicalType" : "timestamp-millis"
+    }, "null" ]
+  }, {
+    "name" : "collection_of_string_field",
+    "type" : [ {
+      "type" : "array",
+      "items" : [ "string", "null" ]
+    }, "null" ]
+  }, {
+    "name" : "collection_of_map_field",
+    "type" : [ {
+      "type" : "array",
+      "items" : [ {
+        "type" : "record",
+        "name" : "collection_of_map_field",
+        "fields" : [ {
+          "name" : "int_field",
+          "type" : [ "int", "null" ]
+        }, {
+          "name" : "string_field",
+          "type" : [ "string", "null" ]
+        } ]
+      }, "null" ]
+    }, "null" ]
+  }, {
+    "name" : "map_field",
+    "type" : [ {
+      "type" : "record",
+      "name" : "map_field",
+      "fields" : [ {
+        "name" : "int_field",
+        "type" : [ "int", "null" ]
+      }, {
+        "name" : "long_field",
+        "type" : [ "long", "null" ]
+      }, {
+        "name" : "float_field",
+        "type" : [ "float", "null" ]
+      }, {
+        "name" : "double_field",
+        "type" : [ "double", "null" ]
+      }, {
+        "name" : "boolean_field",
+        "type" : [ "boolean", "null" ]
+      }, {
+        "name" : "string_field",
+        "type" : [ "string", "null" ]
+      }, {
+        "name" : "bytes_field",
+        "type" : [ "bytes", "null" ]
+      }, {
+        "name" : "collection_of_string_field",
+        "type" : [ {
+          "type" : "array",
+          "items" : [ "string", "null" ]
+        }, "null" ]
+      }, {
+        "name" : "embedded_collection_of_map_field",
+        "type" : [ {
+          "type" : "array",
+          "items" : [ {
+            "type" : "record",
+            "name" : "embedded_collection_of_map_field",
+            "fields" : [ {
+              "name" : "int_field",
+              "type" : [ "int", "null" ]
+            }, {
+              "name" : "string_field",
+              "type" : [ "string", "null" ]
+            } ]
+          }, "null" ]
+        }, "null" ]
+      }, {
+        "name" : "embedded_map_field",
+        "type" : [ {
+          "type" : "record",
+          "name" : "embedded_map_field",
+          "fields" : [ {
+            "name" : "int_field",
+            "type" : [ "int", "null" ]
+          }, {
+            "name" : "string_field",
+            "type" : [ "string", "null" ]
+          } ]
+        }, "null" ]
+      } ]
+    }, "null" ]
+  }, {
+    "name": "null_string",
+    "type": [
+      "null",
+      "string"],
+    "default": null
+  } ]
+}
