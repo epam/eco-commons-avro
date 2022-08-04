@@ -394,14 +394,14 @@ public class DefaultAvroConverters implements AvroConverters {
                 }
             }
 
-            if (fieldsDisjunction.size() != 0) {
+            if (!fieldsDisjunction.isEmpty()) {
                 String message = String.join(", ", fieldsDisjunction);
                 throw new AvroConversionException(value, schema, "Fields disjunction: " + message);
             }
         }
 
         private boolean isUnionWithNull(Field schemaField) {
-            if (schemaField.schema().getType() != Schema.Type.UNION || schemaField.schema().getTypes().size() == 0) {
+            if (schemaField.schema().getType() != Schema.Type.UNION || schemaField.schema().getTypes().isEmpty()) {
                 return false;
             }
             //null only on first position working in our case
