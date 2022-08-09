@@ -28,6 +28,13 @@ import com.epam.eco.commons.avro.traversal.GenericSchemaTraverser;
 
 /**
  * @author Andrei_Tytsik
+ *
+ * The class has not supported cases when we're removing fields with record definition
+ * and having other fields than using this record.
+ * Successfully working in this situation can be only if we remove all usage of the scheme
+ * before removing the field with definition.
+ * More behavior in tests RemoveSchemaFieldWithRecordDefinitionTest.java
+ *
  */
 public class RemoveSchemaFieldByPath implements SchemaModification {
 
