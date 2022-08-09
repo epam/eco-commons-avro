@@ -64,7 +64,7 @@ public class RemoveSchemaFieldByPath implements SchemaModification {
             public void onSchema(String path, Object parentSchema, Object schema) {
                 // do nothing
             }
-        }).walk(schemaMap, path);
+        }).walk(schemaMap, null);
 
         int removedCount = 0;
         for (int i = 0; i < typesToRemoveFieldFrom.size(); i++) {
