@@ -1,0 +1,32 @@
+{
+  "type" : "record",
+  "name" : "BroadSchema",
+  "namespace" : "test.commons.avro",
+  "fields" : [ {
+      "name" : "int_field",
+      "type" : [ "int", "null" ]
+    },{
+      "name": "two_string",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "two_string",
+          "namespace": "",
+          "fields": [ {
+              "name": "one",
+              "type": [ "null", "string" ],
+              "default": null
+            }, {
+              "name": "two",
+              "type": [ "null", "string" ],
+              "default": null
+            } ]
+        } ],
+      "default": null
+    }, {
+      "name": "another_two_string",
+      "type": [ "null", "two_string" ],
+      "default": null
+    } ]
+}

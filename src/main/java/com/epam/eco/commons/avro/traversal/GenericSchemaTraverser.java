@@ -172,10 +172,10 @@ public class GenericSchemaTraverser {
     }
 
     private String buildFullNameFor(String name, String namespace) {
-        if (namespace == null && !StringUtils.contains(name, '.')) {
+        if (StringUtils.isNotEmpty(namespace) && !StringUtils.contains(name, '.')) {
             namespace = !NAMESPACE_CONTEXT.get().isEmpty() ? NAMESPACE_CONTEXT.get().peek() : null;
         }
-        return namespace != null ? String.format("%s.%s", namespace, name) : name;
+        return StringUtils.isNotEmpty(namespace) ? String.format("%s.%s", namespace, name) : name;
     }
 
 }
