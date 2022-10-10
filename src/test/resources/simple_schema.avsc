@@ -1,0 +1,10 @@
+{
+  "type" : "record",
+  "name" : "BroadSchema",
+  "namespace" : "test.commons.avro",
+  "fields" : [
+    {
+      "name" : "string_field1",
+      "type" : [ "string", "null" ]
+    }]
+}

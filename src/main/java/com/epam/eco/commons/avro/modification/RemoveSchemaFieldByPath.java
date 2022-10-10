@@ -39,11 +39,17 @@ import com.epam.eco.commons.avro.traversal.GenericSchemaTraverser;
 public class RemoveSchemaFieldByPath implements SchemaModification {
 
     private final String path;
+    private final boolean strict;
 
     public RemoveSchemaFieldByPath(String path) {
+        this(path, true);
+    }
+
+    public RemoveSchemaFieldByPath(String path, boolean strict) {
         Validate.notBlank(path, "Field path is null");
 
         this.path = path;
+        this.strict = strict;
     }
 
     public String getPath() {
@@ -83,7 +89,7 @@ public class RemoveSchemaFieldByPath implements SchemaModification {
             }
         }
 
-        if (removedCount == 0) {
+        if (strict && removedCount == 0) {
             throw new RuntimeException(String.format("Field not found at '%s'", path));
         }
     }
@@ -95,7 +101,7 @@ public class RemoveSchemaFieldByPath implements SchemaModification {
 
     @Override
     public int hashCode() {
-        return Objects.hash(path);
+        return Objects.hash(path, strict);
     }
 
     @Override
@@ -109,7 +115,8 @@ public class RemoveSchemaFieldByPath implements SchemaModification {
 
         RemoveSchemaFieldByPath that = (RemoveSchemaFieldByPath)obj;
         return
-                Objects.equals(this.path, that.path);
+                Objects.equals(this.path, that.path) &&
+                        Objects.equals(this.strict, that.strict);
     }
 
     public static RemoveSchemaFieldByPath with(String path) {
