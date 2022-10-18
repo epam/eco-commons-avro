@@ -5,6 +5,9 @@ import org.apache.avro.Schema;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * @author Maksim_Gavrilov
+ */
 public class TestUtils {
 
     public static Schema getScheme(String filePath) throws IOException {

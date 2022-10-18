@@ -6,6 +6,9 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+/**
+ * @author Maksim_Gavrilov
+ */
 public class RemoveSchemaFieldByPathStrictTest {
 
     private Schema getScheme() throws IOException {

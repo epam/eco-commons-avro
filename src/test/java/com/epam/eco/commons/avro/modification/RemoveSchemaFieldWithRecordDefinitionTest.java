@@ -7,6 +7,9 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+/**
+ * @author Maksim_Gavrilov
+ */
 public class RemoveSchemaFieldWithRecordDefinitionTest {
 
     private Schema getScheme() throws IOException {
