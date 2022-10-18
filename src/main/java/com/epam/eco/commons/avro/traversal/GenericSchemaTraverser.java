@@ -154,12 +154,12 @@ public class GenericSchemaTraverser {
     private void doInNamespaceContext(Map<String, Object> schema, Runnable function) {
         String namespace = (String)schema.get(AvroConstants.SCHEMA_KEY_NAMESPACE);
         try {
-            if (namespace != null) {
+            if (StringUtils.isNotEmpty(namespace)) {
                 NAMESPACE_CONTEXT.get().push(namespace);
             }
             function.run();
         } finally {
-            if (namespace != null) {
+            if (StringUtils.isNotEmpty(namespace)) {
                 NAMESPACE_CONTEXT.get().pop();
             }
         }
@@ -172,7 +172,7 @@ public class GenericSchemaTraverser {
     }
 
     private String buildFullNameFor(String name, String namespace) {
-        if (StringUtils.isNotEmpty(namespace) && !StringUtils.contains(name, '.')) {
+        if (StringUtils.isEmpty(namespace) && !StringUtils.contains(name, '.')) {
             namespace = !NAMESPACE_CONTEXT.get().isEmpty() ? NAMESPACE_CONTEXT.get().peek() : null;
         }
         return StringUtils.isNotEmpty(namespace) ? String.format("%s.%s", namespace, name) : name;
