@@ -1,18 +1,15 @@
 package com.epam.eco.commons.avro.modification;
 
+import com.epam.eco.commons.avro.utils.TestUtils;
 import org.apache.avro.Schema;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 public class RemoveSchemaFieldByPathStrictTest {
 
     private Schema getScheme() throws IOException {
-        InputStream inputStream = getClass()
-                .getClassLoader()
-                .getResourceAsStream("simple_schema.avsc");
-        return new Schema.Parser().parse(inputStream);
+        return TestUtils.getScheme("simple_schema.avsc");
     }
 
     @Test

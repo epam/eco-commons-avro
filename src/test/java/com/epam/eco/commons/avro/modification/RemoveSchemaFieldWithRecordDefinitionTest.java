@@ -1,19 +1,16 @@
 package com.epam.eco.commons.avro.modification;
 
+import com.epam.eco.commons.avro.utils.TestUtils;
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaParseException;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 public class RemoveSchemaFieldWithRecordDefinitionTest {
 
     private Schema getScheme() throws IOException {
-        InputStream inputStream = getClass()
-                .getClassLoader()
-                .getResourceAsStream("nested_record_with_empty_namespace.avsc");
-        return new Schema.Parser().parse(inputStream);
+        return TestUtils.getScheme("nested_record_with_empty_namespace.avsc");
     }
 
 

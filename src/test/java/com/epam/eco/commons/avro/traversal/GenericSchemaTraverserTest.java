@@ -15,11 +15,14 @@
  */
 package com.epam.eco.commons.avro.traversal;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.epam.eco.commons.avro.utils.TestUtils;
+import org.apache.avro.Schema;
 import org.apache.avro.Schema.Type;
 import org.junit.Assert;
 import org.junit.Test;
@@ -129,4 +132,17 @@ public class GenericSchemaTraverserTest {
         Assert.assertEquals(SchemaTraverseTestData.DESIRED_PATH_FIELD_PATHS, fieldPaths);
     }
 
+    @Test
+    public void testNameExampleFromAvroDoc() throws IOException {
+        Schema schema = TestUtils.getScheme("schema_with_example_names_from_avro_doc.avsc");
+
+        new GenericSchemaTraverser(new GenericSchemaTraverseListener() {
+            @Override
+            public void onSchema(String path, Object parentSchema, Object schema) {
+            }
+            @Override
+            public void onSchemaField(String path, Map<String, Object> parentSchema, Map<String, Object> field) {
+            }
+        }).walk(AvroUtils.schemaToGeneric(schema));
+    }
 }
