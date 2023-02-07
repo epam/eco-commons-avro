@@ -107,6 +107,8 @@ public class DefaultAvroConverters implements AvroConverters {
                     return (int) ChronoUnit.DAYS.between(LocalDate.ofEpochDay(0), ((LocalDate) value));
                 } else if (value instanceof CharSequence) {
                     return (int) LocalDate.parse((CharSequence) value).toEpochDay();
+                } else if (value instanceof Integer) {
+                    return value;
                 }
             } else if (LogicalTypes.timeMillis().equals(schema.getLogicalType())) {
                 if (value instanceof Date) {
@@ -116,6 +118,8 @@ public class DefaultAvroConverters implements AvroConverters {
                     return ((LocalTime) value).toSecondOfDay();
                 } else if (value instanceof CharSequence) {
                     return LocalTime.parse((CharSequence) value).toSecondOfDay();
+                } else if (value instanceof Integer) {
+                    return value;
                 }
             }
 
