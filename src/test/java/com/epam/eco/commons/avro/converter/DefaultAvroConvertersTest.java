@@ -52,7 +52,9 @@ public class DefaultAvroConvertersTest {
                                                     .put("bytes_field", ByteBuffer.wrap("test".getBytes()))
                                                     .put("collection_of_string_field", Arrays.asList("e1", "e2"))
                                                     .put("date_field", LocalDate.of(2018, 7, 10))
+                                                    .put("date_field_int", 10000)
                                                     .put("time_field", LocalTime.of(11, 30))
+                                                    .put("time_field_int", 10000)
                                                     .put("datetime_field", LocalDateTime.of(2018, 7, 10, 11, 30))
                                                     .put("collection_of_map_field", Collections.singletonList(ImmutableMap.of("int_field", 1, "string_field", "test")))
                                                     .put("map_field", ImmutableMap.<String, Object>builder()
@@ -85,7 +87,9 @@ public class DefaultAvroConvertersTest {
         Assert.assertEquals(convertedData.get("string_field"), "test");
         Assert.assertEquals(new String(((ByteBuffer) convertedData.get("bytes_field")).array()), "test");
         Assert.assertEquals(convertedData.get("date_field"), (int) LocalDate.of(2018, 7, 10).toEpochDay());
+        Assert.assertEquals(convertedData.get("date_field_int"), 10000);
         Assert.assertEquals(convertedData.get("time_field"), LocalTime.of(11, 30).toSecondOfDay());
+        Assert.assertEquals(convertedData.get("time_field_int"), 10000);
         Assert.assertEquals(convertedData.get("datetime_field"), LocalDateTime.of(2018, 7, 10, 11, 30).atOffset(ZoneOffset.UTC).toInstant().toEpochMilli());
         Assert.assertEquals(convertedData.get("collection_of_string_field"), Arrays.asList("e1", "e2"));
 

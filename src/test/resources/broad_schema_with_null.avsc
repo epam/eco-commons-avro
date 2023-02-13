@@ -30,7 +30,19 @@
       "logicalType" : "date"
     }, "null" ]
   }, {
+       "name" : "date_field_int",
+       "type" : [ {
+         "type" : "int",
+         "logicalType" : "date"
+       }, "null" ]
+  }, {
     "name" : "time_field",
+    "type" : [ {
+      "type" : "int",
+      "logicalType" : "time-millis"
+    }, "null" ]
+  }, {
+    "name" : "time_field_int",
     "type" : [ {
       "type" : "int",
       "logicalType" : "time-millis"
