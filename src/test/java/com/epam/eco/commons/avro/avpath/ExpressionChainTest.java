@@ -23,22 +23,21 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.avro.util.Utf8;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Andrei_Tytsik
  */
 public class ExpressionChainTest {
 
-    @SuppressWarnings("serial")
     @Test
-    public void testAllChainExpressionsEvaluateInput() throws Exception {
+    public void testAllChainExpressionsEvaluateInput() {
         ExpressionChain instance = new ExpressionChain(Arrays.asList(
                 new SelectAllArrayElements(),
                 new SelectMapValueByKey("100")));
 
-        Map<Utf8, String> map = new LinkedHashMap<Utf8, String>() {{
+        Map<Utf8, String> map = new LinkedHashMap<>() {{
             put(new Utf8("1"), "1");
             put(new Utf8("2"), "2");
             put(new Utf8("3"), "3");
@@ -50,35 +49,35 @@ public class ExpressionChainTest {
         array.add(map);
 
         List<EvaluationResult> output = instance.eval(array);
-        Assert.assertNotNull(output);
-        Assert.assertEquals(1, output.size());
+        Assertions.assertNotNull(output);
+        Assertions.assertEquals(1, output.size());
 
-        Assert.assertEquals("100", output.get(0).getValue());
-        Assert.assertEquals(map, output.get(0).getContainer());
+        Assertions.assertEquals("100", output.get(0).getValue());
+        Assertions.assertEquals(map, output.get(0).getContainer());
     }
 
     @Test
-    public void testEmptyResultIsSelectedForNullObject() throws Exception {
+    public void testEmptyResultIsSelectedForNullObject() {
         ExpressionChain instance = new ExpressionChain(Arrays.asList(
                 new SelectAllArrayElements(),
                 new SelectMapValueByKey("100")));
 
         List<EvaluationResult> output = instance.eval(null);
-        Assert.assertNotNull(output);
-        Assert.assertTrue(output.isEmpty());
+        Assertions.assertNotNull(output);
+        Assertions.assertTrue(output.isEmpty());
     }
 
     @Test
-    public void testArrayValueIsAccepted() throws Exception {
+    public void testArrayValueIsAccepted() {
         ExpressionChain instance = new ExpressionChain(Arrays.asList(
                 new SelectAllArrayElements(),
                 new SelectMapValueByKey("100")));
 
-        Assert.assertTrue(instance.accepts(Collections.emptyList()));
-        Assert.assertFalse(instance.accepts(Collections.emptyMap()));
-        Assert.assertFalse(instance.accepts(1L));
-        Assert.assertFalse(instance.accepts(""));
-        Assert.assertFalse(instance.accepts(null));
+        Assertions.assertTrue(instance.accepts(Collections.emptyList()));
+        Assertions.assertFalse(instance.accepts(Collections.emptyMap()));
+        Assertions.assertFalse(instance.accepts(1L));
+        Assertions.assertFalse(instance.accepts(""));
+        Assertions.assertFalse(instance.accepts(null));
     }
 
 }

@@ -20,8 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.epam.eco.commons.avro.modification.SetSchemaProperties.Feature;
 
@@ -32,7 +32,7 @@ public class AvroSetPropertiesTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testStringValuesAreLowerCased() throws Exception {
+    public void testStringValuesAreLowerCased() {
         Map<String, Object> properties = new LinkedHashMap<>();
         properties.put("keyStr", "VaLue");
         properties.put("keyInt", 1);
@@ -58,10 +58,10 @@ public class AvroSetPropertiesTest {
 
         setProperties.applyToGeneric(genericSchema);
 
-        Assert.assertEquals(genericSchema.get("keyStr"), "value");
-        Assert.assertEquals(((List<Object>)genericSchema.get("keyList")).get(0), "value");
-        Assert.assertEquals(((Map<String, Object>)genericSchema.get("keySubMap")).get("keyStr"), "value");
-        Assert.assertEquals(((List<Object>)((Map<String, Object>)genericSchema.get("keySubMap")).get("keyList")).get(0), "value");
+        Assertions.assertEquals(genericSchema.get("keyStr"), "value");
+        Assertions.assertEquals(((List<Object>)genericSchema.get("keyList")).get(0), "value");
+        Assertions.assertEquals(((Map<String, Object>)genericSchema.get("keySubMap")).get("keyStr"), "value");
+        Assertions.assertEquals(((List<Object>)((Map<String, Object>)genericSchema.get("keySubMap")).get("keyList")).get(0), "value");
     }
 
 }

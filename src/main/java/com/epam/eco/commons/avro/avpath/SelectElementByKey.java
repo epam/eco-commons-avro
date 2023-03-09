@@ -18,7 +18,7 @@ package com.epam.eco.commons.avro.avpath;
 /**
  * @author Andrei_Tytsik
  */
-public class SelectElementByKey extends DelegatingEvaluationExpression {
+public final class SelectElementByKey extends DelegatingEvaluationExpression {
 
     private final Object key;
 

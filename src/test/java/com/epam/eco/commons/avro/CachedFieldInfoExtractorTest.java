@@ -17,8 +17,8 @@ package com.epam.eco.commons.avro;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.epam.eco.commons.avro.data.TestPerson;
 
@@ -28,15 +28,15 @@ import com.epam.eco.commons.avro.data.TestPerson;
 public class CachedFieldInfoExtractorTest {
 
     @Test
-    public void testInfosAreCached() throws Exception {
+    public void testInfosAreCached() {
         List<FieldInfo> infos1 = CachedFieldExtractor.fromSchema(TestPerson.SCHEMA$);
 
-        Assert.assertNotNull(infos1);
+        Assertions.assertNotNull(infos1);
 
         List<FieldInfo> infos2 = CachedFieldExtractor.fromSchema(TestPerson.SCHEMA$);
 
-        Assert.assertNotNull(infos2);
-        Assert.assertTrue(infos1 == infos2);
+        Assertions.assertNotNull(infos2);
+        Assertions.assertTrue(infos1 == infos2);
     }
 
 }

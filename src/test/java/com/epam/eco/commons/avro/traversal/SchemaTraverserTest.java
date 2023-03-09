@@ -22,8 +22,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field;
 import org.apache.avro.Schema.Type;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 
 /**
@@ -32,7 +32,7 @@ import org.junit.Test;
 public class SchemaTraverserTest {
 
     @Test
-    public void testSchemaIsTraversedFully() throws Exception {
+    public void testSchemaIsTraversedFully() {
         AtomicInteger recordCount = new AtomicInteger(0);
         AtomicInteger unionCount = new AtomicInteger(0);
         AtomicInteger nullCount = new AtomicInteger(0);
@@ -69,18 +69,18 @@ public class SchemaTraverserTest {
             }
         }).walk(SchemaTraverseTestData.SCHEMA);
 
-        Assert.assertEquals(SchemaTraverseTestData.RECORD_COUNT, recordCount.get());
-        Assert.assertEquals(SchemaTraverseTestData.UNION_COUNT, unionCount.get());
-        Assert.assertEquals(SchemaTraverseTestData.NULL_COUNT, nullCount.get());
-        Assert.assertEquals(SchemaTraverseTestData.ARRAY_COUNT, arrayCount.get());
-        Assert.assertEquals(SchemaTraverseTestData.MAP_COUNT, mapCount.get());
-        Assert.assertEquals(SchemaTraverseTestData.INT_COUNT, intCount.get());
-        Assert.assertEquals(SchemaTraverseTestData.STRING_COUNT, stringCount.get());
-        Assert.assertEquals(SchemaTraverseTestData.FIELD_PATHS, fieldPaths);
+        Assertions.assertEquals(SchemaTraverseTestData.RECORD_COUNT, recordCount.get());
+        Assertions.assertEquals(SchemaTraverseTestData.UNION_COUNT, unionCount.get());
+        Assertions.assertEquals(SchemaTraverseTestData.NULL_COUNT, nullCount.get());
+        Assertions.assertEquals(SchemaTraverseTestData.ARRAY_COUNT, arrayCount.get());
+        Assertions.assertEquals(SchemaTraverseTestData.MAP_COUNT, mapCount.get());
+        Assertions.assertEquals(SchemaTraverseTestData.INT_COUNT, intCount.get());
+        Assertions.assertEquals(SchemaTraverseTestData.STRING_COUNT, stringCount.get());
+        Assertions.assertEquals(SchemaTraverseTestData.FIELD_PATHS, fieldPaths);
     }
 
     @Test
-    public void testSchemaIsTraversedByDesiredPath() throws Exception {
+    public void testSchemaIsTraversedByDesiredPath() {
         AtomicInteger recordCount = new AtomicInteger(0);
         AtomicInteger unionCount = new AtomicInteger(0);
         AtomicInteger nullCount = new AtomicInteger(0);
@@ -117,14 +117,14 @@ public class SchemaTraverserTest {
             }
         }).walk(SchemaTraverseTestData.SCHEMA, SchemaTraverseTestData.DESIRED_PATH);
 
-        Assert.assertEquals(SchemaTraverseTestData.DESIRED_PATH_RECORD_COUNT, recordCount.get());
-        Assert.assertEquals(SchemaTraverseTestData.DESIRED_PATH_UNION_COUNT, unionCount.get());
-        Assert.assertEquals(SchemaTraverseTestData.DESIRED_PATH_NULL_COUNT, nullCount.get());
-        Assert.assertEquals(SchemaTraverseTestData.DESIRED_PATH_ARRAY_COUNT, arrayCount.get());
-        Assert.assertEquals(SchemaTraverseTestData.DESIRED_PATH_MAP_COUNT, mapCount.get());
-        Assert.assertEquals(SchemaTraverseTestData.DESIRED_PATH_INT_COUNT, intCount.get());
-        Assert.assertEquals(SchemaTraverseTestData.DESIRED_PATH_STRING_COUNT, stringCount.get());
-        Assert.assertEquals(SchemaTraverseTestData.DESIRED_PATH_FIELD_PATHS, fieldPaths);
+        Assertions.assertEquals(SchemaTraverseTestData.DESIRED_PATH_RECORD_COUNT, recordCount.get());
+        Assertions.assertEquals(SchemaTraverseTestData.DESIRED_PATH_UNION_COUNT, unionCount.get());
+        Assertions.assertEquals(SchemaTraverseTestData.DESIRED_PATH_NULL_COUNT, nullCount.get());
+        Assertions.assertEquals(SchemaTraverseTestData.DESIRED_PATH_ARRAY_COUNT, arrayCount.get());
+        Assertions.assertEquals(SchemaTraverseTestData.DESIRED_PATH_MAP_COUNT, mapCount.get());
+        Assertions.assertEquals(SchemaTraverseTestData.DESIRED_PATH_INT_COUNT, intCount.get());
+        Assertions.assertEquals(SchemaTraverseTestData.DESIRED_PATH_STRING_COUNT, stringCount.get());
+        Assertions.assertEquals(SchemaTraverseTestData.DESIRED_PATH_FIELD_PATHS, fieldPaths);
     }
 
 }

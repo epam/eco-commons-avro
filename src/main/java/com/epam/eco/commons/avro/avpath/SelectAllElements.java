@@ -18,7 +18,7 @@ package com.epam.eco.commons.avro.avpath;
 /**
  * @author Andrei_Tytsik
  */
-public class SelectAllElements extends DelegatingEvaluationExpression {
+public final class SelectAllElements extends DelegatingEvaluationExpression {
 
     public SelectAllElements() {
         initDelegates();

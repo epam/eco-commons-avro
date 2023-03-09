@@ -17,8 +17,10 @@ package com.epam.eco.commons.avro;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Andrei_Tytsik
@@ -26,64 +28,72 @@ import org.junit.Test;
 public class PathTest {
 
     @Test
-    public void testPathIsChanged() throws Exception {
+    public void testPathIsChanged() {
         Path path = new Path("name1");
 
         path.append("name2");
-        Assert.assertEquals("name1.name2", path.getPathString());
+        Assertions.assertEquals("name1.name2", path.getPathString());
 
         path.append("name3");
-        Assert.assertEquals("name1.name2.name3", path.getPathString());
+        Assertions.assertEquals("name1.name2.name3", path.getPathString());
 
         path.subtract();
-        Assert.assertEquals("name1.name2", path.getPathString());
+        Assertions.assertEquals("name1.name2", path.getPathString());
 
         path.subtract();
-        Assert.assertEquals("name1", path.getPathString());
+        Assertions.assertEquals("name1", path.getPathString());
 
         path.subtract();
-        Assert.assertEquals(null, path.getPathString());
+        Assertions.assertNull(path.getPathString());
     }
 
     @Test
-    public void testPathStartsWithAnotherPath() throws Exception {
+    public void testPathStartsWithAnotherPath() {
         Path path = new Path("name1.name2.name3");
         Path pathAnother = new Path("name1.name2");
 
-        Assert.assertTrue(path.startsWith(pathAnother));
+        Assertions.assertTrue(path.startsWith(pathAnother));
     }
 
     @Test
-    public void testPathDoesntStartWithAnotherPath() throws Exception {
+    public void testPathDoesntStartWithAnotherPath() {
         Path path = new Path("name1.name2.name3");
         Path pathAnother = new Path("name4.name5");
 
-        Assert.assertFalse(path.startsWith(pathAnother));
-    }
-
-    @Test(expected=RuntimeException.class)
-    public void testFailToSubtractEmptyPath() throws Exception {
-        Path path = new Path(null);
-        path.subtract();
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void testFailToInitInvalidPath() throws Exception {
-        new Path("  ");
+        Assertions.assertFalse(path.startsWith(pathAnother));
     }
 
     @Test
-    public void testPathTokensAreResolved() throws Exception {
+    public void testFailToSubtractEmptyPath() {
+        assertThrows(
+                RuntimeException.class,
+                () -> {
+                    Path path = new Path(null);
+                    path.subtract();
+                }
+        );
+    }
+
+    @Test
+    public void testFailToInitInvalidPath() {
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> new Path("  ")
+        );
+    }
+
+    @Test
+    public void testPathTokensAreResolved() {
         Path path = new Path("name1.name2.name3.name4");
 
         List<String> tokens = path.getPathTokens();
 
-        Assert.assertNotNull(tokens);
-        Assert.assertTrue(tokens.size() == 4);
-        Assert.assertEquals("name1", tokens.get(0));
-        Assert.assertEquals("name2", tokens.get(1));
-        Assert.assertEquals("name3", tokens.get(2));
-        Assert.assertEquals("name4", tokens.get(3));
+        Assertions.assertNotNull(tokens);
+        Assertions.assertEquals(4, tokens.size());
+        Assertions.assertEquals("name1", tokens.get(0));
+        Assertions.assertEquals("name2", tokens.get(1));
+        Assertions.assertEquals("name3", tokens.get(2));
+        Assertions.assertEquals("name4", tokens.get(3));
     }
 
 }

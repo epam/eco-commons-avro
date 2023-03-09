@@ -23,13 +23,15 @@ import org.apache.avro.Schema.Field.Order;
 import org.apache.avro.Schema.Type;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.util.Utf8;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.epam.eco.commons.avro.data.TestPerson;
 import com.epam.eco.commons.avro.data.TestPersonDataReader;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 /**
@@ -52,179 +54,179 @@ public class AvroUtilsTest {
             "\",\"order\":\"" + TEST_FIELD_ORDER.name().toLowerCase() + "\"}";
 
     @Test
-    public void testGenericRecordIsDecodedFromBytes() throws Exception {
+    public void testGenericRecordIsDecodedFromBytes() {
         TestPersonDataReader.readBinaryTestPersons().forEach((bytes)->{
             GenericRecord record = AvroUtils.decodeRecordFromBinary(bytes, TestPerson.SCHEMA$, false);
-            Assert.assertNotNull(record);
+            Assertions.assertNotNull(record);
             LOGGER.info("Generic person decoded from bytes={}", record);
         });
     }
 
     @Test
-    public void testSpecificRecordIsDecodedFromBytes() throws Exception {
+    public void testSpecificRecordIsDecodedFromBytes() {
         TestPersonDataReader.readBinaryTestPersons().forEach((bytes)->{
             TestPerson record = (TestPerson)AvroUtils.decodeRecordFromBinary(bytes, TestPerson.SCHEMA$, true);
-            Assert.assertNotNull(record);
+            Assertions.assertNotNull(record);
             LOGGER.info("Specific person decoded from bytes={}", record);
         });
     }
 
     @Test
-    public void testGenericRecordIsDecodedFromJson() throws Exception {
+    public void testGenericRecordIsDecodedFromJson() {
         TestPersonDataReader.readJsonTestPersons().forEach((json)->{
             GenericRecord record = AvroUtils.decodeRecordFromJson(json, TestPerson.SCHEMA$, false);
-            Assert.assertNotNull(record);
+            Assertions.assertNotNull(record);
             LOGGER.info("Generic person decoded from json={}", record);
         });
     }
 
     @Test
-    public void testSpecificRecordIsDecodedFromJson() throws Exception {
+    public void testSpecificRecordIsDecodedFromJson() {
         TestPersonDataReader.readJsonTestPersons().forEach((json)->{
             TestPerson record = (TestPerson)AvroUtils.decodeRecordFromJson(json, TestPerson.SCHEMA$, true);
-            Assert.assertNotNull(record);
+            Assertions.assertNotNull(record);
             LOGGER.info("Specific person decoded from json={}", record);
         });
     }
 
     @Test
-    public void testGenericRecordIsEncodedToJson() throws Exception {
+    public void testGenericRecordIsEncodedToJson() {
         TestPersonDataReader.readGenericTestPersons().forEach((person)->{
             String json = AvroUtils.encodeRecordToJson(person);
-            Assert.assertNotNull(json);
+            Assertions.assertNotNull(json);
             LOGGER.info("Generic person encoded to JSON={}", json);
         });
     }
 
     @Test
-    public void testSpecificRecordIsEncodedToJson() throws Exception {
+    public void testSpecificRecordIsEncodedToJson() {
         TestPersonDataReader.readSpecificTestPersons().forEach((person)->{
             String json = AvroUtils.encodeRecordToJson(person);
-            Assert.assertNotNull(json);
+            Assertions.assertNotNull(json);
             LOGGER.info("Specific person encoded to JSON={}", json);
         });
     }
 
     @Test
-    public void testGenericRecordIsEncodedToBinary() throws Exception {
+    public void testGenericRecordIsEncodedToBinary() {
         TestPersonDataReader.readGenericTestPersons().forEach((person)->{
             byte[] bytes = AvroUtils.encodeRecordToBinary(person);
-            Assert.assertNotNull(person);
+            Assertions.assertNotNull(person);
             LOGGER.info("Generic person encoded to bytes={}", bytes.length);
         });
     }
 
     @Test
-    public void testSpecificRecordIsEncodedToBinary() throws Exception {
+    public void testSpecificRecordIsEncodedToBinary() {
         TestPersonDataReader.readSpecificTestPersons().forEach((person)->{
             byte[] bytes = AvroUtils.encodeRecordToBinary(person);
-            Assert.assertNotNull(person);
+            Assertions.assertNotNull(person);
             LOGGER.info("Specific person encoded to bytes={}", bytes.length);
         });
     }
 
     @Test
-    public void testGenericRecordIsEncodedToMap() throws Exception {
+    public void testGenericRecordIsEncodedToMap() {
         TestPersonDataReader.readGenericTestPersons().forEach((person)->{
             Map<String, Object> map = AvroUtils.encodeRecordToMap(person);
-            Assert.assertNotNull(map);
+            Assertions.assertNotNull(map);
             LOGGER.info("Generic person encoded to map={}", map);
         });
     }
 
     @Test
-    public void testSpecificRecordIsEncodedToMap() throws Exception {
+    public void testSpecificRecordIsEncodedToMap() {
         TestPersonDataReader.readSpecificTestPersons().forEach((person)->{
             Map<String, Object> map = AvroUtils.encodeRecordToMap(person);
-            Assert.assertNotNull(map);
+            Assertions.assertNotNull(map);
             LOGGER.info("Specific person encoded to map={}", map);
         });
     }
 
     @Test
-    public void testFieldIsConvertedToJson() throws Exception {
+    public void testFieldIsConvertedToJson() {
         String fieldJson = AvroUtils.fieldToJson(TEST_FIELD);
 
-        Assert.assertNotNull(fieldJson);
-        Assert.assertTrue(fieldJson.contains(TEST_FIELD_SCHEMA_JSON));
-        Assert.assertTrue(fieldJson.contains(TEST_FIELD_DOC));
-        Assert.assertTrue(fieldJson.contains(TEST_FIELD_NAME));
-        Assert.assertTrue(fieldJson.contains(TEST_FIELD_ORDER.name().toLowerCase()));
+        Assertions.assertNotNull(fieldJson);
+        Assertions.assertTrue(fieldJson.contains(TEST_FIELD_SCHEMA_JSON));
+        Assertions.assertTrue(fieldJson.contains(TEST_FIELD_DOC));
+        Assertions.assertTrue(fieldJson.contains(TEST_FIELD_NAME));
+        Assertions.assertTrue(fieldJson.contains(TEST_FIELD_ORDER.name().toLowerCase()));
     }
 
     @Test
-    public void testJsonIsConvertedToField() throws Exception {
+    public void testJsonIsConvertedToField() {
         Field field = AvroUtils.fieldFromJson(TEST_FIELD_JSON);
 
-        Assert.assertNotNull(field);
-        Assert.assertEquals(TEST_FIELD_NAME, field.name());
-        Assert.assertEquals(TEST_FIELD_DOC, field.doc());
-        Assert.assertEquals(TEST_FIELD_ORDER, field.order());
-        Assert.assertEquals(TEST_FIELD_SCHEMA, field.schema());
+        Assertions.assertNotNull(field);
+        Assertions.assertEquals(TEST_FIELD_NAME, field.name());
+        Assertions.assertEquals(TEST_FIELD_DOC, field.doc());
+        Assertions.assertEquals(TEST_FIELD_ORDER, field.order());
+        Assertions.assertEquals(TEST_FIELD_SCHEMA, field.schema());
     }
 
     @Test
-    public void testFieldIsConvertedToGeneric() throws Exception {
+    public void testFieldIsConvertedToGeneric() {
         Map<String, Object> genericField = AvroUtils.fieldToGeneric(TEST_FIELD);
 
-        Assert.assertNotNull(genericField);
-        Assert.assertEquals(TEST_FIELD_NAME, genericField.get(AvroConstants.SCHEMA_KEY_FIELD_NAME));
-        Assert.assertEquals(TEST_FIELD_DOC, genericField.get(AvroConstants.SCHEMA_KEY_FIELD_DOC));
-        Assert.assertEquals(TEST_FIELD_ORDER, Order.valueOf(((String)genericField.get(AvroConstants.SCHEMA_KEY_FIELD_ORDER)).toUpperCase()));
-        Assert.assertNotNull(genericField.get(AvroConstants.SCHEMA_KEY_TYPE));
+        Assertions.assertNotNull(genericField);
+        Assertions.assertEquals(TEST_FIELD_NAME, genericField.get(AvroConstants.SCHEMA_KEY_FIELD_NAME));
+        Assertions.assertEquals(TEST_FIELD_DOC, genericField.get(AvroConstants.SCHEMA_KEY_FIELD_DOC));
+        Assertions.assertEquals(TEST_FIELD_ORDER, Order.valueOf(((String)genericField.get(AvroConstants.SCHEMA_KEY_FIELD_ORDER)).toUpperCase()));
+        Assertions.assertNotNull(genericField.get(AvroConstants.SCHEMA_KEY_TYPE));
     }
 
     @Test
-    public void testFieldIsCloned() throws Exception {
+    public void testFieldIsCloned() {
         Field cloned = AvroUtils.cloneField(TEST_FIELD, true, true);
 
-        Assert.assertNotNull(cloned);
-        Assert.assertEquals(-1, cloned.pos());
-        Assert.assertEquals(TEST_FIELD.name(), cloned.name());
-        Assert.assertEquals(TEST_FIELD.doc(), cloned.doc());
-        Assert.assertEquals(TEST_FIELD.order(), cloned.order());
-        Assert.assertEquals(TEST_FIELD.schema(), cloned.schema());
-        Assert.assertEquals(TEST_FIELD.aliases(), cloned.aliases());
-        Assert.assertEquals(TEST_FIELD.getObjectProps(), cloned.getObjectProps());
+        Assertions.assertNotNull(cloned);
+        Assertions.assertEquals(-1, cloned.pos());
+        Assertions.assertEquals(TEST_FIELD.name(), cloned.name());
+        Assertions.assertEquals(TEST_FIELD.doc(), cloned.doc());
+        Assertions.assertEquals(TEST_FIELD.order(), cloned.order());
+        Assertions.assertEquals(TEST_FIELD.schema(), cloned.schema());
+        Assertions.assertEquals(TEST_FIELD.aliases(), cloned.aliases());
+        Assertions.assertEquals(TEST_FIELD.getObjectProps(), cloned.getObjectProps());
     }
 
     @Test
-    public void testFieldNameIsValid() throws Exception {
-        Assert.assertTrue(AvroUtils.isFieldNameValid("a_B_c_1_2_3"));
-        Assert.assertTrue(AvroUtils.isFieldNameValid("_a"));
+    public void testFieldNameIsValid() {
+        Assertions.assertTrue(AvroUtils.isFieldNameValid("a_B_c_1_2_3"));
+        Assertions.assertTrue(AvroUtils.isFieldNameValid("_a"));
     }
 
     @Test
-    public void testFieldNameIsNoValid() throws Exception {
-        Assert.assertFalse(AvroUtils.isFieldNameValid("1a"));
-        Assert.assertFalse(AvroUtils.isFieldNameValid("a_!"));
+    public void testFieldNameIsNoValid() {
+        Assertions.assertFalse(AvroUtils.isFieldNameValid("1a"));
+        Assertions.assertFalse(AvroUtils.isFieldNameValid("a_!"));
     }
 
     @Test
-    public void testAvroPrimitiveIsConvertedToJava() throws Exception {
-        Assert.assertEquals("value", AvroUtils.avroPrimitiveToJava(new Utf8("value")));
-        Assert.assertEquals(1L, AvroUtils.avroPrimitiveToJava(1L));
+    public void testAvroPrimitiveIsConvertedToJava() {
+        Assertions.assertEquals("value", AvroUtils.avroPrimitiveToJava(new Utf8("value")));
+        Assertions.assertEquals(1L, AvroUtils.avroPrimitiveToJava(1L));
     }
 
     @Test
-    public void testJavaPrimitiveIsConvertedToAvro() throws Exception {
-        Assert.assertEquals(new Utf8("value"), AvroUtils.javaPrimitiveToAvro("value"));
-        Assert.assertEquals(1L, AvroUtils.javaPrimitiveToAvro(1L));
+    public void testJavaPrimitiveIsConvertedToAvro() {
+        Assertions.assertEquals(new Utf8("value"), AvroUtils.javaPrimitiveToAvro("value"));
+        Assertions.assertEquals(1L, AvroUtils.javaPrimitiveToAvro(1L));
     }
 
     @Test
-    public void testGenericSchemaTypeIsResolved() throws Exception {
+    public void testGenericSchemaTypeIsResolved() {
         for (Field field : TestPerson.SCHEMA$.getFields()) {
             Object genericSchema = AvroUtils.schemaToGeneric(field.schema());
             Type type = AvroUtils.typeOfGenericSchema(genericSchema);
 
-            Assert.assertEquals(field.schema().getType(), type);
+            Assertions.assertEquals(field.schema().getType(), type);
         }
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testNullGenericSchemaTypeIsResolvedIfTypeIsUnknown() throws Exception {
+    public void testNullGenericSchemaTypeIsResolvedIfTypeIsUnknown() {
         for (Field field : TestPerson.SCHEMA$.getFields()) {
             Object genericSchema = AvroUtils.schemaToGeneric(field.schema());
             if (genericSchema instanceof Map) {
@@ -237,134 +239,140 @@ public class AvroUtilsTest {
 
             Type type = AvroUtils.typeOfGenericSchemaOrElseNullIfUnknown(genericSchema);
 
-            Assert.assertNull(type);
+            Assertions.assertNull(type);
         }
     }
 
     @Test
-    public void testGenericFieldTypeIsResolved() throws Exception {
+    public void testGenericFieldTypeIsResolved() {
         for (Field field : TestPerson.SCHEMA$.getFields()) {
             Map<String, Object> genericField = AvroUtils.fieldToGeneric(field);
             Type type = AvroUtils.typeOfGenericField(genericField);
 
-            Assert.assertEquals(field.schema().getType(), type);
+            Assertions.assertEquals(field.schema().getType(), type);
         }
     }
 
     @Test
-    public void testNullGenericFieldTypeIsResolvedIfTypeIsUnknown() throws Exception {
+    public void testNullGenericFieldTypeIsResolvedIfTypeIsUnknown() {
         for (Field field : TestPerson.SCHEMA$.getFields()) {
             Map<String, Object> genericField = AvroUtils.fieldToGeneric(field);
             genericField.put(AvroConstants.SCHEMA_KEY_FIELD_TYPE, "unknown");
             Type type = AvroUtils.typeOfGenericFieldOrElseNullIfUnknown(genericField);
 
-            Assert.assertNull(type);
+            Assertions.assertNull(type);
         }
     }
 
     @Test
-    public void testTypeResolvedForName() throws Exception {
-        Assert.assertEquals(Type.ARRAY, AvroUtils.typeForName("array"));
-        Assert.assertEquals(Type.BOOLEAN, AvroUtils.typeForName("boolean"));
-        Assert.assertEquals(Type.BYTES, AvroUtils.typeForName("bytes"));
-        Assert.assertEquals(Type.DOUBLE, AvroUtils.typeForName("double"));
-        Assert.assertEquals(Type.ENUM, AvroUtils.typeForName("enum"));
-        Assert.assertEquals(Type.FIXED, AvroUtils.typeForName("fixed"));
-        Assert.assertEquals(Type.FLOAT, AvroUtils.typeForName("float"));
-        Assert.assertEquals(Type.INT, AvroUtils.typeForName("int"));
-        Assert.assertEquals(Type.LONG, AvroUtils.typeForName("long"));
-        Assert.assertEquals(Type.MAP, AvroUtils.typeForName("map"));
-        Assert.assertEquals(Type.NULL, AvroUtils.typeForName("null"));
-        Assert.assertEquals(Type.RECORD, AvroUtils.typeForName("record"));
-        Assert.assertEquals(Type.STRING, AvroUtils.typeForName("string"));
-        Assert.assertEquals(Type.UNION, AvroUtils.typeForName("union"));
-    }
-
-    @Test(expected = UnknownTypeException.class)
-    public void testTypeNotResolvedForName() throws Exception {
-        AvroUtils.typeForName("unknown");
+    public void testTypeResolvedForName() {
+        Assertions.assertEquals(Type.ARRAY, AvroUtils.typeForName("array"));
+        Assertions.assertEquals(Type.BOOLEAN, AvroUtils.typeForName("boolean"));
+        Assertions.assertEquals(Type.BYTES, AvroUtils.typeForName("bytes"));
+        Assertions.assertEquals(Type.DOUBLE, AvroUtils.typeForName("double"));
+        Assertions.assertEquals(Type.ENUM, AvroUtils.typeForName("enum"));
+        Assertions.assertEquals(Type.FIXED, AvroUtils.typeForName("fixed"));
+        Assertions.assertEquals(Type.FLOAT, AvroUtils.typeForName("float"));
+        Assertions.assertEquals(Type.INT, AvroUtils.typeForName("int"));
+        Assertions.assertEquals(Type.LONG, AvroUtils.typeForName("long"));
+        Assertions.assertEquals(Type.MAP, AvroUtils.typeForName("map"));
+        Assertions.assertEquals(Type.NULL, AvroUtils.typeForName("null"));
+        Assertions.assertEquals(Type.RECORD, AvroUtils.typeForName("record"));
+        Assertions.assertEquals(Type.STRING, AvroUtils.typeForName("string"));
+        Assertions.assertEquals(Type.UNION, AvroUtils.typeForName("union"));
     }
 
     @Test
-    public void testTypeResolvedForNameIgnoreCase() throws Exception {
-        Assert.assertEquals(Type.ARRAY, AvroUtils.typeForNameIgnoreCase("aRraY"));
-        Assert.assertEquals(Type.BOOLEAN, AvroUtils.typeForNameIgnoreCase("bOOlean"));
-        Assert.assertEquals(Type.BYTES, AvroUtils.typeForNameIgnoreCase("bytEs"));
-        Assert.assertEquals(Type.DOUBLE, AvroUtils.typeForNameIgnoreCase("dOUble"));
-        Assert.assertEquals(Type.ENUM, AvroUtils.typeForNameIgnoreCase("EnuM"));
-        Assert.assertEquals(Type.FIXED, AvroUtils.typeForNameIgnoreCase("fIXEd"));
-        Assert.assertEquals(Type.FLOAT, AvroUtils.typeForNameIgnoreCase("flOat"));
-        Assert.assertEquals(Type.INT, AvroUtils.typeForNameIgnoreCase("inT"));
-        Assert.assertEquals(Type.LONG, AvroUtils.typeForNameIgnoreCase("Long"));
-        Assert.assertEquals(Type.MAP, AvroUtils.typeForNameIgnoreCase("mAP"));
-        Assert.assertEquals(Type.NULL, AvroUtils.typeForNameIgnoreCase("nulL"));
-        Assert.assertEquals(Type.RECORD, AvroUtils.typeForNameIgnoreCase("RecorD"));
-        Assert.assertEquals(Type.STRING, AvroUtils.typeForNameIgnoreCase("sTRing"));
-        Assert.assertEquals(Type.UNION, AvroUtils.typeForNameIgnoreCase("UNION"));
-    }
-
-    @Test(expected = UnknownTypeException.class)
-    public void testTypeNotResolvedForNameIgnoreCase() throws Exception {
-        AvroUtils.typeForNameIgnoreCase("UnKnOwN");
+    public void testTypeNotResolvedForName() {
+        assertThrows(
+                UnknownTypeException.class,
+                () -> AvroUtils.typeForName("unknown")
+        );
     }
 
     @Test
-    public void testEffectiveTypeOfGenericSchemaResolved() throws Exception {
+    public void testTypeResolvedForNameIgnoreCase() {
+        Assertions.assertEquals(Type.ARRAY, AvroUtils.typeForNameIgnoreCase("aRraY"));
+        Assertions.assertEquals(Type.BOOLEAN, AvroUtils.typeForNameIgnoreCase("bOOlean"));
+        Assertions.assertEquals(Type.BYTES, AvroUtils.typeForNameIgnoreCase("bytEs"));
+        Assertions.assertEquals(Type.DOUBLE, AvroUtils.typeForNameIgnoreCase("dOUble"));
+        Assertions.assertEquals(Type.ENUM, AvroUtils.typeForNameIgnoreCase("EnuM"));
+        Assertions.assertEquals(Type.FIXED, AvroUtils.typeForNameIgnoreCase("fIXEd"));
+        Assertions.assertEquals(Type.FLOAT, AvroUtils.typeForNameIgnoreCase("flOat"));
+        Assertions.assertEquals(Type.INT, AvroUtils.typeForNameIgnoreCase("inT"));
+        Assertions.assertEquals(Type.LONG, AvroUtils.typeForNameIgnoreCase("Long"));
+        Assertions.assertEquals(Type.MAP, AvroUtils.typeForNameIgnoreCase("mAP"));
+        Assertions.assertEquals(Type.NULL, AvroUtils.typeForNameIgnoreCase("nulL"));
+        Assertions.assertEquals(Type.RECORD, AvroUtils.typeForNameIgnoreCase("RecorD"));
+        Assertions.assertEquals(Type.STRING, AvroUtils.typeForNameIgnoreCase("sTRing"));
+        Assertions.assertEquals(Type.UNION, AvroUtils.typeForNameIgnoreCase("UNION"));
+    }
+
+    @Test
+    public void testTypeNotResolvedForNameIgnoreCase() {
+        assertThrows(
+                UnknownTypeException.class,
+                () -> AvroUtils.typeForNameIgnoreCase("UnKnOwN")
+        );
+    }
+
+    @Test
+    public void testEffectiveTypeOfGenericSchemaResolved() {
         Object schema = Type.INT.getName();
-        Assert.assertEquals(Type.INT, AvroUtils.effectiveTypeOfGenericSchema(schema));
+        Assertions.assertEquals(Type.INT, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
         schema = GenericSchemaDataGen.recordSchema("Test");
-        Assert.assertEquals(Type.RECORD, AvroUtils.effectiveTypeOfGenericSchema(schema));
+        Assertions.assertEquals(Type.RECORD, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
         schema = GenericSchemaDataGen.arraySchema(Type.STRING.getName());
-        Assert.assertEquals(Type.STRING, AvroUtils.effectiveTypeOfGenericSchema(schema));
+        Assertions.assertEquals(Type.STRING, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
         schema = GenericSchemaDataGen.arraySchema(GenericSchemaDataGen.unionSchema(Type.FIXED.getName()));
-        Assert.assertEquals(Type.FIXED, AvroUtils.effectiveTypeOfGenericSchema(schema));
+        Assertions.assertEquals(Type.FIXED, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
         schema = GenericSchemaDataGen.arraySchema(GenericSchemaDataGen.unionSchema(Type.NULL.getName(), Type.BYTES.getName()));
-        Assert.assertEquals(Type.BYTES, AvroUtils.effectiveTypeOfGenericSchema(schema));
+        Assertions.assertEquals(Type.BYTES, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
         schema = GenericSchemaDataGen.arraySchema(GenericSchemaDataGen.unionSchema(Type.STRING.getName(), Type.DOUBLE.getName()));
-        Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
+        Assertions.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
         schema = GenericSchemaDataGen.mapSchema(Type.BOOLEAN.getName());
-        Assert.assertEquals(Type.BOOLEAN, AvroUtils.effectiveTypeOfGenericSchema(schema));
+        Assertions.assertEquals(Type.BOOLEAN, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
         schema = GenericSchemaDataGen.mapSchema(GenericSchemaDataGen.unionSchema(Type.FIXED.getName()));
-        Assert.assertEquals(Type.FIXED, AvroUtils.effectiveTypeOfGenericSchema(schema));
+        Assertions.assertEquals(Type.FIXED, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
         schema = GenericSchemaDataGen.mapSchema(GenericSchemaDataGen.unionSchema(Type.NULL.getName(), Type.BYTES.getName()));
-        Assert.assertEquals(Type.BYTES, AvroUtils.effectiveTypeOfGenericSchema(schema));
+        Assertions.assertEquals(Type.BYTES, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
         schema = GenericSchemaDataGen.mapSchema(GenericSchemaDataGen.unionSchema(Type.STRING.getName(), Type.DOUBLE.getName()));
-        Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
+        Assertions.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
         schema = GenericSchemaDataGen.unionSchema(Type.FLOAT.getName());
-        Assert.assertEquals(Type.FLOAT, AvroUtils.effectiveTypeOfGenericSchema(schema));
+        Assertions.assertEquals(Type.FLOAT, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
         schema = GenericSchemaDataGen.unionSchema(Type.NULL.getName(), Type.BOOLEAN.getName());
-        Assert.assertEquals(Type.BOOLEAN, AvroUtils.effectiveTypeOfGenericSchema(schema));
+        Assertions.assertEquals(Type.BOOLEAN, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
         schema = GenericSchemaDataGen.unionSchema(Type.STRING.getName(), Type.BOOLEAN.getName());
-        Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
+        Assertions.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
         schema = GenericSchemaDataGen.unionSchema(Type.STRING.getName(), Type.BOOLEAN.getName(), Type.BYTES.getName());
-        Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
+        Assertions.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
         schema = GenericSchemaDataGen.unionSchema(
                 GenericSchemaDataGen.arraySchema(GenericSchemaDataGen.recordSchema("Test")));
-        Assert.assertEquals(Type.RECORD, AvroUtils.effectiveTypeOfGenericSchema(schema));
+        Assertions.assertEquals(Type.RECORD, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
         schema = GenericSchemaDataGen.unionSchema(
                 Type.NULL.getName(),
                 GenericSchemaDataGen.mapSchema(GenericSchemaDataGen.arraySchema(Type.BYTES.getName())));
-        Assert.assertEquals(Type.BYTES, AvroUtils.effectiveTypeOfGenericSchema(schema));
+        Assertions.assertEquals(Type.BYTES, AvroUtils.effectiveTypeOfGenericSchema(schema));
 
         schema = GenericSchemaDataGen.unionSchema(
                 GenericSchemaDataGen.arraySchema(Type.BOOLEAN.getName()),
                 GenericSchemaDataGen.mapSchema(Type.ENUM.getName()));
-        Assert.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
+        Assertions.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
     }
 
 }

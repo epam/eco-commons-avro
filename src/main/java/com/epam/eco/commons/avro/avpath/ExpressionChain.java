@@ -18,6 +18,7 @@ package com.epam.eco.commons.avro.avpath;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -34,7 +35,7 @@ public class ExpressionChain implements Expression<Object> {
         Validate.notEmpty(expressions, "List of expressions is null or empty");
         Validate.noNullElements(expressions, "List of expressions contains null elements");
 
-        this.expressions = expressions;
+        this.expressions = Collections.unmodifiableList(expressions);
     }
 
     @Override
@@ -76,8 +77,8 @@ public class ExpressionChain implements Expression<Object> {
 
     private List<Object> toInput(List<EvaluationResult> output) {
         return output.stream().
-                filter(result -> result.getValue() != null).
                 map(EvaluationResult::getValue).
+                filter(Objects::nonNull).
                 collect(Collectors.toList());
     }
 

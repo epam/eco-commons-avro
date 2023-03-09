@@ -16,8 +16,8 @@
 package com.epam.eco.commons.avro;
 
 import org.apache.avro.Schema;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.epam.eco.commons.avro.data.TestPerson;
 
@@ -27,15 +27,15 @@ import com.epam.eco.commons.avro.data.TestPerson;
 public class CachedSchemaParserTest {
 
     @Test
-    public void testSchemaIsCached() throws Exception {
+    public void testSchemaIsCached() {
         Schema schema1 = CachedSchemaParser.parse(TestPerson.SCHEMA$.toString());
 
-        Assert.assertNotNull(schema1);
+        Assertions.assertNotNull(schema1);
 
         Schema schema2 = CachedSchemaParser.parse(TestPerson.SCHEMA$.toString());
 
-        Assert.assertNotNull(schema2);
-        Assert.assertTrue(schema1 == schema2);
+        Assertions.assertNotNull(schema2);
+        Assertions.assertSame(schema1, schema2);
     }
 
 }

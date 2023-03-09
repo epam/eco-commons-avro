@@ -15,21 +15,21 @@
  */
 package com.epam.eco.commons.avro.avpath;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Andrei_Tytsik
  */
 public class SelectAllElementsTest {
 
-    private SelectAllArrayElementsTest arrayTest = new SelectAllArrayElementsTest() {
+    private final SelectAllArrayElementsTest arrayTest = new SelectAllArrayElementsTest() {
         @Override
         protected Expression<?> instance() {
             return new SelectAllElements();
         }
     };
 
-    private SelectAllMapValuesTest mapTest = new SelectAllMapValuesTest() {
+    private final SelectAllMapValuesTest mapTest = new SelectAllMapValuesTest() {
         @Override
         protected Expression<?> instance() {
             return new SelectAllElements();
@@ -37,32 +37,32 @@ public class SelectAllElementsTest {
     };
 
     @Test
-    public void testAllArrayElementsAreSelected() throws Exception {
+    public void testAllArrayElementsAreSelected() {
         arrayTest.testAllArrayElementsAreSelected();
     }
 
     @Test
-    public void testEmptyResultIsSelectedForEmptyOrNullArray() throws Exception {
+    public void testEmptyResultIsSelectedForEmptyOrNullArray() {
         arrayTest.testEmptyResultIsSelectedForEmptyOrNullArray();
     }
 
     @Test
-    public void testListValueIsAccepted() throws Exception {
+    public void testListValueIsAccepted() {
         arrayTest.testListValueIsAccepted();
     }
 
     @Test
-    public void testAllMapValuesAreSelected() throws Exception {
+    public void testAllMapValuesAreSelected() {
         mapTest.testAllMapValuesAreSelected();
     }
 
     @Test
-    public void testEmptyResultIsSelectedForEmptyOrNullMap() throws Exception {
+    public void testEmptyResultIsSelectedForEmptyOrNullMap() {
         mapTest.testEmptyResultIsSelectedForEmptyOrNullMap();
     }
 
     @Test
-    public void testMapValueIsAccepted() throws Exception {
+    public void testMapValueIsAccepted() {
         mapTest.testMapValueIsAccepted();
     }
 

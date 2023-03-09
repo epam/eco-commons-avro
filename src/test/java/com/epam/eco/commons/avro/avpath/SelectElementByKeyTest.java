@@ -15,21 +15,21 @@
  */
 package com.epam.eco.commons.avro.avpath;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Andrei_Tytsik
  */
 public class SelectElementByKeyTest {
 
-    private SelectArrayElementByIndexTest arrayTest = new SelectArrayElementByIndexTest() {
+    private final SelectArrayElementByIndexTest arrayTest = new SelectArrayElementByIndexTest() {
         @Override
         protected Expression<?> instance(int index) {
             return new SelectElementByKey(index);
         }
     };
 
-    private SelectMapValueByKeyTest mapTest = new SelectMapValueByKeyTest() {
+    private final SelectMapValueByKeyTest mapTest = new SelectMapValueByKeyTest() {
         @Override
         protected Expression<?> instance(Object key) {
             return new SelectElementByKey(key);
@@ -37,32 +37,32 @@ public class SelectElementByKeyTest {
     };
 
     @Test
-    public void testArrayElementIsSelectedByIndex() throws Exception {
+    public void testArrayElementIsSelectedByIndex() {
         arrayTest.testArrayElementIsSelectedByIndex();
     }
 
     @Test
-    public void testEmptyResultIsSelectedForEmptyOrNullArray() throws Exception {
+    public void testEmptyResultIsSelectedForEmptyOrNullArray() {
         arrayTest.testEmptyResultIsSelectedForNullArray();
     }
 
     @Test
-    public void testListValueIsAccepted() throws Exception {
+    public void testListValueIsAccepted() {
         arrayTest.testListValueIsAccepted();
     }
 
     @Test
-    public void testMapValueIsSelectedByKey() throws Exception {
+    public void testMapValueIsSelectedByKey() {
         mapTest.testMapValueIsSelectedByKey();
     }
 
     @Test
-    public void testEmptyResultIsSelectedForEmptyOrNullMap() throws Exception {
+    public void testEmptyResultIsSelectedForEmptyOrNullMap() {
         mapTest.testEmptyResultIsSelectedForEmptyOrNullMap();
     }
 
     @Test
-    public void testMapValueIsAccepted() throws Exception {
+    public void testMapValueIsAccepted() {
         mapTest.testMapValueIsAccepted();
     }
 

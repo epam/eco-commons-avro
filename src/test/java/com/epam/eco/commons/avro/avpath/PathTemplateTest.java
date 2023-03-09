@@ -15,8 +15,8 @@
  */
 package com.epam.eco.commons.avro.avpath;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Andrei_Tytsik
@@ -24,38 +24,38 @@ import org.junit.Test;
 public class PathTemplateTest {
 
     @Test
-    public void testRecognizedAsElementSelector() throws Exception {
-        Assert.assertFalse(PathTemplate.with(null, null).isElementSelector());
-        Assert.assertFalse(PathTemplate.with("/job", null).isElementSelector());
-        Assert.assertFalse(PathTemplate.with("/hobby[*]/description", null).isElementSelector());
-        Assert.assertTrue(PathTemplate.with("/hobby[*]", null).isElementSelector());
+    public void testRecognizedAsElementSelector() {
+        Assertions.assertFalse(PathTemplate.with(null, null).isElementSelector());
+        Assertions.assertFalse(PathTemplate.with("/job", null).isElementSelector());
+        Assertions.assertFalse(PathTemplate.with("/hobby[*]/description", null).isElementSelector());
+        Assertions.assertTrue(PathTemplate.with("/hobby[*]", null).isElementSelector());
     }
 
     @Test
-    public void testFormattedToPlainPath() throws Exception {
+    public void testFormattedToPlainPath() {
         String plain = PathTemplate.with(null, null).toPlainPath();
-        Assert.assertNull(plain);
+        Assertions.assertNull(plain);
 
         plain = PathTemplate.with("", null).toPlainPath();
-        Assert.assertEquals("", plain);
+        Assertions.assertEquals("", plain);
 
         plain = PathTemplate.with("/job", null).toPlainPath();
-        Assert.assertEquals("job", plain);
+        Assertions.assertEquals("job", plain);
 
         plain = PathTemplate.with("/job/description", null).toPlainPath();
-        Assert.assertEquals("job.description", plain);
+        Assertions.assertEquals("job.description", plain);
 
         plain = PathTemplate.with("/hobby[*]", null).toPlainPath();
-        Assert.assertEquals("hobby", plain);
+        Assertions.assertEquals("hobby", plain);
 
         plain = PathTemplate.with("/hobby[*]/description", null).toPlainPath();
-        Assert.assertEquals("hobby.description", plain);
+        Assertions.assertEquals("hobby.description", plain);
 
         plain = PathTemplate.with("/hobby[*]/description[*]", null).toPlainPath();
-        Assert.assertEquals("hobby.description", plain);
+        Assertions.assertEquals("hobby.description", plain);
 
         plain = PathTemplate.with("/job[*]/description", null).toPlainPath("$");
-        Assert.assertEquals("job$description", plain);
+        Assertions.assertEquals("job$description", plain);
     }
 
 }

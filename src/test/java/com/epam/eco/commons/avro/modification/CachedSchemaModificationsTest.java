@@ -21,8 +21,8 @@ import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Type;
 import org.apache.avro.SchemaBuilder;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.epam.eco.commons.avro.data.TestPerson;
 
@@ -32,20 +32,20 @@ import com.epam.eco.commons.avro.data.TestPerson;
 public class CachedSchemaModificationsTest {
 
     @Test
-    public void testModifiedSchemaIsCached() throws Exception {
+    public void testModifiedSchemaIsCached() {
         SchemaModification[] modifications = initAvroModifications();
 
         Schema schema1 = CachedSchemaModifications.of(modifications).applyTo(TestPerson.SCHEMA$);
 
-        Assert.assertNotNull(schema1);
-        Assert.assertNotEquals(TestPerson.SCHEMA$, schema1);
+        Assertions.assertNotNull(schema1);
+        Assertions.assertNotEquals(TestPerson.SCHEMA$, schema1);
 
         Schema schema2 = CachedSchemaModifications.of(modifications).applyTo(TestPerson.SCHEMA$);
 
-        Assert.assertNotNull(schema2);
-        Assert.assertNotEquals(TestPerson.SCHEMA$, schema2);
+        Assertions.assertNotNull(schema2);
+        Assertions.assertNotEquals(TestPerson.SCHEMA$, schema2);
 
-        Assert.assertTrue(schema1 == schema2);
+        Assertions.assertSame(schema1, schema2);
     }
 
     private SchemaModification[] initAvroModifications() {

@@ -60,14 +60,14 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
-        <slf4j.version>1.7.6</slf4j.version>
+        <java.version>17</java.version>
+        <slf4j.version>1.7.32</slf4j.version>
         <avro.version>1.8.2</avro.version>
         <commons-io.version>2.7</commons-io.version>
-        <commons-lang3.version>3.4</commons-lang3.version>
-        <commons-collections4.version>4.1</commons-collections4.version>
+        <commons-lang3.version>3.9</commons-lang3.version>
+        <commons-collections4.version>4.3</commons-collections4.version>
         <jackson-databind.version>2.13.4.1</jackson-databind.version>
-        <jackson.version>2.9.10</jackson.version>
+        <jackson.version>2.13.2</jackson.version>
 
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
@@ -77,11 +77,12 @@
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.3</nexus-staging-maven-plugin.version>
         <maven-pmd-plugin.version>3.11.0</maven-pmd-plugin.version>
-        <spotbugs-maven-plugin.version>3.1.9</spotbugs-maven-plugin.version>
+        <spotbugs-maven-plugin.version>4.7.3.0</spotbugs-maven-plugin.version>
+        <findsecbugs-plugin.version>1.11.0</findsecbugs-plugin.version>
         <fb-contrib.version>7.4.3.sb</fb-contrib.version>
-        <findsecbugs-plugin.version>1.8.0</findsecbugs-plugin.version>
+        <surefire.version>3.0.0-M9</surefire.version>
 
-        <junit.version>4.13.1</junit.version>
+        <junit5.version>5.7.2</junit5.version>
     </properties>
 
     <dependencies>
@@ -132,10 +133,10 @@
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit5.version}</version>
             <scope>test</scope>
-            <version>${junit.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -163,6 +164,16 @@
                 <configuration>
                     <downloadSources>true</downloadSources>
                     <downloadJavadocs>true</downloadJavadocs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
                 </configuration>
             </plugin>
             <plugin>

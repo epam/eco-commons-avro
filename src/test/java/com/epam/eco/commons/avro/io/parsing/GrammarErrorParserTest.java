@@ -15,15 +15,18 @@
  */
 package com.epam.eco.commons.avro.io.parsing;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.avro.Schema;
 import org.apache.avro.io.parsing.ResolvingGrammarGenerator;
 import org.apache.avro.io.parsing.Symbol;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.epam.eco.commons.avro.AvroUtils;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Andrei_Tytsik
@@ -83,41 +86,41 @@ public class GrammarErrorParserTest {
                 + "]}");
 
     @Test
-    public void testErrorsParsed() throws Exception {
+    public void testErrorsParsed() throws IOException {
         Symbol grammar = new ResolvingGrammarGenerator().generate(WRITER_SCHEMA, READER_SCHEMA);
 
         List<GrammarError> errors = GrammarErrorParser.parse(grammar);
-        Assert.assertNotNull(errors);
-        Assert.assertEquals(5, errors.size());
+        Assertions.assertNotNull(errors);
+        Assertions.assertEquals(5, errors.size());
 
-        Assert.assertEquals("f1.f1_1", errors.get(0).getPath());
-        Assert.assertEquals("Found boolean, expecting int", errors.get(0).getMessage());
+        Assertions.assertEquals("f1.f1_1", errors.get(0).getPath());
+        Assertions.assertEquals("Found boolean, expecting int", errors.get(0).getMessage());
 
-        Assert.assertEquals("f4", errors.get(1).getPath());
-        Assert.assertEquals("Found long, expecting int", errors.get(1).getMessage());
+        Assertions.assertEquals("f4", errors.get(1).getPath());
+        Assertions.assertEquals("Found long, expecting int", errors.get(1).getMessage());
 
-        Assert.assertEquals("f7.f7_1", errors.get(2).getPath());
-        Assert.assertEquals("Found string, expecting int", errors.get(2).getMessage());
+        Assertions.assertEquals("f7.f7_1", errors.get(2).getPath());
+        Assertions.assertEquals("Found string, expecting int", errors.get(2).getMessage());
 
-        Assert.assertEquals("f8", errors.get(3).getPath());
-        Assert.assertEquals("Found boolean, expecting string", errors.get(3).getMessage());
+        Assertions.assertEquals("f8", errors.get(3).getPath());
+        Assertions.assertEquals("Found boolean, expecting string", errors.get(3).getMessage());
 
-        Assert.assertEquals("f9", errors.get(4).getPath());
-        Assert.assertEquals("Found string, expecting union", errors.get(4).getMessage());
+        Assertions.assertEquals("f9", errors.get(4).getPath());
+        Assertions.assertEquals("Found string, expecting union", errors.get(4).getMessage());
     }
 
     @Test
-    public void testNoErrorsParsed() throws Exception {
+    public void testNoErrorsParsed() throws IOException {
         Symbol grammar = new ResolvingGrammarGenerator().generate(WRITER_SCHEMA, WRITER_SCHEMA);
 
         List<GrammarError> errors = GrammarErrorParser.parse(grammar);
-        Assert.assertNotNull(errors);
-        Assert.assertEquals(0, errors.size());
+        Assertions.assertNotNull(errors);
+        Assertions.assertEquals(0, errors.size());
     }
 
-    @Test(expected=Exception.class)
-    public void testFailsOnIllegalArguments() throws Exception {
-        GrammarErrorParser.parse(null);
+    @Test
+    public void testFailsOnIllegalArguments() {
+        assertThrows(Exception.class, () -> GrammarErrorParser.parse(null));
     }
 
 }

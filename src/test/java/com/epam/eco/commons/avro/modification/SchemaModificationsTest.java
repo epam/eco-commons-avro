@@ -21,8 +21,8 @@ import java.util.Map;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Type;
 import org.apache.avro.SchemaBuilder;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.epam.eco.commons.avro.data.TestPerson;
 
@@ -32,7 +32,7 @@ import com.epam.eco.commons.avro.data.TestPerson;
 public class SchemaModificationsTest {
 
     @Test
-    public void testSchemaIsModified() throws Exception {
+    public void testSchemaIsModified() {
         Schema schemaModified = SchemaModifications.of(initAvroModifications()).applyTo(TestPerson.SCHEMA$);
         assertSchemaModifiedAsExpected(schemaModified);
     }
@@ -65,33 +65,33 @@ public class SchemaModificationsTest {
     }
 
     private void assertSchemaModifiedAsExpected(Schema schema) {
-        Assert.assertNotNull(schema);
+        Assertions.assertNotNull(schema);
 
-        Assert.assertEquals("Name_new", schema.getName());
-        Assert.assertEquals("Namespace_new", schema.getNamespace());
+        Assertions.assertEquals("Name_new", schema.getName());
+        Assertions.assertEquals("Namespace_new", schema.getNamespace());
 
-        Assert.assertNull(schema.getField("name"));
-        Assert.assertNull(schema.getField("hobby").schema().getTypes().get(1).getElementType().getField("description"));
-        Assert.assertNull(schema.getField("job").schema().getField("company"));
-        Assert.assertNull(schema.getField("job").schema().getField("position").schema().getField("title"));
-        Assert.assertNull(schema.getField("job").schema().getField("position").schema().getField("skill").schema().getValueType().getField("description"));
+        Assertions.assertNull(schema.getField("name"));
+        Assertions.assertNull(schema.getField("hobby").schema().getTypes().get(1).getElementType().getField("description"));
+        Assertions.assertNull(schema.getField("job").schema().getField("company"));
+        Assertions.assertNull(schema.getField("job").schema().getField("position").schema().getField("title"));
+        Assertions.assertNull(schema.getField("job").schema().getField("position").schema().getField("skill").schema().getValueType().getField("description"));
 
-        Assert.assertNotNull(schema.getField("birthdate"));
-        Assert.assertEquals(schema.getField("birthdate").schema().getType(), Type.LONG);
-        Assert.assertNotNull(schema.getField("job").schema().getField("position").schema().getField("responsibilities"));
-        Assert.assertEquals(schema.getField("job").schema().getField("position").schema().getField("responsibilities").schema().getType(), Type.ARRAY);
-        Assert.assertEquals(schema.getField("job").schema().getField("position").schema().getField("responsibilities").schema().getElementType().getType(), Type.STRING);
+        Assertions.assertNotNull(schema.getField("birthdate"));
+        Assertions.assertEquals(schema.getField("birthdate").schema().getType(), Type.LONG);
+        Assertions.assertNotNull(schema.getField("job").schema().getField("position").schema().getField("responsibilities"));
+        Assertions.assertEquals(schema.getField("job").schema().getField("position").schema().getField("responsibilities").schema().getType(), Type.ARRAY);
+        Assertions.assertEquals(schema.getField("job").schema().getField("position").schema().getField("responsibilities").schema().getElementType().getType(), Type.STRING);
 
-        Assert.assertEquals("prop_add1_value", schema.getObjectProps().get("prop_add1"));
-        Assert.assertEquals("prop_add2_value", schema.getObjectProps().get("prop_add2"));
-        Assert.assertEquals("prop_add3_value", schema.getObjectProps().get("prop_add3"));
-        Assert.assertEquals("prop_add4_value", schema.getObjectProps().get("prop_add4"));
-        Assert.assertEquals("prop_add5_value", schema.getObjectProps().get("prop_add5"));
-        Assert.assertEquals("prop_add6_value", schema.getObjectProps().get("prop_add6"));
+        Assertions.assertEquals("prop_add1_value", schema.getObjectProps().get("prop_add1"));
+        Assertions.assertEquals("prop_add2_value", schema.getObjectProps().get("prop_add2"));
+        Assertions.assertEquals("prop_add3_value", schema.getObjectProps().get("prop_add3"));
+        Assertions.assertEquals("prop_add4_value", schema.getObjectProps().get("prop_add4"));
+        Assertions.assertEquals("prop_add5_value", schema.getObjectProps().get("prop_add5"));
+        Assertions.assertEquals("prop_add6_value", schema.getObjectProps().get("prop_add6"));
 
-        Assert.assertNull(schema.getObjectProps().get("prop1"));
-        Assert.assertNull(schema.getObjectProps().get("prop2"));
-        Assert.assertNull(schema.getObjectProps().get("prop3"));
+        Assertions.assertNull(schema.getObjectProps().get("prop1"));
+        Assertions.assertNull(schema.getObjectProps().get("prop2"));
+        Assertions.assertNull(schema.getObjectProps().get("prop3"));
     }
 
 }

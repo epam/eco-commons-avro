@@ -47,5 +47,41 @@
         <Method name="with"/>
         <Bug pattern="NP_NULL_PARAM_DEREF"/>
     </Match>
+    <Match>
+        <Class name="com.epam.eco.commons.avro.FieldInfo"/>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
+    <Match>
+        <Class name="com.epam.eco.commons.avro.FieldInfo"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
+        <Class name="com.epam.eco.commons.avro.avpath.PathTemplate"/>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
+    <Match>
+        <Class name="com.epam.eco.commons.avro.avpath.PathTemplate"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
+        <Class name="com.epam.eco.commons.avro.modification.AddSchemaFieldToPath"/>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
+    <Match>
+        <Class name="com.epam.eco.commons.avro.modification.AddSchemaFieldToPath"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
+        <Class name="com.epam.eco.commons.avro.modification.ChangeSchemaFieldNamesCase"/>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
+    <Match>
+        <Class name="com.epam.eco.commons.avro.validation.DetailedSchemaValidationException"/>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
+    <Match>
+        <Class name="com.epam.eco.commons.avro.validation.DetailedSchemaValidationException"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
 
 </FindBugsFilter>

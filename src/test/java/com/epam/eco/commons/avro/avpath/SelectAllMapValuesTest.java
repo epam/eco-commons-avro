@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.avro.util.Utf8;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Andrei_Tytsik
@@ -33,10 +33,10 @@ public class SelectAllMapValuesTest {
         return new SelectAllMapValues();
     }
 
-    @SuppressWarnings({ "serial", "unchecked" })
+    @SuppressWarnings("unchecked")
     @Test
-    public void testAllMapValuesAreSelected() throws Exception {
-        Map<String, String> map = new LinkedHashMap<String, String>() {{
+    public void testAllMapValuesAreSelected() {
+        Map<String, String> map = new LinkedHashMap<>() {{
             put("1", "1");
             put("2", "2");
             put("3", "3");
@@ -46,45 +46,45 @@ public class SelectAllMapValuesTest {
 
         List<EvaluationResult> output = ((Expression<Map<String, String>>)instance()).eval(map);
 
-        Assert.assertNotNull(output);
-        Assert.assertEquals(4, output.size());
+        Assertions.assertNotNull(output);
+        Assertions.assertEquals(4, output.size());
 
-        Assert.assertEquals("1", output.get(0).getValue());
-        Assert.assertEquals(map, output.get(0).getContainer());
+        Assertions.assertEquals("1", output.get(0).getValue());
+        Assertions.assertEquals(map, output.get(0).getContainer());
 
-        Assert.assertEquals("2", output.get(1).getValue());
-        Assert.assertEquals(map, output.get(1).getContainer());
+        Assertions.assertEquals("2", output.get(1).getValue());
+        Assertions.assertEquals(map, output.get(1).getContainer());
 
-        Assert.assertEquals("3", output.get(2).getValue());
-        Assert.assertEquals(map, output.get(2).getContainer());
+        Assertions.assertEquals("3", output.get(2).getValue());
+        Assertions.assertEquals(map, output.get(2).getContainer());
 
-        Assert.assertEquals(null, output.get(3).getValue());
-        Assert.assertEquals(map, output.get(3).getContainer());
+        Assertions.assertNull(output.get(3).getValue());
+        Assertions.assertEquals(map, output.get(3).getContainer());
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testEmptyResultIsSelectedForEmptyOrNullMap() throws Exception {
+    public void testEmptyResultIsSelectedForEmptyOrNullMap() {
         Expression<?> instance = instance();
 
         List<EvaluationResult> output = (instance).eval(null);
-        Assert.assertNotNull(output);
-        Assert.assertTrue(output.isEmpty());
+        Assertions.assertNotNull(output);
+        Assertions.assertTrue(output.isEmpty());
 
         output = ((Expression<Map<Utf8, String>>)instance).eval(Collections.emptyMap());
-        Assert.assertNotNull(output);
-        Assert.assertTrue(output.isEmpty());
+        Assertions.assertNotNull(output);
+        Assertions.assertTrue(output.isEmpty());
     }
 
     @Test
-    public void testMapValueIsAccepted() throws Exception {
+    public void testMapValueIsAccepted() {
         Expression<?> instance = instance();
 
-        Assert.assertTrue(instance.accepts(Collections.emptyMap()));
-        Assert.assertFalse(instance.accepts(new Object()));
-        Assert.assertFalse(instance.accepts(1L));
-        Assert.assertFalse(instance.accepts(""));
-        Assert.assertFalse(instance.accepts(null));
+        Assertions.assertTrue(instance.accepts(Collections.emptyMap()));
+        Assertions.assertFalse(instance.accepts(new Object()));
+        Assertions.assertFalse(instance.accepts(1L));
+        Assertions.assertFalse(instance.accepts(""));
+        Assertions.assertFalse(instance.accepts(null));
     }
 
 }

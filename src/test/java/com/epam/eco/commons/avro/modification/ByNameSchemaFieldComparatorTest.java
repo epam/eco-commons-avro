@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.avro.Schema.Type;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.epam.eco.commons.avro.AvroConstants;
 import com.epam.eco.commons.avro.AvroUtils;
@@ -33,7 +33,7 @@ import com.epam.eco.commons.avro.GenericSchemaDataGen;
 public class ByNameSchemaFieldComparatorTest {
 
     @Test
-    public void testSchemaFieldsAreAscOrdered() throws Exception {
+    public void testSchemaFieldsAreAscOrdered() {
         List<Map<String, Object>> fields = GenericSchemaDataGen.randomFields(300);
         List<Map<String, Object>> fieldsOfRecordOrAmbiguousType =
                 extractFieldsOfRecordOrAmbiguousType(fields);
@@ -45,7 +45,7 @@ public class ByNameSchemaFieldComparatorTest {
     }
 
     @Test
-    public void testSchemaFieldsAreDescOrdered() throws Exception {
+    public void testSchemaFieldsAreDescOrdered() {
         List<Map<String, Object>> fields = GenericSchemaDataGen.randomFields(300);
         List<Map<String, Object>> fieldsOfRecordOrAmbiguousType =
                 extractFieldsOfRecordOrAmbiguousType(fields);
@@ -61,7 +61,7 @@ public class ByNameSchemaFieldComparatorTest {
             List<Map<String, Object>> unorderedFieldsAtBeginning,
             boolean asc) {
         for (int i = 0; i < unorderedFieldsAtBeginning.size(); i++) {
-            Assert.assertEquals(
+            Assertions.assertEquals(
                     unorderedFieldsAtBeginning.get(i),
                     fields.get(i));
         }
@@ -71,7 +71,7 @@ public class ByNameSchemaFieldComparatorTest {
             Map<String, Object> field = fields.get(i);
             String fieldName = (String)field.get(AvroConstants.SCHEMA_KEY_FIELD_NAME);
             if (prevFieldName != null) {
-                Assert.assertTrue(
+                Assertions.assertTrue(
                         asc ?
                         prevFieldName.compareTo(fieldName) <= 0 :
                         prevFieldName.compareTo(fieldName) >= 0);

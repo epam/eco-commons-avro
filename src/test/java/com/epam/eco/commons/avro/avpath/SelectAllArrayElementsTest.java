@@ -19,8 +19,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Andrei_Tytsik
@@ -33,50 +33,50 @@ public class SelectAllArrayElementsTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testAllArrayElementsAreSelected() throws Exception {
+    public void testAllArrayElementsAreSelected() {
         List<String> array = Arrays.asList("1", "2", "3", null);
 
         List<EvaluationResult> output = ((Expression<List<String>>)instance()).eval(array);
 
-        Assert.assertNotNull(output);
-        Assert.assertEquals(4, output.size());
+        Assertions.assertNotNull(output);
+        Assertions.assertEquals(4, output.size());
 
-        Assert.assertEquals("1", output.get(0).getValue());
-        Assert.assertEquals(array, output.get(0).getContainer());
+        Assertions.assertEquals("1", output.get(0).getValue());
+        Assertions.assertEquals(array, output.get(0).getContainer());
 
-        Assert.assertEquals("2", output.get(1).getValue());
-        Assert.assertEquals(array, output.get(1).getContainer());
+        Assertions.assertEquals("2", output.get(1).getValue());
+        Assertions.assertEquals(array, output.get(1).getContainer());
 
-        Assert.assertEquals("3", output.get(2).getValue());
-        Assert.assertEquals(array, output.get(2).getContainer());
+        Assertions.assertEquals("3", output.get(2).getValue());
+        Assertions.assertEquals(array, output.get(2).getContainer());
 
-        Assert.assertEquals(null, output.get(3).getValue());
-        Assert.assertEquals(array, output.get(3).getContainer());
+        Assertions.assertNull(output.get(3).getValue());
+        Assertions.assertEquals(array, output.get(3).getContainer());
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testEmptyResultIsSelectedForEmptyOrNullArray() throws Exception {
+    public void testEmptyResultIsSelectedForEmptyOrNullArray() {
         Expression<?> instance = instance();
 
         List<EvaluationResult> output = (instance).eval(null);
-        Assert.assertNotNull(output);
-        Assert.assertTrue(output.isEmpty());
+        Assertions.assertNotNull(output);
+        Assertions.assertTrue(output.isEmpty());
 
         output = ((Expression<List<String>>)instance).eval(Collections.emptyList());
-        Assert.assertNotNull(output);
-        Assert.assertTrue(output.isEmpty());
+        Assertions.assertNotNull(output);
+        Assertions.assertTrue(output.isEmpty());
     }
 
     @Test
-    public void testListValueIsAccepted() throws Exception {
+    public void testListValueIsAccepted() {
         Expression<?> instance = instance();
 
-        Assert.assertTrue(instance.accepts(Collections.emptyList()));
-        Assert.assertFalse(instance.accepts(new Object()));
-        Assert.assertFalse(instance.accepts(1L));
-        Assert.assertFalse(instance.accepts(""));
-        Assert.assertFalse(instance.accepts(null));
+        Assertions.assertTrue(instance.accepts(Collections.emptyList()));
+        Assertions.assertFalse(instance.accepts(new Object()));
+        Assertions.assertFalse(instance.accepts(1L));
+        Assertions.assertFalse(instance.accepts(""));
+        Assertions.assertFalse(instance.accepts(null));
     }
 
 }

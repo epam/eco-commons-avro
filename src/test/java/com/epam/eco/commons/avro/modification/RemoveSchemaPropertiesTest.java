@@ -15,8 +15,8 @@
  */
 package com.epam.eco.commons.avro.modification;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Ihar_Karoza
@@ -27,7 +27,7 @@ public class RemoveSchemaPropertiesTest {
     public void testEquals() {
         String[] schemaProps1 = new String[]{"prop1", "prop2", "prop3"};
         String[] schemaProps2 = new String[]{"prop1", "prop2", "prop3"};
-        Assert.assertEquals(
+        Assertions.assertEquals(
                 RemoveSchemaProperties.with(schemaProps1),
                 RemoveSchemaProperties.with(schemaProps2));
     }

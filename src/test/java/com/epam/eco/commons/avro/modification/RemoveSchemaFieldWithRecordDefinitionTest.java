@@ -15,12 +15,15 @@
  */
 package com.epam.eco.commons.avro.modification;
 
-import com.epam.eco.commons.avro.utils.TestUtils;
+import java.io.IOException;
+
 import org.apache.avro.Schema;
 import org.apache.avro.SchemaParseException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
+import com.epam.eco.commons.avro.utils.TestUtils;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Maksim_Gavrilov
@@ -33,7 +36,7 @@ public class RemoveSchemaFieldWithRecordDefinitionTest {
 
 
     @Test
-    public void successRemove() throws Exception {
+    public void successRemove() throws IOException {
         Schema schemaModified = SchemaModifications.of(
                         new RemoveSchemaFieldByPath("another_two_string"),
                         new RemoveSchemaFieldByPath("two_string")
@@ -49,22 +52,26 @@ public class RemoveSchemaFieldWithRecordDefinitionTest {
         System.out.println(schemaModified);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void wrongOrderInRemove() throws Exception {
-        SchemaModifications.of(
-                        new RemoveSchemaFieldByPath("two_string"),
-                        new RemoveSchemaFieldByPath("another_two_string")
-                )
-                .applyTo(getScheme());
+    @Test
+    public void wrongOrderInRemove() {
+        assertThrows(
+                NullPointerException.class,
+                () -> SchemaModifications.of(
+                                new RemoveSchemaFieldByPath("two_string"),
+                                new RemoveSchemaFieldByPath("another_two_string")
+                        )
+                        .applyTo(getScheme())
+        );
     }
 
-    @Test(expected = SchemaParseException.class)
-    public void removeOnlyFieldWithDefinition() throws Exception {
-        SchemaModifications.of(
-                        new RemoveSchemaFieldByPath("two_string")
-                )
-                .applyTo(getScheme());
+    @Test
+    public void removeOnlyFieldWithDefinition() {
+        assertThrows(
+                SchemaParseException.class,
+                () -> SchemaModifications.of(
+                                new RemoveSchemaFieldByPath("two_string")
+                        )
+                        .applyTo(getScheme())
+        );
     }
-
-
 }

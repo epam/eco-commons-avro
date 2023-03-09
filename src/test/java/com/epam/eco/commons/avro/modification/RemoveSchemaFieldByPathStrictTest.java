@@ -15,11 +15,14 @@
  */
 package com.epam.eco.commons.avro.modification;
 
-import com.epam.eco.commons.avro.utils.TestUtils;
-import org.apache.avro.Schema;
-import org.junit.Test;
-
 import java.io.IOException;
+
+import org.apache.avro.Schema;
+import org.junit.jupiter.api.Test;
+
+import com.epam.eco.commons.avro.utils.TestUtils;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Maksim_Gavrilov
@@ -40,13 +43,12 @@ public class RemoveSchemaFieldByPathStrictTest {
         assert schemaModified.getFields().size() == 0;
     }
 
-    @Test(expected = RuntimeException.class)
-    public void strictEnabledFieldNotExists() throws IOException {
-
-        SchemaModifications.of(
-                        new RemoveSchemaFieldByPath("string_field2")
-                )
-                .applyTo(getScheme());
+    @Test
+    public void strictEnabledFieldNotExists() {
+        assertThrows(
+                RuntimeException.class,
+                () -> SchemaModifications.of(new RemoveSchemaFieldByPath("string_field2")).applyTo(getScheme())
+        );
     }
 
     @Test

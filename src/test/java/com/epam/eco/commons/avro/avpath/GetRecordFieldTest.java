@@ -17,8 +17,8 @@ package com.epam.eco.commons.avro.avpath;
 
 import java.util.List;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.epam.eco.commons.avro.data.TestPerson;
 import com.epam.eco.commons.avro.data.TestPersonDataReader;
@@ -29,44 +29,44 @@ import com.epam.eco.commons.avro.data.TestPersonDataReader;
 public class GetRecordFieldTest {
 
     @Test
-    public void testFieldIsGot() throws Exception {
+    public void testFieldIsGot() {
         TestPerson person = TestPersonDataReader.readSpecificTestPersons().get(0);
 
         GetRecordField instance = new GetRecordField("name");
         List<EvaluationResult> output = instance.eval(person);
-        Assert.assertNotNull(output);
-        Assert.assertEquals(1, output.size());
+        Assertions.assertNotNull(output);
+        Assertions.assertEquals(1, output.size());
 
-        Assert.assertEquals("Erich Gamma", output.get(0).getValue().toString());
-        Assert.assertEquals(person, output.get(0).getContainer());
+        Assertions.assertEquals("Erich Gamma", output.get(0).getValue().toString());
+        Assertions.assertEquals(person, output.get(0).getContainer());
 
         instance = new GetRecordField("age");
         output = instance.eval(person);
-        Assert.assertNotNull(output);
-        Assert.assertEquals(1, output.size());
+        Assertions.assertNotNull(output);
+        Assertions.assertEquals(1, output.size());
 
-        Assert.assertEquals(55, output.get(0).getValue());
-        Assert.assertEquals(person, output.get(0).getContainer());
+        Assertions.assertEquals(55, output.get(0).getValue());
+        Assertions.assertEquals(person, output.get(0).getContainer());
     }
 
     @Test
-    public void testEmptyResultIsSelectedForNullRecord() throws Exception {
+    public void testEmptyResultIsSelectedForNullRecord() {
         GetRecordField instance = new GetRecordField("name");
 
         List<EvaluationResult> output = instance.eval(null);
-        Assert.assertNotNull(output);
-        Assert.assertTrue(output.isEmpty());
+        Assertions.assertNotNull(output);
+        Assertions.assertTrue(output.isEmpty());
     }
 
     @Test
-    public void testRecordValueIsAccepted() throws Exception {
+    public void testRecordValueIsAccepted() {
         Expression<?> instance = new GetRecordField("name");
 
-        Assert.assertTrue(instance.accepts(new TestPerson()));
-        Assert.assertFalse(instance.accepts(new Object()));
-        Assert.assertFalse(instance.accepts(1L));
-        Assert.assertFalse(instance.accepts(""));
-        Assert.assertFalse(instance.accepts(null));
+        Assertions.assertTrue(instance.accepts(new TestPerson()));
+        Assertions.assertFalse(instance.accepts(new Object()));
+        Assertions.assertFalse(instance.accepts(1L));
+        Assertions.assertFalse(instance.accepts(""));
+        Assertions.assertFalse(instance.accepts(null));
     }
 
 }

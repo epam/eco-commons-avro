@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.avro.Schema;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.epam.eco.commons.avro.AvroConstants;
 import com.epam.eco.commons.avro.AvroUtils;
@@ -85,7 +85,7 @@ public class SortSchemaFieldsTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testSchemaFieldsAreAscOrdered() throws Exception {
+    public void testSchemaFieldsAreAscOrdered() {
         Map<String, Object> schemaMap = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
         new SortSchemaFields(ByNameSchemaFieldComparator.ASC).applyToGeneric(schemaMap);
         for (List<Map<String, Object>> fields : SchemaModificationTestUtils.resolveAllSchemasFields(schemaMap)) {
@@ -95,7 +95,7 @@ public class SortSchemaFieldsTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testSchemaFieldsAreDescOrdered() throws Exception {
+    public void testSchemaFieldsAreDescOrdered() {
         Map<String, Object> schemaMap = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
         new SortSchemaFields(ByNameSchemaFieldComparator.DESC).applyToGeneric(schemaMap);
         for (List<Map<String, Object>> fields : SchemaModificationTestUtils.resolveAllSchemasFields(schemaMap)) {
@@ -105,14 +105,14 @@ public class SortSchemaFieldsTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testTwoSchemasAreEqualAfterSorting() throws Exception {
+    public void testTwoSchemasAreEqualAfterSorting() {
         Map<String, Object> schemaMap1 = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
         new SortSchemaFields().applyToGeneric(schemaMap1);
 
         Map<String, Object> schemaMap2 = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
         new SortSchemaFields().applyToGeneric(schemaMap2);
 
-        Assert.assertEquals(schemaMap1, schemaMap2);
+        Assertions.assertEquals(schemaMap1, schemaMap2);
     }
 
     private void verifyFieldsOrdered(List<Map<String, Object>> fields, boolean asc) {
@@ -121,9 +121,9 @@ public class SortSchemaFieldsTest {
             String fieldName = (String)field.get(AvroConstants.SCHEMA_KEY_FIELD_NAME);
             if (prevFieldName != null) {
                 if (prevFieldName.startsWith("x_") && fieldName.startsWith("x_")) { // always same order!
-                    Assert.assertTrue(prevFieldName.compareTo(fieldName) < 0);
+                    Assertions.assertTrue(prevFieldName.compareTo(fieldName) < 0);
                 } else if (prevFieldName.startsWith("f_") && fieldName.startsWith("f_")) {
-                    Assert.assertTrue(
+                    Assertions.assertTrue(
                             asc ?
                             prevFieldName.compareTo(fieldName) < 0 :
                             prevFieldName.compareTo(fieldName) > 0);

@@ -24,8 +24,8 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.apache.avro.Schema;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.epam.eco.commons.avro.AvroUtils;
 
@@ -38,7 +38,7 @@ public class DefaultSchemaGeneratorsTest {
 
     private static final Schema VALUE_SCHEMA = AvroUtils.schemaFromResource("/broad_schema.avsc");
 
-    private Map<String, Object> value = ImmutableMap.<String, Object>builder()
+    private final Map<String, Object> value = ImmutableMap.<String, Object>builder()
                                                     .put("int_field", 1)
                                                     .put("long_field", 1L)
                                                     .put("float_field", (float) 0.1)
@@ -69,7 +69,7 @@ public class DefaultSchemaGeneratorsTest {
     public void buildSchemaTest() {
         Schema genSchema = new DefaultSchemaGenerators().createForValue(value, "BroadSchema", "test.commons.avro");
         Schema resolvedGenSchema = AvroUtils.resolveAnyNonNullable(genSchema);
-        Assert.assertEquals(resolvedGenSchema, VALUE_SCHEMA);
+        Assertions.assertEquals(resolvedGenSchema, VALUE_SCHEMA);
     }
 
 }

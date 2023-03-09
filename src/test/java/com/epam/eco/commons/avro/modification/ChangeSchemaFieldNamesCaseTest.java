@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.avro.Schema;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.epam.eco.commons.avro.AvroConstants;
 import com.epam.eco.commons.avro.AvroUtils;
@@ -79,7 +79,7 @@ public class ChangeSchemaFieldNamesCaseTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testSchemaFieldNamesAreUppercased() throws Exception {
+    public void testSchemaFieldNamesAreUppercased() {
         Map<String, Object> schemaMap = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
         new ChangeSchemaFieldNamesCase(Case.UPPER).applyToGeneric(schemaMap);
         for (List<Map<String, Object>> fields : SchemaModificationTestUtils.resolveAllSchemasFields(schemaMap)) {
@@ -89,7 +89,7 @@ public class ChangeSchemaFieldNamesCaseTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testSchemaFieldNamesAreUppercasedWithIncludes() throws Exception {
+    public void testSchemaFieldNamesAreUppercasedWithIncludes() {
         Map<String, Object> schemaMap = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
 
         Set<String> include = new HashSet<>();
@@ -111,7 +111,7 @@ public class ChangeSchemaFieldNamesCaseTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testSchemaFieldNamesAreUppercasedWithExcludes() throws Exception {
+    public void testSchemaFieldNamesAreUppercasedWithExcludes() {
         Map<String, Object> schemaMap = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
 
         Set<String> exclude = new HashSet<>();
@@ -132,7 +132,7 @@ public class ChangeSchemaFieldNamesCaseTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testSchemaFieldNamesAreUppercasedWithIncludesAndExcludes() throws Exception {
+    public void testSchemaFieldNamesAreUppercasedWithIncludesAndExcludes() {
         Map<String, Object> schemaMap = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
 
         Set<String> include = new HashSet<>();
@@ -160,7 +160,7 @@ public class ChangeSchemaFieldNamesCaseTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testSchemaFieldNamesAreLowercased() throws Exception {
+    public void testSchemaFieldNamesAreLowercased() {
         Map<String, Object> schemaMap = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
         new ChangeSchemaFieldNamesCase(Case.LOWER).applyToGeneric(schemaMap);
         for (List<Map<String, Object>> fields : SchemaModificationTestUtils.resolveAllSchemasFields(schemaMap)) {
@@ -170,7 +170,7 @@ public class ChangeSchemaFieldNamesCaseTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testSchemaFieldNamesAreLowercasedWithIncludes() throws Exception {
+    public void testSchemaFieldNamesAreLowercasedWithIncludes() {
         Map<String, Object> schemaMap = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
 
         Set<String> include = new HashSet<>();
@@ -192,7 +192,7 @@ public class ChangeSchemaFieldNamesCaseTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testSchemaFieldNamesAreLowercasedWithExcludes() throws Exception {
+    public void testSchemaFieldNamesAreLowercasedWithExcludes() {
         Map<String, Object> schemaMap = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
 
         Set<String> exclude = new HashSet<>();
@@ -213,7 +213,7 @@ public class ChangeSchemaFieldNamesCaseTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testSchemaFieldNamesAreLowercasedWithIncludesAndExcludes() throws Exception {
+    public void testSchemaFieldNamesAreLowercasedWithIncludesAndExcludes() {
         Map<String, Object> schemaMap = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
 
         Set<String> include = new HashSet<>();
@@ -241,14 +241,14 @@ public class ChangeSchemaFieldNamesCaseTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testTwoSchemasAreEqualAfterChangingFieldNamesCase() throws Exception {
+    public void testTwoSchemasAreEqualAfterChangingFieldNamesCase() {
         Map<String, Object> schemaMap1 = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
         new ChangeSchemaFieldNamesCase(Case.UPPER).applyToGeneric(schemaMap1);
 
         Map<String, Object> schemaMap2 = (Map<String, Object>)AvroUtils.schemaToGeneric(SCHEMA);
         new ChangeSchemaFieldNamesCase(Case.UPPER).applyToGeneric(schemaMap2);
 
-        Assert.assertEquals(schemaMap1, schemaMap2);
+        Assertions.assertEquals(schemaMap1, schemaMap2);
     }
 
     private void verifyFieldNamesCaseChanged(
@@ -260,7 +260,7 @@ public class ChangeSchemaFieldNamesCaseTest {
             if (ignoredFields != null && ignoredFields.contains(fieldName)) {
                 continue;
             }
-            Assert.assertEquals(
+            Assertions.assertEquals(
                     upper ? fieldName.toUpperCase() : fieldName.toLowerCase(),
                     fieldName);
         }
