@@ -27,9 +27,9 @@ import org.apache.avro.Schema;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.epam.eco.commons.avro.AvroUtils;
+import com.google.common.collect.ImmutableMap;
 
-import avro.shaded.com.google.common.collect.ImmutableMap;
+import com.epam.eco.commons.avro.AvroUtils;
 
 /**
  * @author Ihar_Karoza

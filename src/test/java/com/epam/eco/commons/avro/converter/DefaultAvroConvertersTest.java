@@ -31,9 +31,9 @@ import org.apache.avro.generic.GenericRecord;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.epam.eco.commons.avro.AvroUtils;
+import com.google.common.collect.ImmutableMap;
 
-import avro.shaded.com.google.common.collect.ImmutableMap;
+import com.epam.eco.commons.avro.AvroUtils;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
