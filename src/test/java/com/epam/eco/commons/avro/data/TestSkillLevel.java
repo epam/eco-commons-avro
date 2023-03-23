@@ -15,16 +15,75 @@
  */
 package com.epam.eco.commons.avro.data;
 
+import org.apache.avro.message.BinaryMessageDecoder;
+import org.apache.avro.message.BinaryMessageEncoder;
+import org.apache.avro.message.SchemaStore;
 import org.apache.avro.specific.SpecificData;
+import org.apache.avro.util.Utf8;
 
-@SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class TestSkillLevel extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -2768810091499630051L;
+  private static final long serialVersionUID = -1729211953889647971L;
+
+
   public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"TestSkillLevel\",\"namespace\":\"com.epam.eco.commons.avro.data\",\"fields\":[{\"name\":\"level\",\"type\":\"string\"},{\"name\":\"description\",\"type\":\"string\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
-  @Deprecated public java.lang.CharSequence level;
-  @Deprecated public java.lang.CharSequence description;
+
+  private static final SpecificData MODEL$ = new SpecificData();
+
+  private static final BinaryMessageEncoder<TestSkillLevel> ENCODER =
+      new BinaryMessageEncoder<TestSkillLevel>(MODEL$, SCHEMA$);
+
+  private static final BinaryMessageDecoder<TestSkillLevel> DECODER =
+      new BinaryMessageDecoder<TestSkillLevel>(MODEL$, SCHEMA$);
+
+  /**
+   * Return the BinaryMessageEncoder instance used by this class.
+   * @return the message encoder used by this class
+   */
+  public static BinaryMessageEncoder<TestSkillLevel> getEncoder() {
+    return ENCODER;
+  }
+
+  /**
+   * Return the BinaryMessageDecoder instance used by this class.
+   * @return the message decoder used by this class
+   */
+  public static BinaryMessageDecoder<TestSkillLevel> getDecoder() {
+    return DECODER;
+  }
+
+  /**
+   * Create a new BinaryMessageDecoder instance for this class that uses the specified {@link SchemaStore}.
+   * @param resolver a {@link SchemaStore} used to find schemas by fingerprint
+   * @return a BinaryMessageDecoder instance for this class backed by the given SchemaStore
+   */
+  public static BinaryMessageDecoder<TestSkillLevel> createDecoder(SchemaStore resolver) {
+    return new BinaryMessageDecoder<TestSkillLevel>(MODEL$, SCHEMA$, resolver);
+  }
+
+  /**
+   * Serializes this TestSkillLevel to a ByteBuffer.
+   * @return a buffer holding the serialized data for this instance
+   * @throws java.io.IOException if this instance could not be serialized
+   */
+  public java.nio.ByteBuffer toByteBuffer() throws java.io.IOException {
+    return ENCODER.encode(this);
+  }
+
+  /**
+   * Deserializes a TestSkillLevel from a ByteBuffer.
+   * @param b a byte buffer holding serialized data for an instance of this class
+   * @return a TestSkillLevel instance decoded from the given buffer
+   * @throws java.io.IOException if the given bytes could not be deserialized into an instance of this class
+   */
+  public static TestSkillLevel fromByteBuffer(
+      java.nio.ByteBuffer b) throws java.io.IOException {
+    return DECODER.decode(b);
+  }
+
+  private java.lang.CharSequence level;
+  private java.lang.CharSequence description;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -43,13 +102,14 @@ public class TestSkillLevel extends org.apache.avro.specific.SpecificRecordBase 
     this.description = description;
   }
 
+  public org.apache.avro.specific.SpecificData getSpecificData() { return MODEL$; }
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
   // Used by DatumWriter.  Applications should not call.
   public java.lang.Object get(int field$) {
     switch (field$) {
     case 0: return level;
     case 1: return description;
-    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
+    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
 
@@ -59,7 +119,7 @@ public class TestSkillLevel extends org.apache.avro.specific.SpecificRecordBase 
     switch (field$) {
     case 0: level = (java.lang.CharSequence)value$; break;
     case 1: description = (java.lang.CharSequence)value$; break;
-    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
+    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
 
@@ -70,6 +130,7 @@ public class TestSkillLevel extends org.apache.avro.specific.SpecificRecordBase 
   public java.lang.CharSequence getLevel() {
     return level;
   }
+
 
   /**
    * Sets the value of the 'level' field.
@@ -86,6 +147,7 @@ public class TestSkillLevel extends org.apache.avro.specific.SpecificRecordBase 
   public java.lang.CharSequence getDescription() {
     return description;
   }
+
 
   /**
    * Sets the value of the 'description' field.
@@ -109,7 +171,11 @@ public class TestSkillLevel extends org.apache.avro.specific.SpecificRecordBase 
    * @return A new TestSkillLevel RecordBuilder
    */
   public static com.epam.eco.commons.avro.data.TestSkillLevel.Builder newBuilder(com.epam.eco.commons.avro.data.TestSkillLevel.Builder other) {
-    return new com.epam.eco.commons.avro.data.TestSkillLevel.Builder(other);
+    if (other == null) {
+      return new com.epam.eco.commons.avro.data.TestSkillLevel.Builder();
+    } else {
+      return new com.epam.eco.commons.avro.data.TestSkillLevel.Builder(other);
+    }
   }
 
   /**
@@ -118,12 +184,17 @@ public class TestSkillLevel extends org.apache.avro.specific.SpecificRecordBase 
    * @return A new TestSkillLevel RecordBuilder
    */
   public static com.epam.eco.commons.avro.data.TestSkillLevel.Builder newBuilder(com.epam.eco.commons.avro.data.TestSkillLevel other) {
-    return new com.epam.eco.commons.avro.data.TestSkillLevel.Builder(other);
+    if (other == null) {
+      return new com.epam.eco.commons.avro.data.TestSkillLevel.Builder();
+    } else {
+      return new com.epam.eco.commons.avro.data.TestSkillLevel.Builder(other);
+    }
   }
 
   /**
    * RecordBuilder for TestSkillLevel instances.
    */
+  @org.apache.avro.specific.AvroGenerated
   public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<TestSkillLevel>
     implements org.apache.avro.data.RecordBuilder<TestSkillLevel> {
 
@@ -132,7 +203,7 @@ public class TestSkillLevel extends org.apache.avro.specific.SpecificRecordBase 
 
     /** Creates a new Builder */
     private Builder() {
-      super(SCHEMA$);
+      super(SCHEMA$, MODEL$);
     }
 
     /**
@@ -143,11 +214,11 @@ public class TestSkillLevel extends org.apache.avro.specific.SpecificRecordBase 
       super(other);
       if (isValidValue(fields()[0], other.level)) {
         this.level = data().deepCopy(fields()[0].schema(), other.level);
-        fieldSetFlags()[0] = true;
+        fieldSetFlags()[0] = other.fieldSetFlags()[0];
       }
       if (isValidValue(fields()[1], other.description)) {
         this.description = data().deepCopy(fields()[1].schema(), other.description);
-        fieldSetFlags()[1] = true;
+        fieldSetFlags()[1] = other.fieldSetFlags()[1];
       }
     }
 
@@ -156,7 +227,7 @@ public class TestSkillLevel extends org.apache.avro.specific.SpecificRecordBase 
      * @param other The existing instance to copy.
      */
     private Builder(com.epam.eco.commons.avro.data.TestSkillLevel other) {
-            super(SCHEMA$);
+      super(SCHEMA$, MODEL$);
       if (isValidValue(fields()[0], other.level)) {
         this.level = data().deepCopy(fields()[0].schema(), other.level);
         fieldSetFlags()[0] = true;
@@ -174,6 +245,7 @@ public class TestSkillLevel extends org.apache.avro.specific.SpecificRecordBase 
     public java.lang.CharSequence getLevel() {
       return level;
     }
+
 
     /**
       * Sets the value of the 'level' field.
@@ -214,6 +286,7 @@ public class TestSkillLevel extends org.apache.avro.specific.SpecificRecordBase 
       return description;
     }
 
+
     /**
       * Sets the value of the 'description' field.
       * @param value The value of 'description'.
@@ -246,32 +319,84 @@ public class TestSkillLevel extends org.apache.avro.specific.SpecificRecordBase 
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public TestSkillLevel build() {
       try {
         TestSkillLevel record = new TestSkillLevel();
         record.level = fieldSetFlags()[0] ? this.level : (java.lang.CharSequence) defaultValue(fields()[0]);
         record.description = fieldSetFlags()[1] ? this.description : (java.lang.CharSequence) defaultValue(fields()[1]);
         return record;
-      } catch (Exception e) {
+      } catch (org.apache.avro.AvroMissingFieldException e) {
+        throw e;
+      } catch (java.lang.Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);
       }
     }
   }
 
-  private static final org.apache.avro.io.DatumWriter
-    WRITER$ = new org.apache.avro.specific.SpecificDatumWriter(SCHEMA$);
+  @SuppressWarnings("unchecked")
+  private static final org.apache.avro.io.DatumWriter<TestSkillLevel>
+    WRITER$ = (org.apache.avro.io.DatumWriter<TestSkillLevel>)MODEL$.createDatumWriter(SCHEMA$);
 
   @Override public void writeExternal(java.io.ObjectOutput out)
     throws java.io.IOException {
     WRITER$.write(this, SpecificData.getEncoder(out));
   }
 
-  private static final org.apache.avro.io.DatumReader
-    READER$ = new org.apache.avro.specific.SpecificDatumReader(SCHEMA$);
+  @SuppressWarnings("unchecked")
+  private static final org.apache.avro.io.DatumReader<TestSkillLevel>
+    READER$ = (org.apache.avro.io.DatumReader<TestSkillLevel>)MODEL$.createDatumReader(SCHEMA$);
 
   @Override public void readExternal(java.io.ObjectInput in)
     throws java.io.IOException {
     READER$.read(this, SpecificData.getDecoder(in));
   }
 
+  @Override protected boolean hasCustomCoders() { return true; }
+
+  @Override public void customEncode(org.apache.avro.io.Encoder out)
+    throws java.io.IOException
+  {
+    out.writeString(this.level);
+
+    out.writeString(this.description);
+
+  }
+
+  @Override public void customDecode(org.apache.avro.io.ResolvingDecoder in)
+    throws java.io.IOException
+  {
+    org.apache.avro.Schema.Field[] fieldOrder = in.readFieldOrderIfDiff();
+    if (fieldOrder == null) {
+      this.level = in.readString(this.level instanceof Utf8 ? (Utf8)this.level : null);
+
+      this.description = in.readString(this.description instanceof Utf8 ? (Utf8)this.description : null);
+
+    } else {
+      for (int i = 0; i < 2; i++) {
+        switch (fieldOrder[i].pos()) {
+        case 0:
+          this.level = in.readString(this.level instanceof Utf8 ? (Utf8)this.level : null);
+          break;
+
+        case 1:
+          this.description = in.readString(this.description instanceof Utf8 ? (Utf8)this.description : null);
+          break;
+
+        default:
+          throw new java.io.IOException("Corrupt ResolvingDecoder.");
+        }
+      }
+    }
+  }
 }
+
+
+
+
+
+
+
+
+
+

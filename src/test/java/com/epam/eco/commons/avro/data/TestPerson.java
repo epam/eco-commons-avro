@@ -15,18 +15,77 @@
  */
 package com.epam.eco.commons.avro.data;
 
+import org.apache.avro.message.BinaryMessageDecoder;
+import org.apache.avro.message.BinaryMessageEncoder;
+import org.apache.avro.message.SchemaStore;
 import org.apache.avro.specific.SpecificData;
+import org.apache.avro.util.Utf8;
 
-@SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class TestPerson extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -7031688094266659120L;
+  private static final long serialVersionUID = -1327566390530370353L;
+
+
   public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"TestPerson\",\"namespace\":\"com.epam.eco.commons.avro.data\",\"fields\":[{\"name\":\"age\",\"type\":[\"null\",\"int\"]},{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"hobby\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"TestHobby\",\"fields\":[{\"name\":\"kind\",\"type\":\"string\"},{\"name\":\"description\",\"type\":\"string\"}]}}]},{\"name\":\"job\",\"type\":{\"type\":\"record\",\"name\":\"TestJob\",\"fields\":[{\"name\":\"company\",\"type\":\"string\"},{\"name\":\"position\",\"type\":{\"type\":\"record\",\"name\":\"TestPosition\",\"fields\":[{\"name\":\"title\",\"type\":\"string\"},{\"name\":\"skill\",\"type\":{\"type\":\"map\",\"values\":{\"type\":\"record\",\"name\":\"TestSkillLevel\",\"fields\":[{\"name\":\"level\",\"type\":\"string\"},{\"name\":\"description\",\"type\":\"string\"}]}}}]}},{\"name\":\"previousJob\",\"type\":[\"null\",\"TestJob\"]}]}}],\"prop1\":\"nomatter\",\"prop2\":\"nomatter\",\"prop3\":\"nomatter\"}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
-  @Deprecated public java.lang.Integer age;
-  @Deprecated public java.lang.CharSequence name;
-  @Deprecated public java.util.List<com.epam.eco.commons.avro.data.TestHobby> hobby;
-  @Deprecated public com.epam.eco.commons.avro.data.TestJob job;
+
+  private static final SpecificData MODEL$ = new SpecificData();
+
+  private static final BinaryMessageEncoder<TestPerson> ENCODER =
+      new BinaryMessageEncoder<TestPerson>(MODEL$, SCHEMA$);
+
+  private static final BinaryMessageDecoder<TestPerson> DECODER =
+      new BinaryMessageDecoder<TestPerson>(MODEL$, SCHEMA$);
+
+  /**
+   * Return the BinaryMessageEncoder instance used by this class.
+   * @return the message encoder used by this class
+   */
+  public static BinaryMessageEncoder<TestPerson> getEncoder() {
+    return ENCODER;
+  }
+
+  /**
+   * Return the BinaryMessageDecoder instance used by this class.
+   * @return the message decoder used by this class
+   */
+  public static BinaryMessageDecoder<TestPerson> getDecoder() {
+    return DECODER;
+  }
+
+  /**
+   * Create a new BinaryMessageDecoder instance for this class that uses the specified {@link SchemaStore}.
+   * @param resolver a {@link SchemaStore} used to find schemas by fingerprint
+   * @return a BinaryMessageDecoder instance for this class backed by the given SchemaStore
+   */
+  public static BinaryMessageDecoder<TestPerson> createDecoder(SchemaStore resolver) {
+    return new BinaryMessageDecoder<TestPerson>(MODEL$, SCHEMA$, resolver);
+  }
+
+  /**
+   * Serializes this TestPerson to a ByteBuffer.
+   * @return a buffer holding the serialized data for this instance
+   * @throws java.io.IOException if this instance could not be serialized
+   */
+  public java.nio.ByteBuffer toByteBuffer() throws java.io.IOException {
+    return ENCODER.encode(this);
+  }
+
+  /**
+   * Deserializes a TestPerson from a ByteBuffer.
+   * @param b a byte buffer holding serialized data for an instance of this class
+   * @return a TestPerson instance decoded from the given buffer
+   * @throws java.io.IOException if the given bytes could not be deserialized into an instance of this class
+   */
+  public static TestPerson fromByteBuffer(
+      java.nio.ByteBuffer b) throws java.io.IOException {
+    return DECODER.decode(b);
+  }
+
+  private java.lang.Integer age;
+  private java.lang.CharSequence name;
+  private java.util.List<com.epam.eco.commons.avro.data.TestHobby> hobby;
+  private com.epam.eco.commons.avro.data.TestJob job;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -49,6 +108,7 @@ public class TestPerson extends org.apache.avro.specific.SpecificRecordBase impl
     this.job = job;
   }
 
+  public org.apache.avro.specific.SpecificData getSpecificData() { return MODEL$; }
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
   // Used by DatumWriter.  Applications should not call.
   public java.lang.Object get(int field$) {
@@ -57,7 +117,7 @@ public class TestPerson extends org.apache.avro.specific.SpecificRecordBase impl
     case 1: return name;
     case 2: return hobby;
     case 3: return job;
-    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
+    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
 
@@ -69,7 +129,7 @@ public class TestPerson extends org.apache.avro.specific.SpecificRecordBase impl
     case 1: name = (java.lang.CharSequence)value$; break;
     case 2: hobby = (java.util.List<com.epam.eco.commons.avro.data.TestHobby>)value$; break;
     case 3: job = (com.epam.eco.commons.avro.data.TestJob)value$; break;
-    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
+    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
 
@@ -80,6 +140,7 @@ public class TestPerson extends org.apache.avro.specific.SpecificRecordBase impl
   public java.lang.Integer getAge() {
     return age;
   }
+
 
   /**
    * Sets the value of the 'age' field.
@@ -97,6 +158,7 @@ public class TestPerson extends org.apache.avro.specific.SpecificRecordBase impl
     return name;
   }
 
+
   /**
    * Sets the value of the 'name' field.
    * @param value the value to set.
@@ -113,6 +175,7 @@ public class TestPerson extends org.apache.avro.specific.SpecificRecordBase impl
     return hobby;
   }
 
+
   /**
    * Sets the value of the 'hobby' field.
    * @param value the value to set.
@@ -128,6 +191,7 @@ public class TestPerson extends org.apache.avro.specific.SpecificRecordBase impl
   public com.epam.eco.commons.avro.data.TestJob getJob() {
     return job;
   }
+
 
   /**
    * Sets the value of the 'job' field.
@@ -151,7 +215,11 @@ public class TestPerson extends org.apache.avro.specific.SpecificRecordBase impl
    * @return A new TestPerson RecordBuilder
    */
   public static com.epam.eco.commons.avro.data.TestPerson.Builder newBuilder(com.epam.eco.commons.avro.data.TestPerson.Builder other) {
-    return new com.epam.eco.commons.avro.data.TestPerson.Builder(other);
+    if (other == null) {
+      return new com.epam.eco.commons.avro.data.TestPerson.Builder();
+    } else {
+      return new com.epam.eco.commons.avro.data.TestPerson.Builder(other);
+    }
   }
 
   /**
@@ -160,12 +228,17 @@ public class TestPerson extends org.apache.avro.specific.SpecificRecordBase impl
    * @return A new TestPerson RecordBuilder
    */
   public static com.epam.eco.commons.avro.data.TestPerson.Builder newBuilder(com.epam.eco.commons.avro.data.TestPerson other) {
-    return new com.epam.eco.commons.avro.data.TestPerson.Builder(other);
+    if (other == null) {
+      return new com.epam.eco.commons.avro.data.TestPerson.Builder();
+    } else {
+      return new com.epam.eco.commons.avro.data.TestPerson.Builder(other);
+    }
   }
 
   /**
    * RecordBuilder for TestPerson instances.
    */
+  @org.apache.avro.specific.AvroGenerated
   public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<TestPerson>
     implements org.apache.avro.data.RecordBuilder<TestPerson> {
 
@@ -177,7 +250,7 @@ public class TestPerson extends org.apache.avro.specific.SpecificRecordBase impl
 
     /** Creates a new Builder */
     private Builder() {
-      super(SCHEMA$);
+      super(SCHEMA$, MODEL$);
     }
 
     /**
@@ -188,19 +261,19 @@ public class TestPerson extends org.apache.avro.specific.SpecificRecordBase impl
       super(other);
       if (isValidValue(fields()[0], other.age)) {
         this.age = data().deepCopy(fields()[0].schema(), other.age);
-        fieldSetFlags()[0] = true;
+        fieldSetFlags()[0] = other.fieldSetFlags()[0];
       }
       if (isValidValue(fields()[1], other.name)) {
         this.name = data().deepCopy(fields()[1].schema(), other.name);
-        fieldSetFlags()[1] = true;
+        fieldSetFlags()[1] = other.fieldSetFlags()[1];
       }
       if (isValidValue(fields()[2], other.hobby)) {
         this.hobby = data().deepCopy(fields()[2].schema(), other.hobby);
-        fieldSetFlags()[2] = true;
+        fieldSetFlags()[2] = other.fieldSetFlags()[2];
       }
       if (isValidValue(fields()[3], other.job)) {
         this.job = data().deepCopy(fields()[3].schema(), other.job);
-        fieldSetFlags()[3] = true;
+        fieldSetFlags()[3] = other.fieldSetFlags()[3];
       }
       if (other.hasJobBuilder()) {
         this.jobBuilder = com.epam.eco.commons.avro.data.TestJob.newBuilder(other.getJobBuilder());
@@ -212,7 +285,7 @@ public class TestPerson extends org.apache.avro.specific.SpecificRecordBase impl
      * @param other The existing instance to copy.
      */
     private Builder(com.epam.eco.commons.avro.data.TestPerson other) {
-            super(SCHEMA$);
+      super(SCHEMA$, MODEL$);
       if (isValidValue(fields()[0], other.age)) {
         this.age = data().deepCopy(fields()[0].schema(), other.age);
         fieldSetFlags()[0] = true;
@@ -239,6 +312,7 @@ public class TestPerson extends org.apache.avro.specific.SpecificRecordBase impl
     public java.lang.Integer getAge() {
       return age;
     }
+
 
     /**
       * Sets the value of the 'age' field.
@@ -279,6 +353,7 @@ public class TestPerson extends org.apache.avro.specific.SpecificRecordBase impl
       return name;
     }
 
+
     /**
       * Sets the value of the 'name' field.
       * @param value The value of 'name'.
@@ -318,6 +393,7 @@ public class TestPerson extends org.apache.avro.specific.SpecificRecordBase impl
       return hobby;
     }
 
+
     /**
       * Sets the value of the 'hobby' field.
       * @param value The value of 'hobby'.
@@ -356,6 +432,7 @@ public class TestPerson extends org.apache.avro.specific.SpecificRecordBase impl
     public com.epam.eco.commons.avro.data.TestJob getJob() {
       return job;
     }
+
 
     /**
       * Sets the value of the 'job' field.
@@ -398,6 +475,7 @@ public class TestPerson extends org.apache.avro.specific.SpecificRecordBase impl
      * @param value The builder instance that must be set.
      * @return This builder.
      */
+
     public com.epam.eco.commons.avro.data.TestPerson.Builder setJobBuilder(com.epam.eco.commons.avro.data.TestJob.Builder value) {
       clearJob();
       jobBuilder = value;
@@ -424,6 +502,7 @@ public class TestPerson extends org.apache.avro.specific.SpecificRecordBase impl
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public TestPerson build() {
       try {
         TestPerson record = new TestPerson();
@@ -431,31 +510,184 @@ public class TestPerson extends org.apache.avro.specific.SpecificRecordBase impl
         record.name = fieldSetFlags()[1] ? this.name : (java.lang.CharSequence) defaultValue(fields()[1]);
         record.hobby = fieldSetFlags()[2] ? this.hobby : (java.util.List<com.epam.eco.commons.avro.data.TestHobby>) defaultValue(fields()[2]);
         if (jobBuilder != null) {
-          record.job = this.jobBuilder.build();
+          try {
+            record.job = this.jobBuilder.build();
+          } catch (org.apache.avro.AvroMissingFieldException e) {
+            e.addParentField(record.getSchema().getField("job"));
+            throw e;
+          }
         } else {
           record.job = fieldSetFlags()[3] ? this.job : (com.epam.eco.commons.avro.data.TestJob) defaultValue(fields()[3]);
         }
         return record;
-      } catch (Exception e) {
+      } catch (org.apache.avro.AvroMissingFieldException e) {
+        throw e;
+      } catch (java.lang.Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);
       }
     }
   }
 
-  private static final org.apache.avro.io.DatumWriter
-    WRITER$ = new org.apache.avro.specific.SpecificDatumWriter(SCHEMA$);
+  @SuppressWarnings("unchecked")
+  private static final org.apache.avro.io.DatumWriter<TestPerson>
+    WRITER$ = (org.apache.avro.io.DatumWriter<TestPerson>)MODEL$.createDatumWriter(SCHEMA$);
 
   @Override public void writeExternal(java.io.ObjectOutput out)
     throws java.io.IOException {
     WRITER$.write(this, SpecificData.getEncoder(out));
   }
 
-  private static final org.apache.avro.io.DatumReader
-    READER$ = new org.apache.avro.specific.SpecificDatumReader(SCHEMA$);
+  @SuppressWarnings("unchecked")
+  private static final org.apache.avro.io.DatumReader<TestPerson>
+    READER$ = (org.apache.avro.io.DatumReader<TestPerson>)MODEL$.createDatumReader(SCHEMA$);
 
   @Override public void readExternal(java.io.ObjectInput in)
     throws java.io.IOException {
     READER$.read(this, SpecificData.getDecoder(in));
   }
 
+  @Override protected boolean hasCustomCoders() { return true; }
+
+  @Override public void customEncode(org.apache.avro.io.Encoder out)
+    throws java.io.IOException
+  {
+    if (this.age == null) {
+      out.writeIndex(0);
+      out.writeNull();
+    } else {
+      out.writeIndex(1);
+      out.writeInt(this.age);
+    }
+
+    out.writeString(this.name);
+
+    if (this.hobby == null) {
+      out.writeIndex(0);
+      out.writeNull();
+    } else {
+      out.writeIndex(1);
+      long size0 = this.hobby.size();
+      out.writeArrayStart();
+      out.setItemCount(size0);
+      long actualSize0 = 0;
+      for (com.epam.eco.commons.avro.data.TestHobby e0: this.hobby) {
+        actualSize0++;
+        out.startItem();
+        e0.customEncode(out);
+      }
+      out.writeArrayEnd();
+      if (actualSize0 != size0)
+        throw new java.util.ConcurrentModificationException("Array-size written was " + size0 + ", but element count was " + actualSize0 + ".");
+    }
+
+    this.job.customEncode(out);
+
+  }
+
+  @Override public void customDecode(org.apache.avro.io.ResolvingDecoder in)
+    throws java.io.IOException
+  {
+    org.apache.avro.Schema.Field[] fieldOrder = in.readFieldOrderIfDiff();
+    if (fieldOrder == null) {
+      if (in.readIndex() != 1) {
+        in.readNull();
+        this.age = null;
+      } else {
+        this.age = in.readInt();
+      }
+
+      this.name = in.readString(this.name instanceof Utf8 ? (Utf8)this.name : null);
+
+      if (in.readIndex() != 1) {
+        in.readNull();
+        this.hobby = null;
+      } else {
+        long size0 = in.readArrayStart();
+        java.util.List<com.epam.eco.commons.avro.data.TestHobby> a0 = this.hobby;
+        if (a0 == null) {
+          a0 = new SpecificData.Array<com.epam.eco.commons.avro.data.TestHobby>((int)size0, SCHEMA$.getField("hobby").schema().getTypes().get(1));
+          this.hobby = a0;
+        } else a0.clear();
+        SpecificData.Array<com.epam.eco.commons.avro.data.TestHobby> ga0 = (a0 instanceof SpecificData.Array ? (SpecificData.Array<com.epam.eco.commons.avro.data.TestHobby>)a0 : null);
+        for ( ; 0 < size0; size0 = in.arrayNext()) {
+          for ( ; size0 != 0; size0--) {
+            com.epam.eco.commons.avro.data.TestHobby e0 = (ga0 != null ? ga0.peek() : null);
+            if (e0 == null) {
+              e0 = new com.epam.eco.commons.avro.data.TestHobby();
+            }
+            e0.customDecode(in);
+            a0.add(e0);
+          }
+        }
+      }
+
+      if (this.job == null) {
+        this.job = new com.epam.eco.commons.avro.data.TestJob();
+      }
+      this.job.customDecode(in);
+
+    } else {
+      for (int i = 0; i < 4; i++) {
+        switch (fieldOrder[i].pos()) {
+        case 0:
+          if (in.readIndex() != 1) {
+            in.readNull();
+            this.age = null;
+          } else {
+            this.age = in.readInt();
+          }
+          break;
+
+        case 1:
+          this.name = in.readString(this.name instanceof Utf8 ? (Utf8)this.name : null);
+          break;
+
+        case 2:
+          if (in.readIndex() != 1) {
+            in.readNull();
+            this.hobby = null;
+          } else {
+            long size0 = in.readArrayStart();
+            java.util.List<com.epam.eco.commons.avro.data.TestHobby> a0 = this.hobby;
+            if (a0 == null) {
+              a0 = new SpecificData.Array<com.epam.eco.commons.avro.data.TestHobby>((int)size0, SCHEMA$.getField("hobby").schema().getTypes().get(1));
+              this.hobby = a0;
+            } else a0.clear();
+            SpecificData.Array<com.epam.eco.commons.avro.data.TestHobby> ga0 = (a0 instanceof SpecificData.Array ? (SpecificData.Array<com.epam.eco.commons.avro.data.TestHobby>)a0 : null);
+            for ( ; 0 < size0; size0 = in.arrayNext()) {
+              for ( ; size0 != 0; size0--) {
+                com.epam.eco.commons.avro.data.TestHobby e0 = (ga0 != null ? ga0.peek() : null);
+                if (e0 == null) {
+                  e0 = new com.epam.eco.commons.avro.data.TestHobby();
+                }
+                e0.customDecode(in);
+                a0.add(e0);
+              }
+            }
+          }
+          break;
+
+        case 3:
+          if (this.job == null) {
+            this.job = new com.epam.eco.commons.avro.data.TestJob();
+          }
+          this.job.customDecode(in);
+          break;
+
+        default:
+          throw new java.io.IOException("Corrupt ResolvingDecoder.");
+        }
+      }
+    }
+  }
 }
+
+
+
+
+
+
+
+
+
+

@@ -15,16 +15,75 @@
  */
 package com.epam.eco.commons.avro.data;
 
+import org.apache.avro.message.BinaryMessageDecoder;
+import org.apache.avro.message.BinaryMessageEncoder;
+import org.apache.avro.message.SchemaStore;
 import org.apache.avro.specific.SpecificData;
+import org.apache.avro.util.Utf8;
 
-@SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class TestPosition extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -2126684643311420324L;
+  private static final long serialVersionUID = 8548217914756755307L;
+
+
   public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"TestPosition\",\"namespace\":\"com.epam.eco.commons.avro.data\",\"fields\":[{\"name\":\"title\",\"type\":\"string\"},{\"name\":\"skill\",\"type\":{\"type\":\"map\",\"values\":{\"type\":\"record\",\"name\":\"TestSkillLevel\",\"fields\":[{\"name\":\"level\",\"type\":\"string\"},{\"name\":\"description\",\"type\":\"string\"}]}}}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
-  @Deprecated public java.lang.CharSequence title;
-  @Deprecated public java.util.Map<java.lang.CharSequence,com.epam.eco.commons.avro.data.TestSkillLevel> skill;
+
+  private static final SpecificData MODEL$ = new SpecificData();
+
+  private static final BinaryMessageEncoder<TestPosition> ENCODER =
+      new BinaryMessageEncoder<TestPosition>(MODEL$, SCHEMA$);
+
+  private static final BinaryMessageDecoder<TestPosition> DECODER =
+      new BinaryMessageDecoder<TestPosition>(MODEL$, SCHEMA$);
+
+  /**
+   * Return the BinaryMessageEncoder instance used by this class.
+   * @return the message encoder used by this class
+   */
+  public static BinaryMessageEncoder<TestPosition> getEncoder() {
+    return ENCODER;
+  }
+
+  /**
+   * Return the BinaryMessageDecoder instance used by this class.
+   * @return the message decoder used by this class
+   */
+  public static BinaryMessageDecoder<TestPosition> getDecoder() {
+    return DECODER;
+  }
+
+  /**
+   * Create a new BinaryMessageDecoder instance for this class that uses the specified {@link SchemaStore}.
+   * @param resolver a {@link SchemaStore} used to find schemas by fingerprint
+   * @return a BinaryMessageDecoder instance for this class backed by the given SchemaStore
+   */
+  public static BinaryMessageDecoder<TestPosition> createDecoder(SchemaStore resolver) {
+    return new BinaryMessageDecoder<TestPosition>(MODEL$, SCHEMA$, resolver);
+  }
+
+  /**
+   * Serializes this TestPosition to a ByteBuffer.
+   * @return a buffer holding the serialized data for this instance
+   * @throws java.io.IOException if this instance could not be serialized
+   */
+  public java.nio.ByteBuffer toByteBuffer() throws java.io.IOException {
+    return ENCODER.encode(this);
+  }
+
+  /**
+   * Deserializes a TestPosition from a ByteBuffer.
+   * @param b a byte buffer holding serialized data for an instance of this class
+   * @return a TestPosition instance decoded from the given buffer
+   * @throws java.io.IOException if the given bytes could not be deserialized into an instance of this class
+   */
+  public static TestPosition fromByteBuffer(
+      java.nio.ByteBuffer b) throws java.io.IOException {
+    return DECODER.decode(b);
+  }
+
+  private java.lang.CharSequence title;
+  private java.util.Map<java.lang.CharSequence,com.epam.eco.commons.avro.data.TestSkillLevel> skill;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -43,13 +102,14 @@ public class TestPosition extends org.apache.avro.specific.SpecificRecordBase im
     this.skill = skill;
   }
 
+  public org.apache.avro.specific.SpecificData getSpecificData() { return MODEL$; }
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
   // Used by DatumWriter.  Applications should not call.
   public java.lang.Object get(int field$) {
     switch (field$) {
     case 0: return title;
     case 1: return skill;
-    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
+    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
 
@@ -59,7 +119,7 @@ public class TestPosition extends org.apache.avro.specific.SpecificRecordBase im
     switch (field$) {
     case 0: title = (java.lang.CharSequence)value$; break;
     case 1: skill = (java.util.Map<java.lang.CharSequence,com.epam.eco.commons.avro.data.TestSkillLevel>)value$; break;
-    default: throw new org.apache.avro.AvroRuntimeException("Bad index");
+    default: throw new IndexOutOfBoundsException("Invalid index: " + field$);
     }
   }
 
@@ -70,6 +130,7 @@ public class TestPosition extends org.apache.avro.specific.SpecificRecordBase im
   public java.lang.CharSequence getTitle() {
     return title;
   }
+
 
   /**
    * Sets the value of the 'title' field.
@@ -86,6 +147,7 @@ public class TestPosition extends org.apache.avro.specific.SpecificRecordBase im
   public java.util.Map<java.lang.CharSequence,com.epam.eco.commons.avro.data.TestSkillLevel> getSkill() {
     return skill;
   }
+
 
   /**
    * Sets the value of the 'skill' field.
@@ -109,7 +171,11 @@ public class TestPosition extends org.apache.avro.specific.SpecificRecordBase im
    * @return A new TestPosition RecordBuilder
    */
   public static com.epam.eco.commons.avro.data.TestPosition.Builder newBuilder(com.epam.eco.commons.avro.data.TestPosition.Builder other) {
-    return new com.epam.eco.commons.avro.data.TestPosition.Builder(other);
+    if (other == null) {
+      return new com.epam.eco.commons.avro.data.TestPosition.Builder();
+    } else {
+      return new com.epam.eco.commons.avro.data.TestPosition.Builder(other);
+    }
   }
 
   /**
@@ -118,12 +184,17 @@ public class TestPosition extends org.apache.avro.specific.SpecificRecordBase im
    * @return A new TestPosition RecordBuilder
    */
   public static com.epam.eco.commons.avro.data.TestPosition.Builder newBuilder(com.epam.eco.commons.avro.data.TestPosition other) {
-    return new com.epam.eco.commons.avro.data.TestPosition.Builder(other);
+    if (other == null) {
+      return new com.epam.eco.commons.avro.data.TestPosition.Builder();
+    } else {
+      return new com.epam.eco.commons.avro.data.TestPosition.Builder(other);
+    }
   }
 
   /**
    * RecordBuilder for TestPosition instances.
    */
+  @org.apache.avro.specific.AvroGenerated
   public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<TestPosition>
     implements org.apache.avro.data.RecordBuilder<TestPosition> {
 
@@ -132,7 +203,7 @@ public class TestPosition extends org.apache.avro.specific.SpecificRecordBase im
 
     /** Creates a new Builder */
     private Builder() {
-      super(SCHEMA$);
+      super(SCHEMA$, MODEL$);
     }
 
     /**
@@ -143,11 +214,11 @@ public class TestPosition extends org.apache.avro.specific.SpecificRecordBase im
       super(other);
       if (isValidValue(fields()[0], other.title)) {
         this.title = data().deepCopy(fields()[0].schema(), other.title);
-        fieldSetFlags()[0] = true;
+        fieldSetFlags()[0] = other.fieldSetFlags()[0];
       }
       if (isValidValue(fields()[1], other.skill)) {
         this.skill = data().deepCopy(fields()[1].schema(), other.skill);
-        fieldSetFlags()[1] = true;
+        fieldSetFlags()[1] = other.fieldSetFlags()[1];
       }
     }
 
@@ -156,7 +227,7 @@ public class TestPosition extends org.apache.avro.specific.SpecificRecordBase im
      * @param other The existing instance to copy.
      */
     private Builder(com.epam.eco.commons.avro.data.TestPosition other) {
-            super(SCHEMA$);
+      super(SCHEMA$, MODEL$);
       if (isValidValue(fields()[0], other.title)) {
         this.title = data().deepCopy(fields()[0].schema(), other.title);
         fieldSetFlags()[0] = true;
@@ -174,6 +245,7 @@ public class TestPosition extends org.apache.avro.specific.SpecificRecordBase im
     public java.lang.CharSequence getTitle() {
       return title;
     }
+
 
     /**
       * Sets the value of the 'title' field.
@@ -214,6 +286,7 @@ public class TestPosition extends org.apache.avro.specific.SpecificRecordBase im
       return skill;
     }
 
+
     /**
       * Sets the value of the 'skill' field.
       * @param value The value of 'skill'.
@@ -246,32 +319,131 @@ public class TestPosition extends org.apache.avro.specific.SpecificRecordBase im
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public TestPosition build() {
       try {
         TestPosition record = new TestPosition();
         record.title = fieldSetFlags()[0] ? this.title : (java.lang.CharSequence) defaultValue(fields()[0]);
         record.skill = fieldSetFlags()[1] ? this.skill : (java.util.Map<java.lang.CharSequence,com.epam.eco.commons.avro.data.TestSkillLevel>) defaultValue(fields()[1]);
         return record;
-      } catch (Exception e) {
+      } catch (org.apache.avro.AvroMissingFieldException e) {
+        throw e;
+      } catch (java.lang.Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);
       }
     }
   }
 
-  private static final org.apache.avro.io.DatumWriter
-    WRITER$ = new org.apache.avro.specific.SpecificDatumWriter(SCHEMA$);
+  @SuppressWarnings("unchecked")
+  private static final org.apache.avro.io.DatumWriter<TestPosition>
+    WRITER$ = (org.apache.avro.io.DatumWriter<TestPosition>)MODEL$.createDatumWriter(SCHEMA$);
 
   @Override public void writeExternal(java.io.ObjectOutput out)
     throws java.io.IOException {
     WRITER$.write(this, SpecificData.getEncoder(out));
   }
 
-  private static final org.apache.avro.io.DatumReader
-    READER$ = new org.apache.avro.specific.SpecificDatumReader(SCHEMA$);
+  @SuppressWarnings("unchecked")
+  private static final org.apache.avro.io.DatumReader<TestPosition>
+    READER$ = (org.apache.avro.io.DatumReader<TestPosition>)MODEL$.createDatumReader(SCHEMA$);
 
   @Override public void readExternal(java.io.ObjectInput in)
     throws java.io.IOException {
     READER$.read(this, SpecificData.getDecoder(in));
   }
 
+  @Override protected boolean hasCustomCoders() { return true; }
+
+  @Override public void customEncode(org.apache.avro.io.Encoder out)
+    throws java.io.IOException
+  {
+    out.writeString(this.title);
+
+    long size0 = this.skill.size();
+    out.writeMapStart();
+    out.setItemCount(size0);
+    long actualSize0 = 0;
+    for (java.util.Map.Entry<java.lang.CharSequence, com.epam.eco.commons.avro.data.TestSkillLevel> e0: this.skill.entrySet()) {
+      actualSize0++;
+      out.startItem();
+      out.writeString(e0.getKey());
+      com.epam.eco.commons.avro.data.TestSkillLevel v0 = e0.getValue();
+      v0.customEncode(out);
+    }
+    out.writeMapEnd();
+    if (actualSize0 != size0)
+      throw new java.util.ConcurrentModificationException("Map-size written was " + size0 + ", but element count was " + actualSize0 + ".");
+
+  }
+
+  @Override public void customDecode(org.apache.avro.io.ResolvingDecoder in)
+    throws java.io.IOException
+  {
+    org.apache.avro.Schema.Field[] fieldOrder = in.readFieldOrderIfDiff();
+    if (fieldOrder == null) {
+      this.title = in.readString(this.title instanceof Utf8 ? (Utf8)this.title : null);
+
+      long size0 = in.readMapStart();
+      java.util.Map<java.lang.CharSequence,com.epam.eco.commons.avro.data.TestSkillLevel> m0 = this.skill; // Need fresh name due to limitation of macro system
+      if (m0 == null) {
+        m0 = new java.util.HashMap<java.lang.CharSequence,com.epam.eco.commons.avro.data.TestSkillLevel>((int)size0);
+        this.skill = m0;
+      } else m0.clear();
+      for ( ; 0 < size0; size0 = in.mapNext()) {
+        for ( ; size0 != 0; size0--) {
+          java.lang.CharSequence k0 = null;
+          k0 = in.readString(k0 instanceof Utf8 ? (Utf8)k0 : null);
+          com.epam.eco.commons.avro.data.TestSkillLevel v0 = null;
+          if (v0 == null) {
+            v0 = new com.epam.eco.commons.avro.data.TestSkillLevel();
+          }
+          v0.customDecode(in);
+          m0.put(k0, v0);
+        }
+      }
+
+    } else {
+      for (int i = 0; i < 2; i++) {
+        switch (fieldOrder[i].pos()) {
+        case 0:
+          this.title = in.readString(this.title instanceof Utf8 ? (Utf8)this.title : null);
+          break;
+
+        case 1:
+          long size0 = in.readMapStart();
+          java.util.Map<java.lang.CharSequence,com.epam.eco.commons.avro.data.TestSkillLevel> m0 = this.skill; // Need fresh name due to limitation of macro system
+          if (m0 == null) {
+            m0 = new java.util.HashMap<java.lang.CharSequence,com.epam.eco.commons.avro.data.TestSkillLevel>((int)size0);
+            this.skill = m0;
+          } else m0.clear();
+          for ( ; 0 < size0; size0 = in.mapNext()) {
+            for ( ; size0 != 0; size0--) {
+              java.lang.CharSequence k0 = null;
+              k0 = in.readString(k0 instanceof Utf8 ? (Utf8)k0 : null);
+              com.epam.eco.commons.avro.data.TestSkillLevel v0 = null;
+              if (v0 == null) {
+                v0 = new com.epam.eco.commons.avro.data.TestSkillLevel();
+              }
+              v0.customDecode(in);
+              m0.put(k0, v0);
+            }
+          }
+          break;
+
+        default:
+          throw new java.io.IOException("Corrupt ResolvingDecoder.");
+        }
+      }
+    }
+  }
 }
+
+
+
+
+
+
+
+
+
+
