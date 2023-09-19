@@ -57,7 +57,7 @@
     "name" : "collection_of_string_field",
     "type" : [ {
       "type" : "array",
-      "items" : [ "string", "null" ]
+      "items" : [ "null", "string" ]
     }, "null" ]
   }, {
     "name" : "collection_of_map_field",
@@ -144,5 +144,15 @@
       "null",
       "string"],
     "default": null
-  } ]
+  }, {
+    "name": "opt_avro_map",
+    "type": [
+      "null",
+      {
+        "type": "map",
+        "values": ["null", "string"]
+      }
+    ],
+    "default": null
+  }]
 }
