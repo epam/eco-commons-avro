@@ -24,12 +24,21 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.apache.avro.JsonProperties;
@@ -339,16 +348,75 @@ public class DefaultAvroConverters implements AvroConverters {
         public Object toAvro(Object value, Schema schema, AvroConverters converters) {
             if (value instanceof Map) {
                 Schema mapValuesSchema = schema.getValueType();
+    
+                MapValueNullableCollector mapValueNullableCollector = new MapValueNullableCollector(
+                    Map.Entry::getKey,
+                    e -> converters.getForSchema(mapValuesSchema).
+                        toAvro(e.getValue(), mapValuesSchema, converters)
+                );
+                
                 return ((Map<String, Object>) value).entrySet().stream()
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey,
-                                e -> converters.getForSchema(mapValuesSchema).
-                                    toAvro(e.getValue(), mapValuesSchema, converters)));
+                        .collect(mapValueNullableCollector);
             }
 
             throw new AvroConversionException(value, schema);
         }
-
+        
+        static class MapValueNullableCollector
+            implements Collector<Map.Entry<String, Object>, Map<String, Object>, Map<String, Object>> {
+            private final Function<Map.Entry<String, Object>, String> keyMapper;
+            private final Function<Map.Entry<String, Object>, Object> valueMapper;
+    
+            public MapValueNullableCollector(
+                Function<Map.Entry<String, Object>, String> keyMapper,
+                Function<Map.Entry<String, Object>, Object> valueMapper
+            ) {
+                this.keyMapper = keyMapper;
+                this.valueMapper = valueMapper;
+            }
+    
+            @Override
+            public Supplier<Map<String, Object>> supplier() {
+                return HashMap::new;
+            }
+    
+            @Override
+            public BiConsumer<Map<String, Object>, Map.Entry<String, Object>> accumulator() {
+                return (map, entry) -> {
+                    String key = keyMapper.apply(entry);
+                    Object value = valueMapper.apply(entry);
+                    Object prevValue = map.putIfAbsent(key, value);
+                    if (prevValue != null) throw  new IllegalStateException(String.format(
+                        "Duplicate key %s (attempted merging values %s and %s)",
+                        key, prevValue, value));
+                };
+            }
+    
+            @Override
+            public BinaryOperator<Map<String, Object>> combiner() {
+                return (m1, m2) -> {
+                    for (Map.Entry<String,Object> e : m2.entrySet()) {
+                        String key = e.getKey();
+                        Object value = e.getValue();
+                        Object prevValue = m1.putIfAbsent(key, value);
+                        if (prevValue != null) throw  new IllegalStateException(String.format(
+                            "Duplicate key %s (attempted merging values %s and %s)",
+                            key, prevValue, value));
+                    }
+                    return m1;
+                };
+            }
+    
+            @Override
+            public Function<Map<String, Object>, Map<String, Object>> finisher() {
+                return Function.identity();
+            }
+    
+            @Override
+            public Set<Characteristics> characteristics() {
+                return Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH));
+            }
+        }
     }
 
     public static class DefaultRecordAvroConverter implements AvroConverter {
