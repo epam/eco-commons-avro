@@ -126,6 +126,10 @@ public class DefaultAvroConvertersTest {
         GenericRecord embeddedMapField = (GenericRecord) mapField.get("embedded_map_field");
         Assertions.assertEquals(embeddedMapField.get("int_field"), 1);
         Assertions.assertEquals(embeddedMapField.get("string_field"), "test");
+        
+        Map<String, Object> optAvroMap = (HashMap<String, Object>) convertedData.get("opt_avro_map");
+        Assertions.assertEquals("str_val", optAvroMap.get("str_field"));
+        Assertions.assertNull(optAvroMap.get("str_null_field"));
     }
 
     @Test

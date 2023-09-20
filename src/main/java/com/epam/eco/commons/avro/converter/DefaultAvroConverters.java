@@ -36,6 +36,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
@@ -355,8 +356,20 @@ public class DefaultAvroConverters implements AvroConverters {
                         toAvro(e.getValue(), mapValuesSchema, converters)
                 );
                 
-                return ((Map<String, Object>) value).entrySet().stream()
-                        .collect(mapValueNullableCollector);
+                Map<String, Object> convertedMap = new HashMap<>();
+                
+                Consumer<Map.Entry<String, Object>> enrichMap = (entry) -> {
+                    convertedMap.put(
+                        entry.getKey(),
+                        converters.getForSchema(mapValuesSchema).
+                            toAvro(entry.getValue(), mapValuesSchema, converters)
+                    );
+                };
+                
+                ((Map<String, Object>) value).entrySet()
+                    .forEach(enrichMap);
+                
+                return convertedMap;
             }
 
             throw new AvroConversionException(value, schema);
