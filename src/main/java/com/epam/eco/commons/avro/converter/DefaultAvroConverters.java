@@ -24,12 +24,22 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.apache.avro.JsonProperties;
@@ -339,16 +349,24 @@ public class DefaultAvroConverters implements AvroConverters {
         public Object toAvro(Object value, Schema schema, AvroConverters converters) {
             if (value instanceof Map) {
                 Schema mapValuesSchema = schema.getValueType();
-                return ((Map<String, Object>) value).entrySet().stream()
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey,
-                                e -> converters.getForSchema(mapValuesSchema).
-                                    toAvro(e.getValue(), mapValuesSchema, converters)));
+                
+                Map<String, Object> convertedMap = new HashMap<>();
+                
+                BiConsumer<String, Object> enrichMap = (k, v) -> {
+                    convertedMap.put(
+                        k,
+                        converters.getForSchema(mapValuesSchema).
+                            toAvro(v, mapValuesSchema, converters)
+                    );
+                };
+                
+                ((Map<String, Object>) value).forEach(enrichMap);
+                
+                return convertedMap;
             }
 
             throw new AvroConversionException(value, schema);
         }
-
     }
 
     public static class DefaultRecordAvroConverter implements AvroConverter {

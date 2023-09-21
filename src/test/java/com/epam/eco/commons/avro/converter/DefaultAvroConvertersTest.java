@@ -22,6 +22,7 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,6 +45,14 @@ public class DefaultAvroConvertersTest {
 
     private static final Schema VALUE_SCHEMA = AvroUtils.schemaFromResource("/broad_schema_with_null.avsc");
 
+    private static Map<String, String> AVRO_MAP = new HashMap<>();
+
+    static {
+        AVRO_MAP.put("str_field", "str_val");
+        AVRO_MAP.put("str_null_field", null);
+
+    }
+
     private final Map<String, Object> value = ImmutableMap.<String, Object>builder()
                                                     .put("int_field", 1)
                                                     .put("long_field", 1L)
@@ -52,7 +61,7 @@ public class DefaultAvroConvertersTest {
                                                     .put("boolean_field", Boolean.TRUE)
                                                     .put("string_field", "test")
                                                     .put("bytes_field", ByteBuffer.wrap("test".getBytes()))
-                                                    .put("collection_of_string_field", Arrays.asList("e1", "e2"))
+                                                    .put("collection_of_string_field", Arrays.asList("e1", "e2", null))
                                                     .put("date_field", LocalDate.of(2018, 7, 10))
                                                     .put("date_field_int", 10000)
                                                     .put("time_field", LocalTime.of(11, 30))
@@ -67,10 +76,11 @@ public class DefaultAvroConvertersTest {
                                                                                   .put("boolean_field", Boolean.TRUE)
                                                                                   .put("string_field", "test")
                                                                                   .put("bytes_field", ByteBuffer.wrap("test".getBytes()))
-                                                                                  .put("collection_of_string_field", Arrays.asList("e1", "e2"))
+                                                                                  .put("collection_of_string_field", Arrays.asList("e1", "e2", null))
                                                                                   .put("embedded_collection_of_map_field", Collections.singletonList(ImmutableMap.of("int_field", 1, "string_field", "test")))
                                                                                   .put("embedded_map_field", ImmutableMap.of("int_field", 1, "string_field", "test"))
                                                                                   .build())
+                                                    .put("opt_avro_map", AVRO_MAP)
                                                     .build();
 
 
@@ -93,7 +103,7 @@ public class DefaultAvroConvertersTest {
         Assertions.assertEquals(convertedData.get("time_field"), LocalTime.of(11, 30).toSecondOfDay());
         Assertions.assertEquals(convertedData.get("time_field_int"), 10000);
         Assertions.assertEquals(convertedData.get("datetime_field"), LocalDateTime.of(2018, 7, 10, 11, 30).atOffset(ZoneOffset.UTC).toInstant().toEpochMilli());
-        Assertions.assertEquals(convertedData.get("collection_of_string_field"), Arrays.asList("e1", "e2"));
+        Assertions.assertEquals(convertedData.get("collection_of_string_field"), Arrays.asList("e1", "e2", null));
 
         GenericRecord collectionOfMapElement = (GenericRecord) ((List) convertedData.get("collection_of_map_field")).get(0);
         Assertions.assertEquals(collectionOfMapElement.get("int_field"), 1);
@@ -107,7 +117,7 @@ public class DefaultAvroConvertersTest {
         Assertions.assertEquals(mapField.get("boolean_field"), Boolean.TRUE);
         Assertions.assertEquals(mapField.get("string_field"), "test");
         Assertions.assertEquals(new String(((ByteBuffer) mapField.get("bytes_field")).array()), "test");
-        Assertions.assertEquals(mapField.get("collection_of_string_field"), Arrays.asList("e1", "e2"));
+        Assertions.assertEquals(mapField.get("collection_of_string_field"), Arrays.asList("e1", "e2", null));
 
         GenericRecord embeddedCollectionOfMapElement = (GenericRecord) ((List) mapField.get("embedded_collection_of_map_field")).get(0);
         Assertions.assertEquals(embeddedCollectionOfMapElement.get("int_field"), 1);
@@ -116,6 +126,10 @@ public class DefaultAvroConvertersTest {
         GenericRecord embeddedMapField = (GenericRecord) mapField.get("embedded_map_field");
         Assertions.assertEquals(embeddedMapField.get("int_field"), 1);
         Assertions.assertEquals(embeddedMapField.get("string_field"), "test");
+        
+        Map<String, Object> optAvroMap = (HashMap<String, Object>) convertedData.get("opt_avro_map");
+        Assertions.assertEquals("str_val", optAvroMap.get("str_field"));
+        Assertions.assertNull(optAvroMap.get("str_null_field"));
     }
 
     @Test
