@@ -352,16 +352,15 @@ public class DefaultAvroConverters implements AvroConverters {
                 
                 Map<String, Object> convertedMap = new HashMap<>();
                 
-                Consumer<Map.Entry<String, Object>> enrichMap = (entry) -> {
+                BiConsumer<String, Object> enrichMap = (k, v) -> {
                     convertedMap.put(
-                        entry.getKey(),
+                        k,
                         converters.getForSchema(mapValuesSchema).
-                            toAvro(entry.getValue(), mapValuesSchema, converters)
+                            toAvro(v, mapValuesSchema, converters)
                     );
                 };
                 
-                ((Map<String, Object>) value).entrySet()
-                    .forEach(enrichMap);
+                ((Map<String, Object>) value).forEach(enrichMap);
                 
                 return convertedMap;
             }
