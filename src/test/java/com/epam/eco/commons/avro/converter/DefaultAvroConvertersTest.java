@@ -45,7 +45,7 @@ public class DefaultAvroConvertersTest {
 
     private static final Schema VALUE_SCHEMA = AvroUtils.schemaFromResource("/broad_schema_with_null.avsc");
 
-    private static Map<String, String> AVRO_MAP = new HashMap<>();
+    private static final Map<String, String> AVRO_MAP = new HashMap<>();
 
     static {
         AVRO_MAP.put("str_field", "str_val");
@@ -54,34 +54,36 @@ public class DefaultAvroConvertersTest {
     }
 
     private final Map<String, Object> value = ImmutableMap.<String, Object>builder()
-                                                    .put("int_field", 1)
-                                                    .put("long_field", 1L)
-                                                    .put("float_field", (float) 0.1)
-                                                    .put("double_field", 0.1)
-                                                    .put("boolean_field", Boolean.TRUE)
-                                                    .put("string_field", "test")
-                                                    .put("bytes_field", ByteBuffer.wrap("test".getBytes()))
-                                                    .put("collection_of_string_field", Arrays.asList("e1", "e2", null))
-                                                    .put("date_field", LocalDate.of(2018, 7, 10))
-                                                    .put("date_field_int", 10000)
-                                                    .put("time_field", LocalTime.of(11, 30))
-                                                    .put("time_field_int", 10000)
-                                                    .put("datetime_field", LocalDateTime.of(2018, 7, 10, 11, 30))
-                                                    .put("collection_of_map_field", Collections.singletonList(ImmutableMap.of("int_field", 1, "string_field", "test")))
-                                                    .put("map_field", ImmutableMap.<String, Object>builder()
-                                                                                  .put("int_field", 1)
-                                                                                  .put("long_field", 1L)
-                                                                                  .put("float_field", (float) 0.1)
-                                                                                  .put("double_field", 0.1)
-                                                                                  .put("boolean_field", Boolean.TRUE)
-                                                                                  .put("string_field", "test")
-                                                                                  .put("bytes_field", ByteBuffer.wrap("test".getBytes()))
-                                                                                  .put("collection_of_string_field", Arrays.asList("e1", "e2", null))
-                                                                                  .put("embedded_collection_of_map_field", Collections.singletonList(ImmutableMap.of("int_field", 1, "string_field", "test")))
-                                                                                  .put("embedded_map_field", ImmutableMap.of("int_field", 1, "string_field", "test"))
-                                                                                  .build())
-                                                    .put("opt_avro_map", AVRO_MAP)
-                                                    .build();
+            .put("int_field", 1)
+            .put("long_field", 1L)
+            .put("float_field", (float) 0.1)
+            .put("double_field", 0.1)
+            .put("boolean_field", Boolean.TRUE)
+            .put("string_field", "test")
+            .put("bytes_field", ByteBuffer.wrap("test".getBytes()))
+            .put("collection_of_string_field", Arrays.asList("e1", "e2", null))
+            .put("date_field", LocalDate.of(2018, 7, 10))
+            .put("date_field_int", 10000)
+            .put("date_field_ldt", LocalDateTime.parse("2024-09-27T10:03:01"))
+            .put("time_field", LocalTime.of(11, 30))
+            .put("time_field_int", 10000)
+            .put("time_field_ldt", LocalDateTime.parse("2024-09-27T10:03:01"))
+            .put("datetime_field", LocalDateTime.of(2018, 7, 10, 11, 30))
+            .put("collection_of_map_field", Collections.singletonList(ImmutableMap.of("int_field", 1, "string_field", "test")))
+            .put("map_field", ImmutableMap.<String, Object>builder()
+                    .put("int_field", 1)
+                    .put("long_field", 1L)
+                    .put("float_field", (float) 0.1)
+                    .put("double_field", 0.1)
+                    .put("boolean_field", Boolean.TRUE)
+                    .put("string_field", "test")
+                    .put("bytes_field", ByteBuffer.wrap("test".getBytes()))
+                    .put("collection_of_string_field", Arrays.asList("e1", "e2", null))
+                    .put("embedded_collection_of_map_field", Collections.singletonList(ImmutableMap.of("int_field", 1, "string_field", "test")))
+                    .put("embedded_map_field", ImmutableMap.of("int_field", 1, "string_field", "test"))
+                    .build())
+            .put("opt_avro_map", AVRO_MAP)
+            .build();
 
 
     private final DefaultAvroConverters converters = new DefaultAvroConverters();
@@ -100,8 +102,10 @@ public class DefaultAvroConvertersTest {
         Assertions.assertEquals(new String(((ByteBuffer) convertedData.get("bytes_field")).array()), "test");
         Assertions.assertEquals(convertedData.get("date_field"), (int) LocalDate.of(2018, 7, 10).toEpochDay());
         Assertions.assertEquals(convertedData.get("date_field_int"), 10000);
+        Assertions.assertEquals(convertedData.get("date_field_ldt"), (int) LocalDateTime.parse("2024-09-27T10:03:01").toLocalDate().toEpochDay());
         Assertions.assertEquals(convertedData.get("time_field"), LocalTime.of(11, 30).toSecondOfDay());
         Assertions.assertEquals(convertedData.get("time_field_int"), 10000);
+        Assertions.assertEquals(convertedData.get("time_field_ldt"), LocalDateTime.parse("2024-09-27T10:03:01").toLocalTime().toSecondOfDay());
         Assertions.assertEquals(convertedData.get("datetime_field"), LocalDateTime.of(2018, 7, 10, 11, 30).atOffset(ZoneOffset.UTC).toInstant().toEpochMilli());
         Assertions.assertEquals(convertedData.get("collection_of_string_field"), Arrays.asList("e1", "e2", null));
 
@@ -126,7 +130,8 @@ public class DefaultAvroConvertersTest {
         GenericRecord embeddedMapField = (GenericRecord) mapField.get("embedded_map_field");
         Assertions.assertEquals(embeddedMapField.get("int_field"), 1);
         Assertions.assertEquals(embeddedMapField.get("string_field"), "test");
-        
+
+        @SuppressWarnings("unchecked")
         Map<String, Object> optAvroMap = (HashMap<String, Object>) convertedData.get("opt_avro_map");
         Assertions.assertEquals("str_val", optAvroMap.get("str_field"));
         Assertions.assertNull(optAvroMap.get("str_null_field"));
@@ -147,17 +152,17 @@ public class DefaultAvroConvertersTest {
 
     @Test
     public void convertToIncompatibleSchemaTest() {
-        Map<String, Object> valueMap =  ImmutableMap.<String, Object>builder()
-                                                    .put("field_0", "test")
-                                                    .put("field_1", "test")
-                                                    .put("field_2", "test")
-                                                    .build();
+        Map<String, Object> valueMap = ImmutableMap.<String, Object>builder()
+                .put("field_0", "test")
+                .put("field_1", "test")
+                .put("field_2", "test")
+                .build();
 
         Schema schema = SchemaBuilder.builder()
-                                     .record("schema")
-                                     .fields()
-                                         .name("field_0").type().stringType().noDefault()
-                                     .endRecord();
+                .record("schema")
+                .fields()
+                .name("field_0").type().stringType().noDefault()
+                .endRecord();
 
         assertThrows(
                 AvroConversionException.class,
