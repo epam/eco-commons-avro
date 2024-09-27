@@ -24,22 +24,14 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.BinaryOperator;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.apache.avro.JsonProperties;
@@ -113,6 +105,8 @@ public class DefaultAvroConverters implements AvroConverters {
                                         .atZone(ZoneOffset.systemDefault())
                                         .toLocalDate()
                                         .toEpochDay();
+                } else if (value instanceof LocalDateTime ldt) {
+                    return this.toLogicalType(ldt.toLocalDate(), schema);
                 } else if (value instanceof LocalDate) {
                     return (int) ChronoUnit.DAYS.between(LocalDate.ofEpochDay(0), ((LocalDate) value));
                 } else if (value instanceof CharSequence) {
@@ -124,6 +118,8 @@ public class DefaultAvroConverters implements AvroConverters {
                 if (value instanceof Date) {
                     Instant instant = Instant.ofEpochMilli(((Date) value).getTime());
                     return LocalDateTime.ofInstant(instant, ZoneOffset.UTC).toLocalTime().toSecondOfDay();
+                } else if (value instanceof LocalDateTime ldt) {
+                    return ldt.toLocalTime().toSecondOfDay();
                 } else if (value instanceof LocalTime) {
                     return ((LocalTime) value).toSecondOfDay();
                 } else if (value instanceof CharSequence) {
@@ -204,7 +200,7 @@ public class DefaultAvroConverters implements AvroConverters {
             } else if (value instanceof Double) {
                 return ((Double) value).floatValue();
             } else if (value instanceof String) {
-                return new Float((String) value);
+                return Float.parseFloat((String) value);
             } else {
                 throw new AvroConversionException(value, schema);
             }
@@ -225,7 +221,7 @@ public class DefaultAvroConverters implements AvroConverters {
             } else if (value instanceof Float) {
                 return ((Float) value).doubleValue();
             } else if (value instanceof String) {
-                return new Double((String) value);
+                return Double.parseDouble((String) value);
             } else {
                 throw new AvroConversionException(value, schema);
             }
@@ -352,13 +348,11 @@ public class DefaultAvroConverters implements AvroConverters {
                 
                 Map<String, Object> convertedMap = new HashMap<>();
                 
-                BiConsumer<String, Object> enrichMap = (k, v) -> {
-                    convertedMap.put(
-                        k,
-                        converters.getForSchema(mapValuesSchema).
-                            toAvro(v, mapValuesSchema, converters)
-                    );
-                };
+                BiConsumer<String, Object> enrichMap = (k, v) -> convertedMap.put(
+                    k,
+                    converters.getForSchema(mapValuesSchema).
+                        toAvro(v, mapValuesSchema, converters)
+                );
                 
                 ((Map<String, Object>) value).forEach(enrichMap);
                 
@@ -409,7 +403,7 @@ public class DefaultAvroConverters implements AvroConverters {
 
             List<String> schemaFieldsNames = schemaFields.stream()
                     .map(Field::name)
-                    .collect(Collectors.toList());
+                    .toList();
             for (String valueName : value.keySet()) {
                 if (!schemaFieldsNames.contains(valueName)) {
                     fieldsDisjunction.add(valueName);
