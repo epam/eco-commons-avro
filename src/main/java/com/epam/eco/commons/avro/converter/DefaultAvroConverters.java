@@ -221,7 +221,7 @@ public class DefaultAvroConverters implements AvroConverters {
             } else if (value instanceof Float) {
                 return ((Float) value).doubleValue();
             } else if (value instanceof String) {
-                return Double.parseDouble((String) value);
+                return Double.valueOf((String) value);
             } else {
                 throw new AvroConversionException(value, schema);
             }
@@ -290,13 +290,37 @@ public class DefaultAvroConverters implements AvroConverters {
             if (value == null)
                 return handleNullValue(schema);
 
+            // First try to find exact type match
+            for (Schema typeSchema : schema.getTypes()) {
+                if (typeSchema.getType() == Schema.Type.NULL) {
+                    continue;
+                }
+                if (isTypeMatch(value, typeSchema.getType())) {
+                    return converters.getForSchema(typeSchema).toAvro(value, typeSchema, converters);
+                }
+            }
+
+            // If no exact match found, try conversion
             return schema.getTypes().stream()
                     .filter(s -> Schema.Type.NULL != s.getType())
-                         .map(s -> tryConvert(value, s, converters))
-                         .filter(Optional::isPresent)
-                         .findFirst()
-                         .orElseThrow(() -> new AvroConversionException(value, schema))
-                         .get();
+                    .map(s -> tryConvert(value, s, converters))
+                    .filter(Optional::isPresent)
+                    .findFirst()
+                    .orElseThrow(() -> new AvroConversionException(value, schema))
+                    .get();
+        }
+
+        private boolean isTypeMatch(Object value, Schema.Type schemaType) {
+            return switch (schemaType) {
+                case STRING -> value instanceof String || value instanceof CharSequence;
+                case INT -> value instanceof Integer;
+                case LONG -> value instanceof Long;
+                case FLOAT -> value instanceof Float;
+                case DOUBLE -> value instanceof Double;
+                case BOOLEAN -> value instanceof Boolean;
+                case BYTES -> value instanceof ByteBuffer;
+                default -> false;
+            };
         }
 
         private Object handleNullValue(Schema schema) {
