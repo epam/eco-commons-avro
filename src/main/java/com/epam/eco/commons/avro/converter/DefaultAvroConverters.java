@@ -290,17 +290,6 @@ public class DefaultAvroConverters implements AvroConverters {
             if (value == null)
                 return handleNullValue(schema);
 
-            // First try to find exact type match
-            for (Schema typeSchema : schema.getTypes()) {
-                if (typeSchema.getType() == Schema.Type.NULL) {
-                    continue;
-                }
-                if (isTypeMatch(value, typeSchema.getType())) {
-                    return converters.getForSchema(typeSchema).toAvro(value, typeSchema, converters);
-                }
-            }
-
-            // If no exact match found, try conversion
             return schema.getTypes().stream()
                     .filter(s -> Schema.Type.NULL != s.getType())
                     .map(s -> tryConvert(value, s, converters))
@@ -308,19 +297,6 @@ public class DefaultAvroConverters implements AvroConverters {
                     .findFirst()
                     .orElseThrow(() -> new AvroConversionException(value, schema))
                     .get();
-        }
-
-        private boolean isTypeMatch(Object value, Schema.Type schemaType) {
-            return switch (schemaType) {
-                case STRING -> value instanceof String || value instanceof CharSequence;
-                case INT -> value instanceof Integer;
-                case LONG -> value instanceof Long;
-                case FLOAT -> value instanceof Float;
-                case DOUBLE -> value instanceof Double;
-                case BOOLEAN -> value instanceof Boolean;
-                case BYTES -> value instanceof ByteBuffer;
-                default -> false;
-            };
         }
 
         private Object handleNullValue(Schema schema) {
@@ -338,7 +314,7 @@ public class DefaultAvroConverters implements AvroConverters {
             try {
                 return Optional.of(
                         converters.getForSchema(unionSchema).toAvro(value, unionSchema, converters));
-            } catch (AvroConversionException e) {
+            } catch (Exception e) {
                 return Optional.empty();
             }
         }
