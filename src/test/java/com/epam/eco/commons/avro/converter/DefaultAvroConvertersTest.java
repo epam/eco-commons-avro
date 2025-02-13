@@ -19,6 +19,7 @@ import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collections;
@@ -69,6 +70,7 @@ public class DefaultAvroConvertersTest {
             .put("time_field_int", 10000)
             .put("time_field_ldt", LocalDateTime.parse("2024-09-27T10:03:01"))
             .put("datetime_field", LocalDateTime.of(2018, 7, 10, 11, 30))
+            .put("datetime_field_ld", LocalDate.parse("2024-09-27"))
             .put("collection_of_map_field", Collections.singletonList(ImmutableMap.of("int_field", 1, "string_field", "test")))
             .put("map_field", ImmutableMap.<String, Object>builder()
                     .put("int_field", 1)
@@ -107,6 +109,7 @@ public class DefaultAvroConvertersTest {
         Assertions.assertEquals(convertedData.get("time_field_int"), 10000);
         Assertions.assertEquals(convertedData.get("time_field_ldt"), LocalDateTime.parse("2024-09-27T10:03:01").toLocalTime().toSecondOfDay());
         Assertions.assertEquals(convertedData.get("datetime_field"), LocalDateTime.of(2018, 7, 10, 11, 30).atOffset(ZoneOffset.UTC).toInstant().toEpochMilli());
+        Assertions.assertEquals(convertedData.get("datetime_field_ld"), LocalDate.parse("2024-09-27").atStartOfDay(ZoneId.of("UTC")).toInstant().toEpochMilli());
         Assertions.assertEquals(convertedData.get("collection_of_string_field"), Arrays.asList("e1", "e2", null));
 
         GenericRecord collectionOfMapElement = (GenericRecord) ((List) convertedData.get("collection_of_map_field")).get(0);

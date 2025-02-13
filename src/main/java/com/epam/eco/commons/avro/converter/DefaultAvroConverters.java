@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -169,6 +170,8 @@ public class DefaultAvroConverters implements AvroConverters {
                                         .toEpochMilli();
                 } else if (value instanceof Long  || value instanceof Integer) {
                     return value;
+                } else if (value instanceof LocalDate) {
+                    return ((LocalDate) value).atStartOfDay(ZoneId.of("UTC")).toInstant().toEpochMilli();
                 }
             }
 

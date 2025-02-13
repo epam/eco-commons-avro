@@ -123,6 +123,16 @@
       ]
     },
     {
+      "name": "datetime_field_ld",
+      "type": [
+        {
+          "type": "long",
+          "logicalType": "timestamp-millis"
+        },
+        "null"
+      ]
+    },
+    {
       "name": "collection_of_string_field",
       "type": [
         {
