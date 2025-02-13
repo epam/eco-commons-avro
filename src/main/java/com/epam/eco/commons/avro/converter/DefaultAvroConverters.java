@@ -221,7 +221,7 @@ public class DefaultAvroConverters implements AvroConverters {
             } else if (value instanceof Float) {
                 return ((Float) value).doubleValue();
             } else if (value instanceof String) {
-                return Double.parseDouble((String) value);
+                return Double.valueOf((String) value);
             } else {
                 throw new AvroConversionException(value, schema);
             }
@@ -292,11 +292,11 @@ public class DefaultAvroConverters implements AvroConverters {
 
             return schema.getTypes().stream()
                     .filter(s -> Schema.Type.NULL != s.getType())
-                         .map(s -> tryConvert(value, s, converters))
-                         .filter(Optional::isPresent)
-                         .findFirst()
-                         .orElseThrow(() -> new AvroConversionException(value, schema))
-                         .get();
+                    .map(s -> tryConvert(value, s, converters))
+                    .filter(Optional::isPresent)
+                    .findFirst()
+                    .orElseThrow(() -> new AvroConversionException(value, schema))
+                    .get();
         }
 
         private Object handleNullValue(Schema schema) {
@@ -314,7 +314,7 @@ public class DefaultAvroConverters implements AvroConverters {
             try {
                 return Optional.of(
                         converters.getForSchema(unionSchema).toAvro(value, unionSchema, converters));
-            } catch (AvroConversionException e) {
+            } catch (Exception e) {
                 return Optional.empty();
             }
         }

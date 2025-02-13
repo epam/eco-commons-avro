@@ -170,4 +170,32 @@ public class DefaultAvroConvertersTest {
         );
     }
 
+    @Test
+    public void convertsUnionOfDifferentTypes() {
+        // Create schema programmatically
+        Schema schema = SchemaBuilder.record("schema")
+                .fields()
+                .name("f1").type()
+                .unionOf()
+                    .intType()
+                    .and()
+                    .stringType()
+                .endUnion()
+                .noDefault()
+                .endRecord();
+
+        // Prepare test data
+        Map<String, Object> valueMap = Map.of("f1", "strValue");
+
+        // Convert and verify
+        DefaultAvroConverters converters = new DefaultAvroConverters();
+        GenericRecord genericRecord1 = (GenericRecord) converters.toAvro(valueMap, schema);
+        Assertions.assertEquals("strValue", genericRecord1.get("f1").toString());
+
+        Map<String, Object> valueMap1 = Map.of("f1", 1);
+
+        GenericRecord genericRecord2 = (GenericRecord) converters.toAvro(valueMap1, schema);
+        Assertions.assertEquals(1, genericRecord2.get("f1"));
+    }
+
 }
