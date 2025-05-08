@@ -1,0 +1,73 @@
+{
+  "type": "record",
+  "name": "LocalTimestampMicrosTestRecord",
+  "namespace": "com.example.avro",
+  "fields": [
+    {
+      "name": "local_timestamp_micros_ldt",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "logicalType": "local-timestamp-micros"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "local_timestamp_micros_odt",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "logicalType": "local-timestamp-micros"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "local_timestamp_micros_str_odt",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "logicalType": "local-timestamp-micros"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "local_timestamp_micros_str_ldt",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "logicalType": "local-timestamp-micros"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "local_timestamp_micros_num",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "logicalType": "local-timestamp-micros"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "local_timestamp_micros_date",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "logicalType": "local-timestamp-micros"
+        }
+      ],
+      "default": null
+    }
+  ]
+}

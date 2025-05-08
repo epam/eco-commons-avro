@@ -1,0 +1,73 @@
+{
+  "type": "record",
+  "name": "LocalTimestampMillisTestRecord",
+  "namespace": "com.example.avro",
+  "fields": [
+    {
+      "name": "local_timestamp_millis_ldt",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "logicalType": "local-timestamp-millis"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "local_timestamp_millis_odt",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "logicalType": "local-timestamp-millis"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "local_timestamp_millis_str_odt",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "logicalType": "local-timestamp-millis"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "local_timestamp_millis_str_ldt",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "logicalType": "local-timestamp-millis"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "local_timestamp_millis_num",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "logicalType": "local-timestamp-millis"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "local_timestamp_millis_date",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "logicalType": "local-timestamp-millis"
+        }
+      ],
+      "default": null
+    }
+  ]
+}

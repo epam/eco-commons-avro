@@ -20,8 +20,11 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
@@ -174,8 +178,52 @@ public class DefaultAvroConverters implements AvroConverters {
                     return ((LocalDate) value).atStartOfDay(ZoneId.of("UTC")).toInstant().toEpochMilli();
                 }
             }
+            if (LogicalTypes.localTimestampMillis().equals(schema.getLogicalType())) {
+                if (value instanceof LocalDateTime localDateTimeValue) {
+                    return localDateTimeValue.toInstant(ZoneOffset.UTC).toEpochMilli();
+                } else if (value instanceof OffsetDateTime offsetDateTimeValue) {
+                    return offsetDateTimeValue.toInstant().toEpochMilli();
+                } else if (value instanceof CharSequence charSequenceValue) {
+                    try {
+                        return OffsetDateTime.parse(charSequenceValue, DateTimeFormatter.ISO_DATE_TIME)
+                                .toInstant()
+                                .toEpochMilli();
+                    } catch (DateTimeParseException e) {
+                        return LocalDateTime.parse(charSequenceValue, DateTimeFormatter.ISO_DATE_TIME)
+                                .toInstant(ZoneOffset.UTC)
+                                .toEpochMilli();
+                    }
+                } else if (value instanceof Long || value instanceof Integer) {
+                    return value;
+                } else if (value instanceof Date dateValue) {
+                    return dateValue.getTime();
+                }
+            }
+
+            if (LogicalTypes.localTimestampMicros().equals(schema.getLogicalType())) {
+                if (value instanceof LocalDateTime localDateTimeValue) {
+                    return toEpochMicros(localDateTimeValue.toInstant(ZoneOffset.UTC));
+                } else if (value instanceof OffsetDateTime offsetDateTimeValue) {
+                    return toEpochMicros(offsetDateTimeValue.toInstant());
+                } else if (value instanceof CharSequence charSequenceValue) {
+                    try {
+                        return toEpochMicros(OffsetDateTime.parse(charSequenceValue, DateTimeFormatter.ISO_DATE_TIME).toInstant());
+                    } catch (DateTimeParseException e) {
+                        return toEpochMicros(LocalDateTime.parse(charSequenceValue, DateTimeFormatter.ISO_DATE_TIME).toInstant(ZoneOffset.UTC));
+                    }
+                } else if (value instanceof Long || value instanceof Integer) {
+                    return value;
+                } else if (value instanceof Date dateValue) {
+                    return TimeUnit.MILLISECONDS.toMicros(dateValue.getTime());
+                }
+
+            }
 
             throw new AvroConversionException(value, schema);
+        }
+
+        private long toEpochMicros(Instant instant) {
+            return ChronoUnit.MICROS.between(Instant.EPOCH, instant);
         }
 
         private Object toBaseType(Object value, Schema schema) {

@@ -16,13 +16,17 @@
 package com.epam.eco.commons.avro.converter;
 
 import java.nio.ByteBuffer;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +47,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Ihar_Karoza
  */
 public class DefaultAvroConvertersTest {
+
+    private static final Schema LOCAL_TIMESTAMP_VALUE_TEST_SCHEMA = AvroUtils.schemaFromResource("/local_timestamp_mills_test.avsc");
+    private static final Schema LOCAL_TIMESTAMP_MICROS_TEST_SCHEMA = AvroUtils.schemaFromResource("/local_timestamp_micros_test.avsc");
 
     private static final Schema VALUE_SCHEMA = AvroUtils.schemaFromResource("/broad_schema_with_null.avsc");
 
@@ -199,6 +206,97 @@ public class DefaultAvroConvertersTest {
 
         GenericRecord genericRecord2 = (GenericRecord) converters.toAvro(valueMap1, schema);
         Assertions.assertEquals(1, genericRecord2.get("f1"));
+    }
+
+
+    @Test
+    public void testLocalTimestampMillis() {
+        // given
+        DefaultAvroConverters converters = new DefaultAvroConverters();
+
+        LocalDateTime ldtExample = LocalDateTime.of(2023, 9, 1, 12, 34, 56);
+        long ldtMillis = ldtExample.toInstant(ZoneOffset.UTC).toEpochMilli();
+        OffsetDateTime odtExample = OffsetDateTime.of(2023, 9, 1, 12, 34, 56, 0, ZoneOffset.UTC);
+        long odtMillis = odtExample.toInstant().toEpochMilli();
+        String odtString = "2023-09-01T12:34:56Z";
+        long odtStringMillis = Instant.parse(odtString).toEpochMilli();
+        String ldtString = "2023-09-01T12:34:56";
+        long ldtStringMillis = LocalDateTime.parse(ldtString).toInstant(ZoneOffset.UTC).toEpochMilli();
+        long numericMillis = 1693281600000L; // e.g., 2023-08-29
+        long dateMillis = 1693281600000L;    // same time as numericMillis
+
+        Map<String, Object> recordData = new HashMap<>();
+        recordData.put("local_timestamp_millis_ldt", ldtExample);
+        recordData.put("local_timestamp_millis_odt", odtExample);
+        recordData.put("local_timestamp_millis_str_odt", odtString);
+        recordData.put("local_timestamp_millis_str_ldt", ldtString);
+        recordData.put("local_timestamp_millis_num", numericMillis);
+        recordData.put("local_timestamp_millis_date", new Date(dateMillis));
+
+        // when
+        GenericRecord result = (GenericRecord) converters.toAvro(recordData, LOCAL_TIMESTAMP_VALUE_TEST_SCHEMA);
+
+        // then - verify each field matches the expected epoch milli value:
+        Assertions.assertEquals(ldtMillis, result.get("local_timestamp_millis_ldt"),
+                "Should convert LocalDateTime to epoch millis");
+        Assertions.assertEquals(odtMillis, result.get("local_timestamp_millis_odt"),
+                "Should convert OffsetDateTime to epoch millis");
+        Assertions.assertEquals(odtStringMillis, result.get("local_timestamp_millis_str_odt"),
+                "Should parse offset-style string to epoch millis");
+        Assertions.assertEquals(ldtStringMillis, result.get("local_timestamp_millis_str_ldt"),
+                "Should parse local-style string to epoch millis");
+        Assertions.assertEquals(numericMillis, result.get("local_timestamp_millis_num"),
+                "Should accept numeric epoch millis");
+        Assertions.assertEquals(dateMillis, result.get("local_timestamp_millis_date"),
+                "Should accept Date object and convert it to epoch millis");
+    }
+
+
+    @Test
+    public void testLocalTimestampMicros() {
+        // given
+        DefaultAvroConverters converters = new DefaultAvroConverters();
+
+        LocalDateTime ldt = LocalDateTime.of(2023, 9, 2, 10, 30, 0);
+
+        long ldtMicros = ChronoUnit.MICROS.between(Instant.EPOCH, ldt.toInstant(ZoneOffset.UTC));
+
+        OffsetDateTime odt = OffsetDateTime.of(2023, 9, 2, 10, 30, 0, 0, ZoneOffset.UTC);
+        long odtMicros = ChronoUnit.MICROS.between(Instant.EPOCH, odt.toInstant());
+
+        // Strings parseable as offset or local
+        String odtString = "2023-09-02T10:30:00Z";
+        long odtStringMicros = ChronoUnit.MICROS.between(Instant.EPOCH, Instant.parse(odtString));
+        String ldtString = "2023-09-02T10:30:00";
+        long ldtStringMicros = ChronoUnit.MICROS.between(
+                Instant.EPOCH,
+                LocalDateTime.parse(ldtString).toInstant(ZoneOffset.UTC)
+        );
+
+        long numericMicros = 1693644600000000L; // e.g., "2023-09-02T10:30:00Z" in microseconds
+        // Date: note that this date is in ms, so to get micros from it in the converter,
+        // it will do date.getTime() * 1000
+        Date dateValue = new Date(numericMicros / 1000);
+
+        Map<String, Object> recordData = new HashMap<>();
+        recordData.put("local_timestamp_micros_ldt", ldt);
+        recordData.put("local_timestamp_micros_odt", odt);
+        recordData.put("local_timestamp_micros_str_odt", odtString);
+        recordData.put("local_timestamp_micros_str_ldt", ldtString);
+        recordData.put("local_timestamp_micros_num", numericMicros);
+        recordData.put("local_timestamp_micros_date", dateValue);
+
+        // when
+        GenericRecord record = (GenericRecord) converters.toAvro(recordData, LOCAL_TIMESTAMP_MICROS_TEST_SCHEMA);
+
+        // then - verify each field matched the correct microsecond value:
+        Assertions.assertNotNull(record, "Converted record should not be null");
+        Assertions.assertEquals(ldtMicros, record.get("local_timestamp_micros_ldt"));
+        Assertions.assertEquals(odtMicros, record.get("local_timestamp_micros_odt"));
+        Assertions.assertEquals(odtStringMicros, record.get("local_timestamp_micros_str_odt"));
+        Assertions.assertEquals(ldtStringMicros, record.get("local_timestamp_micros_str_ldt"));
+        Assertions.assertEquals(numericMicros, record.get("local_timestamp_micros_num"));
+        Assertions.assertEquals(numericMicros, record.get("local_timestamp_micros_date"));
     }
 
 }
