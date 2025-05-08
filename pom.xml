@@ -3,7 +3,7 @@
 
     <groupId>com.epam.eco</groupId>
     <artifactId>commons-avro</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
 
     <name>Eco Commons Avro</name>
     <url>https://github.com/epam/eco-commons-avro</url>
@@ -44,7 +44,7 @@
         <connection>scm:git:git@github.com:epam/eco-commons-avro.git</connection>
         <developerConnection>scm:git:git@github.com:epam/eco-commons-avro.git</developerConnection>
         <url>https://github.com/epam/eco-commons-avro</url>
-        <tag>HEAD</tag>
+        <tag>v1.0.2</tag>
     </scm>
 
     <distributionManagement>
