@@ -48,10 +48,6 @@
     </scm>
 
     <distributionManagement>
-        <snapshotRepository>
-            <id>central</id>
-            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
-        </snapshotRepository>
         <repository>
             <id>central</id>
             <url>https://central.sonatype.com</url>
