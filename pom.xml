@@ -65,18 +65,18 @@
         <jackson.version>2.21.2</jackson.version>
         <guava.version>33.6.0-jre</guava.version>
 
-        <maven-publishing-plugin.version>0.8.0</maven-publishing-plugin.version>
+        <maven-publishing-plugin.version>0.10.0</maven-publishing-plugin.version>
         <maven-release-plugin.version>3.3.1</maven-release-plugin.version>
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
-        <maven-source-plugin.version>3.1.0</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
+        <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
         <maven-eclipse-plugin.version>2.10</maven-eclipse-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
         <maven-pmd-plugin.version>3.11.0</maven-pmd-plugin.version>
         <spotbugs-maven-plugin.version>4.7.3.0</spotbugs-maven-plugin.version>
         <findsecbugs-plugin.version>1.11.0</findsecbugs-plugin.version>
         <fb-contrib.version>7.4.3.sb</fb-contrib.version>
-        <surefire.version>3.0.0-M9</surefire.version>
+        <surefire.version>3.5.5</surefire.version>
 
         <junit5.version>6.0.3</junit5.version>
     </properties>
