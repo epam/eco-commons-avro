@@ -17,12 +17,13 @@ package com.epam.eco.commons.avro.modification;
 
 import java.io.IOException;
 
+import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
-import org.apache.avro.SchemaParseException;
 import org.junit.jupiter.api.Test;
 
 import com.epam.eco.commons.avro.utils.TestUtils;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -66,12 +67,13 @@ public class RemoveSchemaFieldWithRecordDefinitionTest {
 
     @Test
     public void removeOnlyFieldWithDefinition() {
-        assertThrows(
-                SchemaParseException.class,
+        AvroRuntimeException exception = assertThrows(
+                AvroRuntimeException.class,
                 () -> SchemaModifications.of(
                                 new RemoveSchemaFieldByPath("two_string")
                         )
                         .applyTo(getScheme())
         );
+        assertTrue(exception.getMessage().contains("Undefined schema"));
     }
 }
