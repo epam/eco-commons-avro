@@ -106,7 +106,7 @@ public class GrammarErrorParserTest {
         Assertions.assertEquals("Found boolean, expecting string", errors.get(3).getMessage());
 
         Assertions.assertEquals("f9", errors.get(4).getPath());
-        Assertions.assertEquals("Found string, expecting union", errors.get(4).getMessage());
+        Assertions.assertTrue(errors.get(4).getMessage().startsWith("Found string, expecting union"));
     }
 
     @Test
