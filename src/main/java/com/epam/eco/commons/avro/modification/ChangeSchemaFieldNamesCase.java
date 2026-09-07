@@ -99,19 +99,9 @@ public class ChangeSchemaFieldNamesCase implements SchemaModification {
     public void applyToGeneric(Map<String, Object> schemaMap) {
         List<Map<String, Object>> fieldsToChange = new ArrayList<>();
 
-        new GenericSchemaTraverser(new GenericSchemaTraverseListener() {
-            @Override
-            public void onSchemaField(
-                    String path,
-                    Map<String, Object> parentSchema,
-                    Map<String, Object> field) {
-                if (isFieldIncluded(path) && !isFieldExcluded(path)) {
-                    fieldsToChange.add(field);
-                }
-            }
-            @Override
-            public void onSchema(String path, Object parentSchema, Object schema) {
-                // do nothing
+        new GenericSchemaTraverser((path, parentSchema, field) -> {
+            if (isFieldIncluded(path) && !isFieldExcluded(path)) {
+                fieldsToChange.add(field);
             }
         }).walk(schemaMap);
 

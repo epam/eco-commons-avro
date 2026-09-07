@@ -136,13 +136,7 @@ public class GenericSchemaTraverserTest {
     public void testNameExampleFromAvroDoc() throws IOException {
         Schema schema = TestUtils.getScheme("schema_with_example_names_from_avro_doc.avsc");
 
-        new GenericSchemaTraverser(new GenericSchemaTraverseListener() {
-            @Override
-            public void onSchema(String path, Object parentSchema, Object schema) {
-            }
-            @Override
-            public void onSchemaField(String path, Map<String, Object> parentSchema, Map<String, Object> field) {
-            }
+        new GenericSchemaTraverser((path, parentSchema, field) -> {
         }).walk(AvroUtils.schemaToGeneric(schema));
     }
 }
