@@ -28,6 +28,8 @@ import java.util.function.Function;
 
 import org.apache.commons.lang3.Validate;
 
+import static java.util.List.copyOf;
+
 /**
  * @author Andrei_Tytsik
  */
@@ -54,11 +56,8 @@ public class SetSchemaProperties implements SchemaModification {
             Validate.noNullElements(features, "Array of features has null elements");
         }
 
-        this.properties = Collections.unmodifiableMap(new HashMap<>(properties));
-        this.features =
-                features != null ?
-                Collections.unmodifiableList(new ArrayList<>(features)) :
-                Collections.emptyList();
+        this.properties = Map.copyOf(properties);
+        this.features = features != null ? copyOf(features) : Collections.emptyList();
     }
 
     public Map<String, Object> getProperties() {
@@ -193,8 +192,8 @@ public class SetSchemaProperties implements SchemaModification {
 
     public static class Builder {
 
-        private Map<String, Object> properties = new HashMap<>();
-        private List<Feature> features = new ArrayList<>();
+        private final Map<String, Object> properties = new HashMap<>();
+        private final List<Feature> features = new ArrayList<>();
 
         public Builder property(String key, Object value) {
             this.properties.put(key, value);

@@ -62,20 +62,10 @@ public class RemoveSchemaFieldByPath implements SchemaModification {
         List<Map<String, Object>> typesToRemoveFieldFrom = new ArrayList<>();
         List<Object> fieldsToRemove = new ArrayList<>();
 
-        new GenericSchemaTraverser(new GenericSchemaTraverseListener() {
-            @Override
-            public void onSchemaField(
-                    String path,
-                    Map<String, Object> parentSchema,
-                    Map<String, Object> field) {
-                if (RemoveSchemaFieldByPath.this.path.equals(path)) {
-                    typesToRemoveFieldFrom.add(parentSchema);
-                    fieldsToRemove.add(field);
-                }
-            }
-            @Override
-            public void onSchema(String path, Object parentSchema, Object schema) {
-                // do nothing
+        new GenericSchemaTraverser((path, parentSchema, field) -> {
+            if (RemoveSchemaFieldByPath.this.path.equals(path)) {
+                typesToRemoveFieldFrom.add(parentSchema);
+                fieldsToRemove.add(field);
             }
         }).walk(schemaMap, null);
 

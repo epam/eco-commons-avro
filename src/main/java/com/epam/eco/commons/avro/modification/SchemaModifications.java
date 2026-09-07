@@ -23,6 +23,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.Validate;
 
+import static java.util.List.copyOf;
+
 /**
  * @author Andrei_Tytsik
  */
@@ -36,7 +38,7 @@ public class SchemaModifications implements SchemaModification {
                 modifications,
                 "Collection of schema modifications contains null elements");
 
-        this.modifications = Collections.unmodifiableList(new ArrayList<>(modifications));
+        this.modifications = copyOf(modifications);
     }
 
     @Override

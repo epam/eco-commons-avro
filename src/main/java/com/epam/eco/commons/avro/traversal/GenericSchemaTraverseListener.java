@@ -21,9 +21,12 @@ import java.util.Map;
  * @author Andrei_Tytsik
  */
 public interface GenericSchemaTraverseListener {
-    void onSchema(String path, Object parentSchema, Object schema);
+
+    default void onSchema(String path, Object parentSchema, Object schema) {}
+
     void onSchemaField(
             String path,
             Map<String, Object> parentSchema,
-            Map<String, Object> field);
+            Map<String, Object> field
+    );
 }
