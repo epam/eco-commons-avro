@@ -28,6 +28,7 @@ import java.util.function.Function;
 
 import org.apache.commons.lang3.Validate;
 
+import static java.util.Collections.unmodifiableMap;
 import static java.util.List.copyOf;
 
 /**
@@ -56,7 +57,7 @@ public class SetSchemaProperties implements SchemaModification {
             Validate.noNullElements(features, "Array of features has null elements");
         }
 
-        this.properties = Map.copyOf(properties);
+        this.properties = unmodifiableMap(properties);
         this.features = features != null ? copyOf(features) : Collections.emptyList();
     }
 
