@@ -57,7 +57,7 @@ public class SetSchemaProperties implements SchemaModification {
             Validate.noNullElements(features, "Array of features has null elements");
         }
 
-        this.properties = unmodifiableMap(properties);
+        this.properties = unmodifiableMap(new HashMap<>(properties));
         this.features = features != null ? copyOf(features) : Collections.emptyList();
     }
 
