@@ -21,6 +21,7 @@ import org.apache.avro.Schema;
 import org.apache.avro.Schema.Field;
 import org.apache.avro.Schema.Field.Order;
 import org.apache.avro.Schema.Type;
+import org.apache.avro.SchemaParseException;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.util.Utf8;
 import org.junit.jupiter.api.Assertions;
@@ -373,6 +374,56 @@ public class AvroUtilsTest {
                 GenericSchemaDataGen.arraySchema(Type.BOOLEAN.getName()),
                 GenericSchemaDataGen.mapSchema(Type.ENUM.getName()));
         Assertions.assertEquals(Type.UNION, AvroUtils.effectiveTypeOfGenericSchema(schema));
+    }
+
+    @Test
+    public void testSchemaFromJsonRejectsLegacyNamespace() {
+        assertThrows(
+                SchemaParseException.class,
+                () -> AvroUtils.schemaFromJson(
+                        "{\"type\":\"record\",\"name\":\"Event\",\"namespace\":\"epm-gess\",\"fields\":[]}"));
+    }
+
+    @Test
+    public void testSchemaFromJsonWithLegacyNamespacesAllowsLegacyNamespace() {
+        Schema schema = AvroUtils.schemaFromJsonWithLegacyNamespaces(
+                "{\"type\":\"record\",\"name\":\"Event\",\"namespace\":\"epm-gess\",\"fields\":[]}",
+                true);
+
+        assertLegacyNamespaceSchema(schema);
+    }
+
+    @Test
+    public void testSchemaFromJsonWithLegacyNamespacesAllowsHyphenInQualifiedNameNamespace() {
+        Schema schema = AvroUtils.schemaFromJsonWithLegacyNamespaces(
+                "{\"type\":\"record\",\"name\":\"epm-gess.Event\",\"fields\":[]}",
+                true);
+
+        assertLegacyNamespaceSchema(schema);
+    }
+
+    @Test
+    public void testSchemaFromJsonWithLegacyNamespacesRejectsIllegalTypeName() {
+        assertThrows(
+                SchemaParseException.class,
+                () -> AvroUtils.schemaFromJsonWithLegacyNamespaces(
+                        "{\"type\":\"record\",\"name\":\"epm-gess\",\"namespace\":\"ok\",\"fields\":[]}",
+                        true));
+    }
+
+    @Test
+    public void testSchemaFromJsonWithLegacyNamespacesRejectsIllegalFieldName() {
+        assertThrows(
+                SchemaParseException.class,
+                () -> AvroUtils.schemaFromJsonWithLegacyNamespaces(
+                        "{\"type\":\"record\",\"name\":\"Event\",\"fields\":[{\"name\":\"bad-field\",\"type\":\"string\"}]}",
+                        true));
+    }
+
+    private static void assertLegacyNamespaceSchema(Schema schema) {
+        Assertions.assertEquals("epm-gess.Event", schema.getFullName());
+        Assertions.assertEquals("Event", schema.getName());
+        Assertions.assertEquals("epm-gess", schema.getNamespace());
     }
 
 }

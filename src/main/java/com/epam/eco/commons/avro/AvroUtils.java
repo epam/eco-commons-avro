@@ -51,6 +51,8 @@ import org.apache.commons.lang3.Validate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.epam.eco.commons.avro.validation.CustomSchemaParser;
+
 /**
  * @author tytsik
  */
@@ -245,6 +247,12 @@ public abstract class AvroUtils {
         Validate.notNull(schema, "Schema is null");
 
         return schema.toString();
+    }
+
+    public static Schema schemaFromJsonWithLegacyNamespaces(String schemaJson, boolean validateDefaults) {
+        Validate.notBlank(schemaJson, "Schema json is blank");
+
+        return CustomSchemaParser.parse(schemaJson, validateDefaults);
     }
 
     public static Schema schemaFromGeneric(Object genericSchema) {
